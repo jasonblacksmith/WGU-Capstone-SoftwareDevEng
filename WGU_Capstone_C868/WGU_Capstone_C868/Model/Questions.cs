@@ -3,10 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SQLite;
+using WGU_Capstone_C868.Model.Interfaces;
 
 namespace WGU_Capstone_C868.Model
 {
-    internal class Questions
+    [Table("Questions")]
+    public class Questions : IQuestions
     {
+        [PrimaryKey, AutoIncrement]
+        [Column("QuestionId")]
+        public int QuestionId { get; set; }
+        [Indexed]
+        [Column("UserId")]
+        public int UserId { get; set; }
+        [Column("Question")]
+        public string Question { get; set; }
+        [Indexed]
+        [Column("VisitId")]
+        public int VisitId { get; set; }
     }
 }
