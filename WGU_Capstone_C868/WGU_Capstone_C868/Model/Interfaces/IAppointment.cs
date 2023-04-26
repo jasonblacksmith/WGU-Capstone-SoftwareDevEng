@@ -10,6 +10,7 @@
         string PhoneNumber { get; set; }
         int StateId { get; set; }
         bool Current { get; set; }
+        DateTime DateAndTime { get; set; }
         int UserId { get; set; }
     }
 }

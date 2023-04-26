@@ -31,6 +31,8 @@ namespace WGU_Capstone_C868.Model
         public int StateId { get; set; }
         [Column("Current")]
         public bool Current { get; set; }
+        [Column("DateAndTime")]
+        public DateTime DateAndTime { get; set; }
         [Indexed]
         [Column("UserId")]
         public int UserId { get; set; }

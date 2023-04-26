@@ -1,8 +1,8 @@
 ﻿namespace WGU_Capstone_C868.Model.Interfaces
 {
-    public interface IQuestions
+    public interface IQuestion
     {
-        string Question { get; set; }
+        string QuestionContent { get; set; }
         int QuestionId { get; set; }
         int UserId { get; set; }
         int VisitId { get; set; }

@@ -9,7 +9,7 @@ using WGU_Capstone_C868.Model.Interfaces;
 namespace WGU_Capstone_C868.Model
 {
     [Table("Questions")]
-    public class Questions : IQuestions
+    public class Question : IQuestion
     {
         [PrimaryKey, AutoIncrement]
         [Column("QuestionId")]
@@ -18,7 +18,7 @@ namespace WGU_Capstone_C868.Model
         [Column("UserId")]
         public int UserId { get; set; }
         [Column("Question")]
-        public string Question { get; set; }
+        public string QuestionContent { get; set; }
         [Indexed]
         [Column("VisitId")]
         public int VisitId { get; set; }

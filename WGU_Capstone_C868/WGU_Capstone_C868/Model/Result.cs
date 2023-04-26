@@ -10,11 +10,11 @@ using WGU_Capstone_C868.Model.Interfaces;
 namespace WGU_Capstone_C868.Model
 {
     [Table("Results")]
-    public class Results : IResults
+    public class Result : IResult
     {
         [PrimaryKey, AutoIncrement]
-        [Column("ResultsId")]
-        public int ResultsId { get; set; }
+        [Column("ResultId")]
+        public int ResultId { get; set; }
         [Indexed]
         [Column("AppointmentId")]
         public int AppointmentId { get; set; }
