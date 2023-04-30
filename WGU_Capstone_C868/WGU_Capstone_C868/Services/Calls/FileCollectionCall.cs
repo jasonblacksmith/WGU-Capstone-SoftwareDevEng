@@ -12,7 +12,7 @@ namespace WGU_Capstone_C868.Services.Calls
         public FileCollection fileCollection;
         public ObservableCollection<FileCollection> fileCollections = new();
 
-        //Creates and adds new Address record to DB
+        //Creates and adds new FileCollection record to DB
         public async Task<FileCollection> AddFileCollectionAsync(FileCollection fileCollection)
         {
             FileCollection AddFileCollection = fileCollection;
@@ -28,7 +28,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Returns the desired Address record from the DB
+        //Returns the desired FileCollection record from the DB
         public async Task<FileCollection> GetFileCollectionAsync(int pk)
         {
             try
@@ -43,7 +43,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Returns an ObservableCollection of all Addresses int the table
+        //Returns an ObservableCollection of all FileCollections int the table
         public async Task<ObservableCollection<FileCollection>> GetFileCollectionsAsync()
         {
             List<FileCollection> FileCollections = await SqLiteDataService.Db.Table<FileCollection>().ToListAsync();
@@ -54,7 +54,7 @@ namespace WGU_Capstone_C868.Services.Calls
             return fileCollections;
         }
 
-        //Removes or Deletes the desired Address record from the DB
+        //Removes or Deletes the desired FileCollection record from the DB
         public async Task<bool> RemoveFileCollectionAsync(FileCollection fileCollection)
         {
             try
@@ -70,7 +70,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Updates the desired Address in the Address table in the DB
+        //Updates the desired FileCollection in the FileCollection table in the DB
         public async Task<FileCollection> UpdateFileCollectionAsync(FileCollection fileCollection)
         {
             FileCollection UpdateFileCollection = fileCollection;

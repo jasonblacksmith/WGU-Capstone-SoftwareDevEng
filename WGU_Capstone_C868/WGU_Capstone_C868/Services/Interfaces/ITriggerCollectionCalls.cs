@@ -6,6 +6,6 @@
         Task<bool> RemoveTriggerCollectionAsync(TriggerCollection triggerCollection);
         Task<TriggerCollection> GetTriggerCollectionAsync(int pk);
         Task<TriggerCollection> UpdateTriggerCollectionAsync(TriggerCollection triggerCollection);
-        Task<ObservableCollection<TriggerCollection>> GetTriggerTriggerCollectionsAsync();
+        Task<ObservableCollection<TriggerCollection>> GetTriggerCollectionsAsync();
     }
 }

@@ -12,7 +12,7 @@ namespace WGU_Capstone_C868.Services.Calls
         public AppointmentState appointmentState;
         public ObservableCollection<AppointmentState> appointmentStates = new();
 
-        //Returns the desired Appointment record from the DB
+        //Returns the desired AppointmentState record from the DB
         public async Task<AppointmentState> GetAppointmentStateAsync(int pk)
         {
             try
@@ -27,7 +27,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Returns an ObservableCollection of all Addresses int the table
+        //Returns an ObservableCollection of all AppointmentStates int the table
         public async Task<ObservableCollection<AppointmentState>> GetAppointmentStatesAsync()
         {
             List<AppointmentState> AppointmentStates = await SqLiteDataService.Db.Table<AppointmentState>().ToListAsync();

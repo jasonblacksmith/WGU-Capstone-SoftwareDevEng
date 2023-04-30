@@ -53,7 +53,7 @@ namespace WGU_Capstone_C868.Services.Calls
             return files;
         }
 
-        //Removes or Deletes the desired Address record from the DB
+        //Removes or Deletes the desired File record from the DB
         public async Task<bool> RemoveFileAsync(Model.File file)
         {
             try
@@ -69,7 +69,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Updates the desired Address in the Address table in the DB
+        //Updates the desired File in the File table in the DB
         public async Task<Model.File> UpdateFileAsync(Model.File file)
         {
             Model.File UpdateFile = file;

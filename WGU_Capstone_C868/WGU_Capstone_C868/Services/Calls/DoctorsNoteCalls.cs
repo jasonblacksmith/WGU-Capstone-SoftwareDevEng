@@ -13,7 +13,7 @@ namespace WGU_Capstone_C868.Services.Calls
         public DoctorsNote doctorsNote;
         public ObservableCollection<DoctorsNote> doctorsNotes = new();
 
-        //Creates and adds new Appointment record to DB
+        //Creates and adds new DoctorsNote record to DB
         public async Task<DoctorsNote> AddDoctorsNoteAsync(DoctorsNote doctorsNote)
         {
             DoctorsNote AddDoctorsNote = doctorsNote;
@@ -29,7 +29,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Returns the desired Appointment record from the DB
+        //Returns the desired DoctorsNote record from the DB
         public async Task<DoctorsNote> GetDoctorsNoteAsync(int pk)
         {
             try
@@ -44,7 +44,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Returns an ObservableCollection of all Addresses int the table
+        //Returns an ObservableCollection of all DoctorsNotes int the table
         public async Task<ObservableCollection<DoctorsNote>> GetDoctorsNotesAsync()
         {
             List<DoctorsNote> DoctorsNotes = await SqLiteDataService.Db.Table<DoctorsNote>().ToListAsync();
@@ -55,7 +55,7 @@ namespace WGU_Capstone_C868.Services.Calls
             return doctorsNotes;
         }
 
-        //Removes or Deletes the desired Address record from the DB
+        //Removes or Deletes the desired DoctorsNote record from the DB
         public async Task<bool> RemoveDoctorsNoteAsync(DoctorsNote doctorsNote)
         {
             try
@@ -71,7 +71,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Updates the desired Address in the Address table in the DB
+        //Updates the desired DoctorsNote in the DoctorsNote table in the DB
         public async Task<DoctorsNote> UpdateDoctorsNoteAsync(DoctorsNote doctorsNote)
         {
             DoctorsNote UpdateDoctorsNote = doctorsNote;

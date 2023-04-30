@@ -43,7 +43,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Returns an ObservableCollection of all Addresses int the table
+        //Returns an ObservableCollection of all Appointments int the table
         public async Task<ObservableCollection<Appointment>> GetAppointmentsAsync()
         {
             List<Appointment> Appointments = await SqLiteDataService.Db.Table<Appointment>().ToListAsync();
@@ -54,7 +54,7 @@ namespace WGU_Capstone_C868.Services.Calls
             return appointments;
         }
 
-        //Removes or Deletes the desired Address record from the DB
+        //Removes or Deletes the desired Appointment record from the DB
         public async Task<bool> RemoveAppointmentAsync(Appointment appointment)
         {
             try
@@ -70,7 +70,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Updates the desired Address in the Address table in the DB
+        //Updates the desired Appointment in the Appointment table in the DB
         public async Task<Appointment> UpdateAppointmentAsync(Appointment appointment)
         {
             Appointment UpdateAppointment = appointment;

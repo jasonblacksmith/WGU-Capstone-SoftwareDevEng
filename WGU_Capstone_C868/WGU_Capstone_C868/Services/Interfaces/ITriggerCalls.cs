@@ -6,6 +6,6 @@
         Task<bool> RemoveTriggerAsync(Model.Trigger trigger);
         Task<Model.Trigger> GetTriggerAsync(int pk);
         Task<Model.Trigger> UpdateTriggerAsync(Model.Trigger trigger);
-        Task<ObservableCollection<Model.Trigger>> GetTriggerAsync();
+        Task<ObservableCollection<Model.Trigger>> GetTriggersAsync();
     }
 }

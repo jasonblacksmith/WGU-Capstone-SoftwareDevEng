@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace WGU_Capstone_C868.ViewModel
 {
-    internal class MainPageViewModel
+    public class MainPageViewModel
     {
+
     }
 }

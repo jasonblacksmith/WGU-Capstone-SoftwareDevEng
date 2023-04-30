@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WGU_Capstone_C868.Services.Interfaces;
 
 namespace WGU_Capstone_C868.Services.Calls
 {
-    internal class ResultCalls
+    internal class ResultCalls : IResultCalls
     {
-        public Address address;
-        public ObservableCollection<Address> addresses = new();
+        public Result result;
+        public ObservableCollection<Result> results = new();
 
-        //Creates and adds new Address record to DB
-        public async Task<Address> AddAddressAsync(Address address)
+        //Creates and adds new Result record to DB
+        public async Task<Result> AddResultAsync(Result result)
         {
-            Address AddAddress = address;
+            Result AddResult = result;
             try
             {
-                _ = await SqLiteDataService.Db.InsertAsync(AddAddress);
-                return AddAddress;
+                _ = await SqLiteDataService.Db.InsertAsync(AddResult);
+                return AddResult;
             }
             catch (Exception ex)
             {
@@ -27,13 +28,13 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Returns the desired Address record from the DB
-        public async Task<Address> GetAddressAsync(int pk)
+        //Returns the desired Result record from the DB
+        public async Task<Result> GetResultAsync(int pk)
         {
             try
             {
-                Address GetAddress = await SqLiteDataService.Db.GetAsync<Address>(pk);
-                return GetAddress;
+                Result GetResult = await SqLiteDataService.Db.GetAsync<Result>(pk);
+                return GetResult;
             }
             catch (Exception ex)
             {
@@ -42,23 +43,23 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Returns an ObservableCollection of all Addresses int the table
-        public async Task<ObservableCollection<Address>> GetAddressesAsync()
+        //Returns an ObservableCollection of all Results int the table
+        public async Task<ObservableCollection<Result>> GetResultsAsync()
         {
-            List<Address> Addresses = await SqLiteDataService.Db.Table<Address>().ToListAsync();
-            foreach (Address Address in Addresses)
+            List<Result> Results = await SqLiteDataService.Db.Table<Result>().ToListAsync();
+            foreach (Result Result in Results)
             {
-                addresses.Add(Address);
+                results.Add(Result);
             }
-            return addresses;
+            return results;
         }
 
-        //Removes or Deletes the desired Address record from the DB
-        public async Task<bool> RemoveAddressAsync(Address address)
+        //Removes or Deletes the desired Result record from the DB
+        public async Task<bool> RemoveResultAsync(Result result)
         {
             try
             {
-                _ = await SqLiteDataService.Db.DeleteAsync<Address>(address.AddressId);
+                _ = await SqLiteDataService.Db.DeleteAsync<Result>(result.ResultId);
 
                 return await Task.FromResult(true);
             }
@@ -69,14 +70,14 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Updates the desired Address in the Address table in the DB
-        public async Task<Address> UpdateAddressAsync(Address address)
+        //Updates the desired Result in the Result table in the DB
+        public async Task<Result> UpdateResultAsync(Result result)
         {
-            Address UpdateAddress = address;
+            Result UpdateResult = result;
             try
             {
-                _ = await SqLiteDataService.Db.UpdateAsync(UpdateAddress);
-                return UpdateAddress;
+                _ = await SqLiteDataService.Db.UpdateAsync(UpdateResult);
+                return UpdateResult;
             }
             catch (Exception ex)
             {

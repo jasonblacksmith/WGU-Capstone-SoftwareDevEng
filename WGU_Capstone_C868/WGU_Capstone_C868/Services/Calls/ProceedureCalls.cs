@@ -12,7 +12,7 @@ namespace WGU_Capstone_C868.Services.Calls
         public Proceedure proceedure;
         public ObservableCollection<Proceedure> proceedures = new();
 
-        //Creates and adds new Address record to DB
+        //Creates and adds new Proceedure record to DB
         public async Task<Proceedure> AddProceedureAsync(Proceedure proceedure)
         {
             Proceedure AddProceedure = proceedure;
@@ -28,7 +28,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Returns the desired Address record from the DB
+        //Returns the desired Proceedure record from the DB
         public async Task<Proceedure> GetProceedureAsync(int pk)
         {
             try
@@ -43,7 +43,7 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Returns an ObservableCollection of all Addresses int the table
+        //Returns an ObservableCollection of all Proceedures int the table
         public async Task<ObservableCollection<Proceedure>> GetProceeduresAsync()
         {
             List<Proceedure> Proceedures = await SqLiteDataService.Db.Table<Proceedure>().ToListAsync();
@@ -54,7 +54,7 @@ namespace WGU_Capstone_C868.Services.Calls
             return proceedures;
         }
 
-        //Removes or Deletes the desired Address record from the DB
+        //Removes or Deletes the desired Proceedure record from the DB
         public async Task<bool> RemoveProceedureAsync(Proceedure proceedure)
         {
             try
@@ -70,8 +70,8 @@ namespace WGU_Capstone_C868.Services.Calls
             }
         }
 
-        //Updates the desired Address in the Address table in the DB
-        public async Task<Proceedure> UpdateAddressAsync(Proceedure proceedure)
+        //Updates the desired Proceedure in the Proceedure table in the DB
+        public async Task<Proceedure> UpdateProceedureAsync(Proceedure proceedure)
         {
             Proceedure UpdateProceedure = proceedure;
             try
