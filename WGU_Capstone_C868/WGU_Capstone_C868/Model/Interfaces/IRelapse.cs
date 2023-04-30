@@ -4,7 +4,7 @@
     {
         DateTime DateAndTime { get; set; }
         string Location { get; set; }
-        int ResultsId { get; set; }
+        int RelapseId { get; set; }
         int SymptomCollectionId { get; set; }
         int TriggersCollectionId { get; set; }
         int UserId { get; set; }

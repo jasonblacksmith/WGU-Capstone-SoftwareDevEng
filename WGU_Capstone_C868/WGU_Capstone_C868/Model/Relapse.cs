@@ -12,8 +12,8 @@ namespace WGU_Capstone_C868.Model
     public class Relapse : IRelapse
     {
         [PrimaryKey, AutoIncrement]
-        [Column("ResultsId")]
-        public int ResultsId { get; set; }
+        [Column("RelapseId")]
+        public int RelapseId { get; set; }
         [Indexed]
         [Column("UserId")]
         public int UserId { get; set; }
