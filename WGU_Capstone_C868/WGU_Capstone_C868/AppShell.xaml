@@ -11,5 +11,9 @@
         Title="My MS Tracker"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
+    <ShellContent 
+        Title="My MS Tracker Dashboard"
+        ContentTemplate="{DataTemplate view:Dashboard}"
+        Route="Dashboard" />
 
 </Shell>

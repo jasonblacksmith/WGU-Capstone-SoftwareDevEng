@@ -9,6 +9,10 @@ namespace WGU_Capstone_C868.ViewModel
 
         public ObservableCollection<User> Users = new();
 
+
+        [ObservableProperty]
+        public string regexValidator = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$";
+
         [ObservableProperty]
         public User user;
 
@@ -27,6 +31,7 @@ namespace WGU_Capstone_C868.ViewModel
         public string name;
 
         public string password;
+
         public string userName;
 
         [RelayCommand]
@@ -37,10 +42,11 @@ namespace WGU_Capstone_C868.ViewModel
         }
 
         [RelayCommand]
-        public void SetAsCreate()
+        public async void SetAsCreate()
         {
             forLogin = false;
             LoginCreate = "  Create  ";
+            await Shell.Current.DisplayAlert("Password Requirements", "Password must have 1 lowercase and 1 capital letter, 1 number, 1 special character, and be 8 characters or longer.", "OK");
         }
 
         [RelayCommand]
@@ -74,13 +80,13 @@ namespace WGU_Capstone_C868.ViewModel
                 {
                     if (password == U.Password)
                     {
-                        User = U;
-                        await Shell.Current.GoToAsync(nameof(Dashboard), true);
-                        return;
+                        user = U;
+                        await Shell.Current.GoToAsync("//Dashboard", true);
+                        //return;
                     }
                 }
             }
-            if(User == null)
+            if(user == null)
             {
                 await Shell.Current.DisplayAlert("Could Not Login",
                 $"Please check Username and Password and try again.", "OK");
@@ -99,6 +105,9 @@ namespace WGU_Capstone_C868.ViewModel
 
             await UserCalls.AddUserAsync(user);
         }
+
+
+
         //On Create: Input a Username and Password(Establish best practices template for both)
         //Add User Method call and confirm
         //Login for new user initiated

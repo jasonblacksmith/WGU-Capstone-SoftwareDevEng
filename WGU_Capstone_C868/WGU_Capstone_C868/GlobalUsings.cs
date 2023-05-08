@@ -1,5 +1,6 @@
 ﻿global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
+global using CommunityToolkit.Maui;
 global using WGU_Capstone_C868.Model;
 global using WGU_Capstone_C868.ViewModel;
 global using System.Collections.ObjectModel;
