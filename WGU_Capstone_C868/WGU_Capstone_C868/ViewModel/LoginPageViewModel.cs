@@ -1,4 +1,5 @@
-﻿using WGU_Capstone_C868.Services.Calls;
+﻿using System.Text.RegularExpressions;
+using WGU_Capstone_C868.Services.Calls;
 using WGU_Capstone_C868.View;
 
 namespace WGU_Capstone_C868.ViewModel
@@ -9,7 +10,6 @@ namespace WGU_Capstone_C868.ViewModel
 
         public ObservableCollection<User> Users = new();
 
-
         [ObservableProperty]
         public string regexValidator = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$";
 
@@ -19,7 +19,7 @@ namespace WGU_Capstone_C868.ViewModel
         public bool forLogin = true;
 
         [ObservableProperty]
-        public string loginCreate;
+        public string loginCreate = "  Login  ";
 
         [ObservableProperty]
         public string userNameInput;
@@ -58,7 +58,7 @@ namespace WGU_Capstone_C868.ViewModel
             {
                 await ValidateUser(userName, password);
             }
-            else if (!forLogin && (userName is not null && password is not null))
+            else if (!forLogin && (userName is not null && ValidPassword(password)))
             {
                 await AddNewUser(userName, password);
             }
@@ -67,7 +67,17 @@ namespace WGU_Capstone_C868.ViewModel
                 return;
             }
         }
-        //TODO: Implement the freaking DataBase you NUTTER!!!
+
+        //TODO: Set a confirmation on creating a test user and set to Login
+
+        //For Testing Only!!!
+        [RelayCommand]
+        public async Task KillTestData()
+        {
+            await SqLiteDataService.BurnAndRebuild();
+            return;
+        }
+
         public async Task ValidateUser(string userName, string password)
         {
             UserCalls userCalls = new();
@@ -106,8 +116,17 @@ namespace WGU_Capstone_C868.ViewModel
             await UserCalls.AddUserAsync(user);
         }
 
+        bool ValidPassword(string Password)
+        {
+            Match match = Regex.Match(Password, regexValidator);
+            if(Password is not null && match.Success)
+            {
+                return true;
+            }
+            else { return false; }
+        }
 
-
+        
         //On Create: Input a Username and Password(Establish best practices template for both)
         //Add User Method call and confirm
         //Login for new user initiated
