@@ -14,9 +14,13 @@ namespace WGU_Capstone_C868.Services
     {
         public static SQLiteAsyncConnection Db;
 
-        private static ObservableCollection<AppointmentState> AppointmentStates = new();
+        private static List<AppointmentState> AppointmentStates = new();
 
-        private static AppointmentState appointmentState;
+        private static List<Proceedure> Proceedures = new();
+
+        internal static Proceedure proceedure;
+
+        internal static AppointmentState appointmentState;
 
         public static async Task Init()
         {
@@ -33,11 +37,31 @@ namespace WGU_Capstone_C868.Services
             await Db.CreateTablesAsync<Symptom, SymptomCollection, Model.Trigger, TriggerCollection, User>();
             await Db.CreateTablesAsync<Visit, VisitType>();
 
-            AppointmentStates.Add(new appointmentState(0,"Active"));
+            Debug.WriteLine("Tables Created");
+
+            appointmentState = new AppointmentState();
+            appointmentState.StateId = 1;
+            appointmentState.Name = "Active";
+            AppointmentStates.Add(appointmentState);
+            appointmentState.StateId = 2;
+            appointmentState.Name = "Canceled";
+            AppointmentStates.Add(appointmentState);
+            appointmentState.StateId = 3;
+            appointmentState.Name = "Complete";
+            AppointmentStates.Add(appointmentState);
 
             await Db.InsertAllAsync(AppointmentStates);
 
-            Debug.WriteLine("Tables Created");
+            proceedure = new Proceedure();
+            proceedure.ProceedureId = 1;
+            proceedure.Title = "MRI";
+            Proceedures.Add(proceedure);
+            proceedure.ProceedureId = 2;
+            proceedure.Title = "Labs";
+
+            await Db.InsertAllAsync(Proceedures);
+
+            Debug.WriteLine("Static Data Loaded");
         }
 
         public static async Task BurnAndRebuild()
