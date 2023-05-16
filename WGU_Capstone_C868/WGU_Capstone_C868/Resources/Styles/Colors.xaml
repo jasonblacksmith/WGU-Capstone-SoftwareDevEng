@@ -7,7 +7,7 @@
     <Color x:Key="Primary">#1e1526</Color>
     <Color x:Key="Secondary">#DFD8F7</Color>
     <Color x:Key="Tertiary">#231231</Color>
-    <Color x:Key="TextColor">#bea8d2</Color>
+    <Color x:Key="TextColor">#E2C3FF</Color>
     <Color x:Key="Input">#45275e</Color>
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>

@@ -1,12 +1,98 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:services="clr-Namespace.WGU_Capstone_C868.Services"
+             xmlns:model="clr-namespace:WGU_Capstone_C868.Model"
+             xmlns:viewmodel="clr-namespace:WGU_Capstone_C868.ViewModel" 
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="WGU_Capstone_C868.View.Dashboard"
-             Title="My MS Tracker">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="viewmodel:DashboardViewModel">
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" Margin="0">
+            <Grid.Shadow>
+                <Shadow Brush="Black"
+                        Offset="0,20"
+                        Radius="40"
+                        Opacity="0.8"/>
+            </Grid.Shadow>
+            <Label 
+                Text="{Binding Title}"
+                Grid.Column="0"
+                Grid.Row="0"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                FontSize="20" />
+            <Label
+                Text="{Binding PageTitle}"
+                Grid.Column="0"
+                Grid.Row="1"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                FontSize="15" />
+            <Label
+                Text="{Binding DashboardUser.Name}"
+                Grid.Column="1"
+                Grid.Row="0"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,5,0" />
+            <Label 
+                x:Name="DateTimeHeader"
+                Text="{Binding DateToday}"
+                Grid.Column="1"
+                Grid.Row="1"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Margin="0,0,5,0" />
+        </Grid>
+    </Shell.TitleView>
+    <ScrollView>
+        <VerticalStackLayout>
+            <Grid RowDefinitions="225, 225, 225" RowSpacing="15" Margin="0,20,0,0">
+                <Frame x:Name="MRIandScans" Grid.Row="0" CornerRadius="20" Margin="10" BorderColor="#9340D9" Padding="10,10,10,0" BackgroundColor="#170D21">
+                    <Grid RowDefinitions="*,*,*,*,*,25">
+                        <Button x:Name="MRIsAndScansLabel" Grid.Row="0" Text="MRI's and Scans"  FontAttributes="Bold" Padding="0,0,4,0" Margin="0,0,5,0" FontSize="25" HorizontalOptions="StartAndExpand" WidthRequest="200" TextColor="#E2C3FF"
+                          Background="Transparent"/>
+                        <Frame x:Name="UpcomingMRIorAppointment" CornerRadius="8" Grid.Row="1" Grid.RowSpan="4" Margin="3,0,3,0" BackgroundColor="#472861" BorderColor="#9340D9" Padding="0">
+                            <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,*">
+                                <Label x:Name="UpComingProceedureLabel" Grid.Row="0" Grid.ColumnSpan="2" Text="Upcoming: MRI" Margin="15,5,15,8" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontAttributes="Bold" FontSize="Large"/>
+                                <Line x:Name="HorizontalRule" Grid.Row="1" Grid.ColumnSpan="2" Stroke="#9340D9" VerticalOptions="End" X1="310" Y1="0" X2="20" Y2="1" />
+                                
+                                <Label x:Name="NameOfFacilityLabel" Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" Text="Filler Facility Name" HorizontalOptions="Start" VerticalOptions="Center" FontSize="17"/>
+                                <Label x:Name="PhoneNumberLabel" Grid.Row="1" Grid.Column="1" Text="Ph#: 000-000-0000" VerticalTextAlignment="Center" FontSize="17" Margin="10,0,0,0"/>
+                                <Label x:Name="DateTimeLabel" Grid.Row="2" Grid.Column="0" Text="3/14/83 4:45pm" FontSize="Medium" Margin="10,8,0,0" HorizontalOptions="Center" VerticalOptions="Start" />
+
+                                <Button x:Name="OverlayButtonMRIsAndScans" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" Padding="0"/>
+                                <Button x:Name="LinkToLocation" Text="Location Map" Grid.Row="2" Grid.Column="1" Margin="0,0,5,5" Padding="2" BorderColor="#9340D9" BorderWidth="3" TextColor="#E2C3FF" FontAttributes="Bold" CornerRadius="50" FontSize="20" BackgroundColor="#732FA3"/>
+                            </Grid>
+                        </Frame>
+                        <Button x:Name="PastResultsLink" Grid.Row="5" Background="Transparent" Text="Past Results" FontAttributes="Italic" Padding="0,0,4,0" Margin="3,0,3,5" FontSize="Small" HorizontalOptions="EndAndExpand" WidthRequest="100" TextColor="#E2C3FF"/>
+                    </Grid>
+                </Frame>
+
+                <Frame x:Name="RelapseDiary" Grid.Row="1" CornerRadius="20" Margin="20" BorderColor="#9340D9" BackgroundColor="#170D21" Padding="0">
+                    <Grid RowDefinitions="*,*" Margin="0" Padding="0">
+                        <Label x:Name="RelapseDiaryLabel" Grid.Row="0" Text="Relapse Diary" FontSize="35" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="End" Margin="0,0,0,10" Padding="0"/>
+
+                        <Label x:Name="DaysSinceLastLabel" Grid.Row="1" Text="Days since last relapse: 00" FontSize="Large" HorizontalOptions="Center" Margin="0,15,0,0" />
+
+                        <Button x:Name="OverlayButtonRelapseDiary" Grid.Row="0" Grid.RowSpan="2" BackgroundColor="Transparent" Padding="0"/>
+                    </Grid>
+
+                </Frame>
+
+                <Frame x:Name="NotesQuestions" Grid.Row="2" CornerRadius="20" Margin="20" BorderColor="#9340D9" BackgroundColor="#170D21" Padding="0">
+                    <Grid RowDefinitions="*,*" ColumnDefinitions="*,*" Margin="0" Padding="0">
+                        <Label x:Name="QuestionsNotesLabel" Grid.Row="0" Grid.ColumnSpan="2" Text="Notes/Questions" FontSize="35" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="End" Margin="0,0,0,10" Padding="0"/>
+
+                        <Button x:Name="OverlayButtonNotesQuestions" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" BackgroundColor="Transparent" Padding="0"/>
+
+                        <Button x:Name="LastVisitButton" Grid.Row="1" Grid.Column="0" Text="Last Visit" Padding="0,0,4,0" Margin="3,0,3,5" FontSize="Large" HorizontalOptions="End" VerticalOptions="Start" WidthRequest="120" HeightRequest="40" TextColor="#E2C3FF" BackgroundColor="Transparent"/>
+
+                        <Button x:Name="NextVisitButton" Grid.Row="1" Grid.Column="1" Text="Next Visit" Padding="0,0,4,0" Margin="3,0,3,5" FontSize="Large" HorizontalOptions="Start" VerticalOptions="Start" WidthRequest="120" HeightRequest="40" TextColor="#E2C3FF" BackgroundColor="Transparent"/>
+                    </Grid>
+                </Frame>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

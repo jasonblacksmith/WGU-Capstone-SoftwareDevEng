@@ -52,7 +52,7 @@ namespace WGU_Capstone_C868.Services.Calls
                 users.Add(User);
             }
             return users;
-        }
+                    }
 
         //Removes or Deletes the desired User record from the DB
         public async Task<bool> RemoveUserAsync(User user)

@@ -16,7 +16,24 @@
             <Setter Property="TextColor" Value="Green" />
         </Style>
     </ContentPage.Resources>
-
+    
+    <Shell.TitleView>
+        <Grid Margin="0">
+            <Grid.Shadow>
+                <Shadow Brush="Black"
+                        Offset="0,20"
+                        Radius="40"
+                        Opacity="0.8"/>
+            </Grid.Shadow>
+            <Label 
+                Text="{Binding Title}"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                FontSize="35" 
+                FontAttributes="Bold" />
+        </Grid>
+    </Shell.TitleView>
+    
     <ScrollView>
         <VerticalStackLayout
             Spacing="25"
