@@ -14,13 +14,7 @@ namespace WGU_Capstone_C868.Model
         [PrimaryKey, AutoIncrement]
         [Column("StatId")]
         public int StateId { get; set; }
-        [Column("Active")]
-        public bool Active { get; set; }
-        [Column("Cancelled")]
-        public bool Cancelled { get; set; }
-        [Column("Rescheduled")]
-        public bool Rescheduled { get; set; }
-        [Column("Complete")]
-        public bool Complete { get; set;}
+        [Column("Name")]
+        public string Name { get; set; }
     }
 }

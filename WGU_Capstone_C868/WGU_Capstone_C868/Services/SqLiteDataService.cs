@@ -1,6 +1,7 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -12,6 +13,10 @@ namespace WGU_Capstone_C868.Services
     public static class SqLiteDataService
     {
         public static SQLiteAsyncConnection Db;
+
+        private static ObservableCollection<AppointmentState> AppointmentStates = new();
+
+        private static AppointmentState appointmentState;
 
         public static async Task Init()
         {
@@ -27,6 +32,10 @@ namespace WGU_Capstone_C868.Services
             await Db.CreateTablesAsync<FileCollection, Proceedure, Question, Relapse, Result>();
             await Db.CreateTablesAsync<Symptom, SymptomCollection, Model.Trigger, TriggerCollection, User>();
             await Db.CreateTablesAsync<Visit, VisitType>();
+
+            AppointmentStates.Add(new appointmentState(0,"Active"));
+
+            await Db.InsertAllAsync(AppointmentStates);
 
             Debug.WriteLine("Tables Created");
         }
@@ -60,5 +69,7 @@ namespace WGU_Capstone_C868.Services
 
             Debug.WriteLine("Tables Rebuilt");
         }
+
+        //TODO: Populate static lists to db AppointmentState, Proceedure
     }
 }

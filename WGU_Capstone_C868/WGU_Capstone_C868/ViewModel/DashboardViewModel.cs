@@ -23,7 +23,7 @@ namespace WGU_Capstone_C868.ViewModel
         private AddressCalls AddressCalls = new AddressCalls();
         //TODO: Sublink to Past Results
         private ResultCalls ResultCalls = new ResultCalls();
-        //TODO: Empty State "Add your first proceedure!" Links to adding a new Proceedure Appointment
+        //TODO: !!!Empty State "Add your first proceedure!" Links to adding a new Proceedure Appointment
 
         //TODO: Relapse Diary Card
         //TODO: Link to Relapse Diary Page
@@ -34,16 +34,35 @@ namespace WGU_Capstone_C868.ViewModel
         //TODO: Link to Notes and Questions Page
         //TODO: Link to Last visit | Next visit
 
-        public int UserId;
-
         [ObservableProperty]
         internal User dashboardUser;
+
+        [ObservableProperty]
+        internal string appointmentLocationName = CriticalObjects.AppointmentData.LocationName;
+
+        [ObservableProperty]
+        internal string appointmentPhone = CriticalObjects.AppointmentData.PhoneNumber;
 
         //TODO: Dashboard Page
         public DashboardViewModel()
         {
             pageTitle = "Dashboard";
             dashboardUser = CriticalObjects.UserData;
+            _ = SetMRIsAndScansAppointment(dashboardUser.UserId);
+        }
+
+        private async Task<Appointment> SetMRIsAndScansAppointment(int userId)
+        {
+            ObservableCollection<Appointment> _appointments = await AppointmentCalls.GetAppointmentsAsync();
+
+            foreach (Appointment a in _appointments)
+            {
+                if (a.UserId != userId)
+                {
+                    _appointments.Remove(a);
+                }
+            }
+            return CriticalObjects.AppointmentData = _appointments.OrderByDescending(a => a.DateAndTime).First();
         }
     }
 }
