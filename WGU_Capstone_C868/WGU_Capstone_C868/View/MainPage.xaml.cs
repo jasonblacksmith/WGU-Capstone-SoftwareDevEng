@@ -5,7 +5,8 @@ public partial class MainPage : ContentPage
 	public MainPage(LoginPageViewModel viewModel)
 	{
 		InitializeComponent();
-        Task task = StartDb();
+        Task task0 = StartDb();
+		Task task1 = LoadMoqData();
 		BindingContext = viewModel;
 	}
 
@@ -13,4 +14,9 @@ public partial class MainPage : ContentPage
 	{
         await SqLiteDataService.Init();
     }
+
+	private async Task LoadMoqData()
+	{
+		await MoqDataLoader.Init();
+	}
 }

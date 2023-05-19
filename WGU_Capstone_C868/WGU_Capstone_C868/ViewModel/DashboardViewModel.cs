@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WGU_Capstone_C868.Model;
 using WGU_Capstone_C868.Services.Calls;
 
 namespace WGU_Capstone_C868.ViewModel
@@ -12,9 +13,7 @@ namespace WGU_Capstone_C868.ViewModel
     {
         private UserCalls UserCalls = new UserCalls();
 
-        //TODO: MRI's and Scans Card
         //TODO: Link to MRI's and Scans Page with Next Upcoming Proceedure
-        //TODO: Display data form Appointments, Upcoming, Soonest to date
         //TODO: Get the Name of the Facility and Phone Number to display
         private AppointmentCalls AppointmentCalls = new AppointmentCalls();
         private AppointmentStateCalls AppointmentStateCalls = new AppointmentStateCalls();
@@ -43,12 +42,51 @@ namespace WGU_Capstone_C868.ViewModel
         [ObservableProperty]
         internal string appointmentPhone = CriticalObjects.AppointmentData.PhoneNumber;
 
+        [ObservableProperty]
+        internal string upcomingProceedure = CriticalObjects.ProceedureData.Title;
+
+        [ObservableProperty]
+        internal string appointmentTime = CriticalObjects.AppointmentData.DateAndTime.ToString();
+
+        internal string mapsLocation = "";
+
+        private async Task<Address> ThisAddress()
+        {
+            Address address = new Address();
+            address = await AddressCalls.GetAddressAsync(CriticalObjects.AppointmentData.AddressId);
+            return address; 
+        } 
+
+        private async Task<Proceedure> ThisProceedure()
+        {
+            Proceedure proceedure = new Proceedure();
+            proceedure = await ProceedureCalls.GetProceedureAsync(CriticalObjects.AppointmentData.ProceedureId);
+            return CriticalObjects.ProceedureData = proceedure;
+        }
         //TODO: Dashboard Page
         public DashboardViewModel()
         {
             pageTitle = "Dashboard";
             dashboardUser = CriticalObjects.UserData;
-            _ = SetMRIsAndScansAppointment(dashboardUser.UserId);
+        }
+
+        private async Task<DashboardViewModel> InitializeAsync()
+        {
+            _ = await SetMRIsAndScansAppointment(dashboardUser.UserId);
+            _ = await ThisAddress();
+            _ = await ThisProceedure();
+            return this;
+        }
+
+        public static Task<DashboardViewModel> CreateAsync()
+        {
+            var ret = new DashboardViewModel();
+            return ret.InitializeAsync();
+        }
+
+        public static async Task UseDashboardViewModelAsync()
+        {
+            _ = await CreateAsync();
         }
 
         private async Task<Appointment> SetMRIsAndScansAppointment(int userId)
@@ -63,6 +101,26 @@ namespace WGU_Capstone_C868.ViewModel
                 }
             }
             return CriticalObjects.AppointmentData = _appointments.OrderByDescending(a => a.DateAndTime).First();
+        }
+
+        [RelayCommand]
+        public async Task OpenMaps()
+        {
+            Location location = new Location(CriticalObjects.AddressData.Latitude,CriticalObjects.AddressData.Longitude);
+            var options = new MapLaunchOptions
+            {
+                Name = CriticalObjects.AppointmentData.LocationName
+                //, NavigationMode = NavigationMode.Driving
+            };
+
+            try
+            {
+                await Map.Default.OpenAsync(location, options);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
     }
 }

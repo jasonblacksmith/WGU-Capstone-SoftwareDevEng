@@ -9,5 +9,7 @@
         string State { get; set; }
         string ZipCode { get; set; }
         string Country { get; set; }
+        double Latitude { get; set; }
+        double Longitude { get; set; }
     }
 }

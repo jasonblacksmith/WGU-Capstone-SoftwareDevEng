@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Maui.Devices.Sensors;
 using SQLite;
 using WGU_Capstone_C868.Model.Interfaces;
 
@@ -26,5 +27,9 @@ namespace WGU_Capstone_C868.Model
         public string? ZipCode { get; set; }
         [Column("Country")]
         public string Country { get; set; }
+        [Column("Latitude")]
+        public double Latitude { get; set; }
+        [Column("Longitude")]
+        public double Longitude { get; set; }
     }
 }

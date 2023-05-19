@@ -55,15 +55,15 @@
                           Background="Transparent"/>
                         <Frame x:Name="UpcomingMRIorAppointment" CornerRadius="8" Grid.Row="1" Grid.RowSpan="4" Margin="3,0,3,0" BackgroundColor="#472861" BorderColor="#9340D9" Padding="0">
                             <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,*">
-                                <Label x:Name="UpComingProceedureLabel" Grid.Row="0" Grid.ColumnSpan="2" Text="Upcoming: MRI" Margin="15,5,15,8" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontAttributes="Bold" FontSize="Large"/>
+                                <Label x:Name="UpComingProceedureLabel" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding UpcomingProceedure}" Margin="15,5,15,8" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontAttributes="Bold" FontSize="Large"/>
                                 <Line x:Name="HorizontalRule" Grid.Row="1" Grid.ColumnSpan="2" Stroke="#9340D9" VerticalOptions="End" X1="310" Y1="0" X2="20" Y2="1" />
                                 
-                                <Label x:Name="NameOfFacilityLabel" Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" Text="{Binding AppointmentLocationName}" HorizontalOptions="Start" VerticalOptions="Center" FontSize="17"/>
+                                <Label x:Name="NameOfFacilityLabel" Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" Text="{Binding AppointmentLocationName}" HorizontalOptions="Center" VerticalOptions="Center" FontSize="17"/>
                                 <Label x:Name="PhoneNumberLabel" Grid.Row="1" Grid.Column="1" Text="{Binding AppointmentPhone}" VerticalTextAlignment="Center" FontSize="17" Margin="10,0,0,0"/>
-                                <Label x:Name="DateTimeLabel" Grid.Row="2" Grid.Column="0" Text="3/14/83 4:45pm" FontSize="Medium" Margin="10,8,0,0" HorizontalOptions="Center" VerticalOptions="Start" />
+                                <Label x:Name="DateTimeLabel" Grid.Row="2" Grid.Column="0" Text="{Binding AppointmentTime}" FontSize="Medium" Margin="10,8,0,0" HorizontalOptions="Center" VerticalOptions="Start" />
 
                                 <Button x:Name="OverlayButtonMRIsAndScans" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" Padding="0"/>
-                                <Button x:Name="LinkToLocation" Text="Location Map" Grid.Row="2" Grid.Column="1" Margin="0,0,5,5" Padding="2" BorderColor="#9340D9" BorderWidth="3" TextColor="#E2C3FF" FontAttributes="Bold" CornerRadius="50" FontSize="20" BackgroundColor="#732FA3"/>
+                                <Button x:Name="LinkToLocation" Text="Location Map" Grid.Row="2" Grid.Column="1" Margin="0,0,5,5" Padding="2" BorderColor="#9340D9" BorderWidth="3" TextColor="#E2C3FF" FontAttributes="Bold" CornerRadius="50" FontSize="20" BackgroundColor="#732FA3" Command="{Binding OpenMapsCommand}"/>
                             </Grid>
                         </Frame>
                         <Button x:Name="PastResultsLink" Grid.Row="5" Background="Transparent" Text="Past Results" FontAttributes="Italic" Padding="0,0,4,0" Margin="3,0,3,5" FontSize="Small" HorizontalOptions="EndAndExpand" WidthRequest="100" TextColor="#E2C3FF"/>
