@@ -11,17 +11,17 @@ namespace WGU_Capstone_C868.ViewModel
 {
     public partial class DashboardViewModel : BaseViewModel
     {
-        private UserCalls UserCalls = new UserCalls();
+        private static UserCalls UserCalls = new UserCalls();
 
         //TODO: Link to MRI's and Scans Page with Next Upcoming Proceedure
         //TODO: Get the Name of the Facility and Phone Number to display
-        private AppointmentCalls AppointmentCalls = new AppointmentCalls();
-        private AppointmentStateCalls AppointmentStateCalls = new AppointmentStateCalls();
-        private ProceedureCalls ProceedureCalls = new ProceedureCalls();
+        private static AppointmentCalls AppointmentCalls = new AppointmentCalls();
+        private static AppointmentStateCalls AppointmentStateCalls = new AppointmentStateCalls();
+        private static ProceedureCalls ProceedureCalls = new ProceedureCalls();
         //TODO: Link to a map of the location
-        private AddressCalls AddressCalls = new AddressCalls();
+        private static AddressCalls AddressCalls = new AddressCalls();
         //TODO: Sublink to Past Results
-        private ResultCalls ResultCalls = new ResultCalls();
+        private static ResultCalls ResultCalls = new ResultCalls();
         //TODO: !!!Empty State "Add your first proceedure!" Links to adding a new Proceedure Appointment
 
         //TODO: Relapse Diary Card
@@ -34,7 +34,7 @@ namespace WGU_Capstone_C868.ViewModel
         //TODO: Link to Last visit | Next visit
 
         [ObservableProperty]
-        internal User dashboardUser;
+        internal User dashboardUser = CriticalObjects.UserData;
 
         [ObservableProperty]
         internal string appointmentLocationName = CriticalObjects.AppointmentData.LocationName;
@@ -48,48 +48,31 @@ namespace WGU_Capstone_C868.ViewModel
         [ObservableProperty]
         internal string appointmentTime = CriticalObjects.AppointmentData.DateAndTime.ToString();
 
-        internal string mapsLocation = "";
+        internal string mapsLocation;
 
-        private async Task<Address> ThisAddress()
+        //TODO: Dashboard Page
+        public async Task Init()
+        {
+            pageTitle = "Dashboard";
+            await SetMRIsAndScansAppointment(dashboardUser.UserId);
+            await ThisProceedure(CriticalObjects.AppointmentData.ProceedureId);
+        }
+
+        private static async Task<Address> ThisAddress()
         {
             Address address = new Address();
             address = await AddressCalls.GetAddressAsync(CriticalObjects.AppointmentData.AddressId);
-            return address; 
+            return CriticalObjects.AddressData = address; 
         } 
 
-        private async Task<Proceedure> ThisProceedure()
+        private static async Task<Proceedure> ThisProceedure(int proceedureId)
         {
             Proceedure proceedure = new Proceedure();
-            proceedure = await ProceedureCalls.GetProceedureAsync(CriticalObjects.AppointmentData.ProceedureId);
+            proceedure = await ProceedureCalls.GetProceedureAsync(proceedureId);
             return CriticalObjects.ProceedureData = proceedure;
         }
-        //TODO: Dashboard Page
-        public DashboardViewModel()
-        {
-            pageTitle = "Dashboard";
-            dashboardUser = CriticalObjects.UserData;
-        }
 
-        private async Task<DashboardViewModel> InitializeAsync()
-        {
-            _ = await SetMRIsAndScansAppointment(dashboardUser.UserId);
-            _ = await ThisAddress();
-            _ = await ThisProceedure();
-            return this;
-        }
-
-        public static Task<DashboardViewModel> CreateAsync()
-        {
-            var ret = new DashboardViewModel();
-            return ret.InitializeAsync();
-        }
-
-        public static async Task UseDashboardViewModelAsync()
-        {
-            _ = await CreateAsync();
-        }
-
-        private async Task<Appointment> SetMRIsAndScansAppointment(int userId)
+        private static async Task<Appointment> SetMRIsAndScansAppointment(int userId)
         {
             ObservableCollection<Appointment> _appointments = await AppointmentCalls.GetAppointmentsAsync();
 
@@ -110,7 +93,6 @@ namespace WGU_Capstone_C868.ViewModel
             var options = new MapLaunchOptions
             {
                 Name = CriticalObjects.AppointmentData.LocationName
-                //, NavigationMode = NavigationMode.Driving
             };
 
             try

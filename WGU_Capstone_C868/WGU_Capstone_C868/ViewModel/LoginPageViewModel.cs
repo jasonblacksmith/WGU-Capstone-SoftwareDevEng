@@ -69,6 +69,14 @@ namespace WGU_Capstone_C868.ViewModel
             return;
         }
 
+        //For Testing Only!!!
+        [RelayCommand]
+        public static async Task LoadMockData()
+        {
+            await MoqDataLoader.Init();
+            return;
+        }
+
         public async Task ValidateUser(string userName, string password)
         {
             Users = await userCalls.GetUsersAsync();
@@ -92,6 +100,8 @@ namespace WGU_Capstone_C868.ViewModel
                 return;
             }
         }
+
+
 
         async Task AddNewUser(string userName, string password)
         {

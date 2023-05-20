@@ -26,25 +26,5 @@ namespace WGU_Capstone_C868
         public static Visit VisitData = new Visit();
         public static VisitType VisitTypeData = new VisitType();
 
-        //public CriticalObjects(Address addressData, Appointment appointmentData, AppointmentState appointmentStateData, DoctorsNote doctorsNoteData, Model.File fileData, FileCollection fileCollectionData, Proceedure proceedureData, Question questionData, Relapse relapseData, Result thisResult, Symptom symptomData, SymptomCollection symptomCollectionData, Model.Trigger triggerData, TriggerCollection triggerCollectionData, User userData, Visit visitData, VisitType visitTypeData)
-        //{
-        //    AddressData = addressData;
-        //    AppointmentData = appointmentData;
-        //    AppointmentStateData = appointmentStateData;
-        //    DoctorsNoteData = doctorsNoteData;
-        //    FileData = fileData;
-        //    FileCollectionData = fileCollectionData;
-        //    ProceedureData = proceedureData;
-        //    QuestionData = questionData;
-        //    RelapseData = relapseData;
-        //    ThisResult = thisResult;
-        //    SymptomData = symptomData;
-        //    SymptomCollectionData = symptomCollectionData;
-        //    TriggerData = triggerData;
-        //    TriggerCollectionData = triggerCollectionData;
-        //    UserData = userData;
-        //    VisitData = visitData;
-        //    VisitTypeData = visitTypeData;
-        //}
     }
 }

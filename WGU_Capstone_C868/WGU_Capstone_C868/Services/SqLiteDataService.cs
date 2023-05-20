@@ -129,6 +129,7 @@ namespace WGU_Capstone_C868.Services
             Proceedures.Add(proceedure);
             proceedure.ProceedureId = 2;
             proceedure.Title = "Labs";
+            Proceedures.Add(proceedure);
 
             await Db.InsertAllAsync(Proceedures);
 

@@ -69,6 +69,7 @@
             </Grid>
             <Button x:Name="KillAllData" Command="{Binding KillTestDataCommand}" Text="Data Kill Switch for Test" BackgroundColor="Red" HeightRequest="50" WidthRequest="180" BorderColor="Black" BorderWidth="5">
             </Button>
+            <Button x:Name="LoadMockData" Command="{Binding LoadMockDataCommand}" Text="Load Mock Data for Test" BackgroundColor="Green" HeightRequest="50" WidthRequest="180" BorderColor="Black" BorderWidth="5"/>
         </VerticalStackLayout>
         
     </ScrollView>

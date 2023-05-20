@@ -9,6 +9,7 @@ namespace WGU_Capstone_C868.Services
 {
     public static class MoqDataLoader
     {
+        private static UserCalls userCalls = new UserCalls();
         private static AppointmentCalls appointmentCalls = new AppointmentCalls();
         private static AddressCalls addressCalls = new AddressCalls();
         private static ResultCalls resultCalls = new ResultCalls();
@@ -22,7 +23,20 @@ namespace WGU_Capstone_C868.Services
 
         public static async Task Init()
         {
-            //TODO: Tie this to a button or something! 
+            //User One
+            User user = new User();
+            user.UserId = 1;
+            user.UserName = "Test1";
+            user.Name = "Test Testerton";
+            user.Password = "Test1234!";
+            await userCalls.AddUserAsync(user);
+            //User Two
+            user.UserId = 2;
+            user.UserName = "jasonrwhalen";
+            user.Name = "Jason Tester";
+            user.Password = "Telec@st3rHH";
+            await userCalls.AddUserAsync(user);
+
             //One Upcoming Appointment
             Appointment coA = CriticalObjects.AppointmentData;
             coA.AppointmentId = 1;
