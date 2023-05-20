@@ -7,21 +7,23 @@ using WGU_Capstone_C868.Services.Calls;
 
 namespace WGU_Capstone_C868.Services
 {
-    public static class MoqDataLoader
+    public class MoqDataLoader
     {
-        private static UserCalls userCalls = new UserCalls();
-        private static AppointmentCalls appointmentCalls = new AppointmentCalls();
-        private static AddressCalls addressCalls = new AddressCalls();
-        private static ResultCalls resultCalls = new ResultCalls();
-        private static DoctorsNoteCalls doctorsNoteCalls = new DoctorsNoteCalls();
-        private static VisitCalls visitCalls = new VisitCalls();
-        private static RelapseCalls relapseCalls = new RelapseCalls();
-        private static TriggerCollectionCalls tCC = new TriggerCollectionCalls();
-        private static SymptomCollectionCalls sCC = new SymptomCollectionCalls();
-        private static TriggerCalls tCalls = new TriggerCalls();
-        private static SymptomCalls sCalls = new SymptomCalls();
+        CriticalObjects CriticalObjects = new CriticalObjects();
 
-        public static async Task Init()
+        private UserCalls userCalls = new UserCalls();
+        private AppointmentCalls appointmentCalls = new AppointmentCalls();
+        private AddressCalls addressCalls = new AddressCalls();
+        private ResultCalls resultCalls = new ResultCalls();
+        private DoctorsNoteCalls doctorsNoteCalls = new DoctorsNoteCalls();
+        private VisitCalls visitCalls = new VisitCalls();
+        private RelapseCalls relapseCalls = new RelapseCalls();
+        private TriggerCollectionCalls tCC = new TriggerCollectionCalls();
+        private SymptomCollectionCalls sCC = new SymptomCollectionCalls();
+        private TriggerCalls tCalls = new TriggerCalls();
+        private SymptomCalls sCalls = new SymptomCalls();
+
+        public async void Init()
         {
             //User One
             User user = new User();

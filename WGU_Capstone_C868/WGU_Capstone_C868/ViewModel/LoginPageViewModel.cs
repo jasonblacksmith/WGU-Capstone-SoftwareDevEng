@@ -7,6 +7,10 @@ namespace WGU_Capstone_C868.ViewModel
     public partial class LoginPageViewModel : BaseViewModel    
     {
         readonly UserCalls userCalls = new();
+
+        internal MoqDataLoader moqDataLoader = new();
+
+        public CriticalObjects CriticalObjects = new CriticalObjects();
         
         public ObservableCollection<User> Users = new();
         public int UserId;
@@ -71,9 +75,9 @@ namespace WGU_Capstone_C868.ViewModel
 
         //For Testing Only!!!
         [RelayCommand]
-        public static async Task LoadMockData()
+        public void LoadMockData()
         {
-            await MoqDataLoader.Init();
+            moqDataLoader.Init();
             return;
         }
 
@@ -88,8 +92,8 @@ namespace WGU_Capstone_C868.ViewModel
                     if (password == U.Password)
                     {
                         theUser = U;
-                        CriticalObjects.UserData = theUser;
-                        await Shell.Current.GoToAsync($"//Dashboard", true);
+                        await ;
+                        //await Shell.Current.GoToAsync($"//Dashboard", true);
                     }
                 }
             }

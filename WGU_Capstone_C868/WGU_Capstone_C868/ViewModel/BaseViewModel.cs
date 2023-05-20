@@ -12,6 +12,12 @@ namespace WGU_Capstone_C868.ViewModel
 
         [ObservableProperty]
         public string dateToday = DateTime.Today.ToString("MM/dd/yyyy");
+
+        //[ObservableProperty]
+        //[NotifyPropertyChangedFor(nameof(IsNotBusy))]
+        //bool isBusy;
+
+        //public bool IsNotBusy => !IsBusy;
     }
 }
 

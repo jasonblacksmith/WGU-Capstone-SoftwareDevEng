@@ -7,8 +7,7 @@ public partial class Dashboard : ContentPage
 {
     public Dashboard(DashboardViewModel viewModel)
 	{
-        BindingContext = viewModel;
-        _ = viewModel.Init();
         InitializeComponent();
+        BindingContext = viewModel;
     }
 }

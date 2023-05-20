@@ -20,11 +20,15 @@ namespace WGU_Capstone_C868.Services
 
         private static List<VisitType> VisitTypes = new();
 
-        internal static VisitType visitType;
+        internal static VisitType visitType = new();
+        internal static VisitType visitType1 = new();
 
-        internal static Proceedure proceedure;
+        internal static Proceedure proceedure = new();
+        internal static Proceedure proceedure1 = new();
 
-        internal static AppointmentState appointmentState;
+        internal static AppointmentState appointmentState = new();
+        internal static AppointmentState appointmentState1 = new();
+        internal static AppointmentState appointmentState2 = new();
 
         public static async Task Init()
         {
@@ -44,35 +48,33 @@ namespace WGU_Capstone_C868.Services
             Debug.WriteLine("Tables Created");
             
         #region StaticDataInserts
-            appointmentState = new AppointmentState();
             appointmentState.StateId = 1;
             appointmentState.Name = "Active";
             AppointmentStates.Add(appointmentState);
-            appointmentState.StateId = 2;
-            appointmentState.Name = "Cancelled";
-            AppointmentStates.Add(appointmentState);
-            appointmentState.StateId = 3;
-            appointmentState.Name = "Complete";
-            AppointmentStates.Add(appointmentState);
+            appointmentState1.StateId = 2;
+            appointmentState1.Name = "Cancelled";
+            AppointmentStates.Add(appointmentState1);
+            appointmentState2.StateId = 3;
+            appointmentState2.Name = "Complete";
+            AppointmentStates.Add(appointmentState2);
 
             await Db.InsertAllAsync(AppointmentStates);
 
-            proceedure = new Proceedure();
             proceedure.ProceedureId = 1;
             proceedure.Title = "MRI";
             Proceedures.Add(proceedure);
-            proceedure.ProceedureId = 2;
-            proceedure.Title = "Labs";
+            proceedure1.ProceedureId = 2;
+            proceedure1.Title = "Labs";
+            Proceedures.Add(proceedure1);
 
             await Db.InsertAllAsync(Proceedures);
 
-            visitType = new VisitType();
             visitType.VisitTypeId = 1;
             visitType.Title = "Check Up";
             VisitTypes.Add(visitType);
-            visitType.VisitTypeId = 2;
-            visitType.Title = "Results Follow Up";
-            VisitTypes.Add(visitType);
+            visitType1.VisitTypeId = 2;
+            visitType1.Title = "Results Follow Up";
+            VisitTypes.Add(visitType1);
 
             await Db.InsertAllAsync(VisitTypes);
 
@@ -110,36 +112,33 @@ namespace WGU_Capstone_C868.Services
             Debug.WriteLine("Tables Recreated");
 
             #region StaticDataInserts
-            appointmentState = new AppointmentState();
             appointmentState.StateId = 1;
             appointmentState.Name = "Active";
             AppointmentStates.Add(appointmentState);
-            appointmentState.StateId = 2;
-            appointmentState.Name = "Cancelled";
-            AppointmentStates.Add(appointmentState);
-            appointmentState.StateId = 3;
-            appointmentState.Name = "Complete";
-            AppointmentStates.Add(appointmentState);
+            appointmentState1.StateId = 2;
+            appointmentState1.Name = "Cancelled";
+            AppointmentStates.Add(appointmentState1);
+            appointmentState2.StateId = 3;
+            appointmentState2.Name = "Complete";
+            AppointmentStates.Add(appointmentState2);
 
             await Db.InsertAllAsync(AppointmentStates);
 
-            proceedure = new Proceedure();
             proceedure.ProceedureId = 1;
             proceedure.Title = "MRI";
             Proceedures.Add(proceedure);
-            proceedure.ProceedureId = 2;
-            proceedure.Title = "Labs";
-            Proceedures.Add(proceedure);
+            proceedure1.ProceedureId = 2;
+            proceedure1.Title = "Labs";
+            Proceedures.Add(proceedure1);
 
             await Db.InsertAllAsync(Proceedures);
 
-            visitType = new VisitType();
             visitType.VisitTypeId = 1;
             visitType.Title = "Check Up";
             VisitTypes.Add(visitType);
-            visitType.VisitTypeId = 2;
-            visitType.Title = "Results Follow Up";
-            VisitTypes.Add(visitType);
+            visitType1.VisitTypeId = 2;
+            visitType1.Title = "Results Follow Up";
+            VisitTypes.Add(visitType1);
 
             await Db.InsertAllAsync(VisitTypes);
 
