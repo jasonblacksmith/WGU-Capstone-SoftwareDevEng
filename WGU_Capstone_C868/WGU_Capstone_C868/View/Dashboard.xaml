@@ -30,7 +30,7 @@
                 VerticalOptions="Center"
                 FontSize="15" />
             <Label
-                Text="{Binding DashboardUser.Name}"
+                Text="{Binding TheUser.Name}"
                 Grid.Column="1"
                 Grid.Row="0"
                 HorizontalOptions="End"

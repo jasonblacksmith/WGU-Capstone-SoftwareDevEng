@@ -25,19 +25,38 @@ namespace WGU_Capstone_C868.Services
 
         public async void Init()
         {
-            //User One
-            User user = new User();
-            user.UserId = 1;
-            user.UserName = "Test1";
-            user.Name = "Test Testerton";
-            user.Password = "Test1234!";
-            await userCalls.AddUserAsync(user);
-            //User Two
-            user.UserId = 2;
-            user.UserName = "jasonrwhalen";
-            user.Name = "Jason Tester";
-            user.Password = "Telec@st3rHH";
-            await userCalls.AddUserAsync(user);
+            try
+            {
+                //User One
+                User user = new User();
+                user.UserId = 1;
+                user.UserName = "Test1";
+                user.Name = "Test Testerton";
+                user.Password = "Test1234!";
+                await userCalls.AddUserAsync(user);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+
+            try
+            {
+                //User Two
+                User user1 = new User();
+                user1.UserId = 2;
+                user1.UserName = "jasonrwhalen";
+                user1.Name = "Jason Tester";
+                user1.Password = "Telec@st3rHH";
+                await userCalls.AddUserAsync(user1);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+
 
             //One Upcoming Appointment
             Appointment coA = CriticalObjects.AppointmentData;
@@ -70,7 +89,7 @@ namespace WGU_Capstone_C868.Services
             coB.ProceedureId = 1;
             coB.LocationName = "UVRMC Imaging";
             coB.AddressId = 1;
-            coB.Notes = "Must be fasting and no metal on porson or clothing";
+            coB.Notes = "Must be fasting and no metal on person or clothing";
             coB.StateId = 3;
             coB.Current = false;
             coB.PhoneNumber = "098-765-4321";
@@ -121,6 +140,8 @@ namespace WGU_Capstone_C868.Services
             await tCC.AddTriggerCollectionAsync(tC);
             //Associated Triggers
             Model.Trigger trigger = new Model.Trigger();
+            Model.Trigger trigger1 = new Model.Trigger();
+            Model.Trigger trigger2 = new Model.Trigger();
             trigger.TriggerId = 1;
             trigger.TriggerCollectionId = 1;
             trigger.Title = "Family Gathering";
@@ -128,19 +149,19 @@ namespace WGU_Capstone_C868.Services
             trigger.IsNew = false;
             await tCalls.AddTriggerAsync(trigger);
             //Another one
-            trigger.TriggerId = 2;
-            trigger.TriggerCollectionId = 1;
-            trigger.Title = "Work stress";
-            trigger.Description = "When difficult at work my stress increases and it can trigger a relapse";
-            trigger.IsNew = false;
-            await tCalls.AddTriggerAsync(trigger);
+            trigger1.TriggerId = 2;
+            trigger1.TriggerCollectionId = 1;
+            trigger1.Title = "Work stress";
+            trigger1.Description = "When difficult at work my stress increases and it can trigger a relapse";
+            trigger1.IsNew = false;
+            await tCalls.AddTriggerAsync(trigger1);
             //And one more for the show
-            trigger.TriggerId = 3;
-            trigger.TriggerCollectionId = 1;
-            trigger.Title = "Clowns";
-            trigger.Description = "Clowns freak me out and have caused a relapse recently";
-            trigger.IsNew = true;
-            await tCalls.AddTriggerAsync(trigger);
+            trigger2.TriggerId = 3;
+            trigger2.TriggerCollectionId = 1;
+            trigger2.Title = "Clowns";
+            trigger2.Description = "Clowns freak me out and have caused a relapse recently";
+            trigger2.IsNew = true;
+            await tCalls.AddTriggerAsync(trigger2);
             //Associated SymptomCollection
             SymptomCollection sC = new SymptomCollection();
             sC.SymptomCollectionId = 1;
@@ -148,6 +169,8 @@ namespace WGU_Capstone_C868.Services
             await sCC.AddSymptomCollectionAsync(sC);
             //Associated Symptoms
             Symptom symptom = new Symptom();
+            Symptom symptom1 = new Symptom();
+            Symptom symptom2 = new Symptom();
             symptom.SymptomId = 1;
             symptom.SymptomCollectionId = 1;
             symptom.Title = "Tingling in hands";
@@ -155,19 +178,19 @@ namespace WGU_Capstone_C868.Services
             symptom.IsNew = false;
             await sCalls.AddSymptomAsync(symptom);
             //Another one
-            symptom.SymptomId = 2;
-            symptom.SymptomCollectionId = 1;
-            symptom.Title = "Fatigue";
-            symptom.Description = "Very tired or easily exhausted";
-            symptom.IsNew = false;
-            await sCalls.AddSymptomAsync(symptom);
+            symptom1.SymptomId = 2;
+            symptom1.SymptomCollectionId = 1;
+            symptom1.Title = "Fatigue";
+            symptom1.Description = "Very tired or easily exhausted";
+            symptom1.IsNew = false;
+            await sCalls.AddSymptomAsync(symptom1);
             //And one more for the show
-            symptom.SymptomId = 3;
-            symptom.SymptomCollectionId = 1;
-            symptom.Title = "Right Leg Slow";
-            symptom.Description = "My right leg feels heavy and is slow to react sometimes when I go to walk from sitting or laying down";
-            symptom.IsNew = true;
-            await sCalls.AddSymptomAsync(symptom);
+            symptom2.SymptomId = 3;
+            symptom2.SymptomCollectionId = 1;
+            symptom2.Title = "Right Leg Slow";
+            symptom2.Description = "My right leg feels heavy and is slow to react sometimes when I go to walk from sitting or laying down";
+            symptom2.IsNew = true;
+            await sCalls.AddSymptomAsync(symptom2);
         }
     }
 }

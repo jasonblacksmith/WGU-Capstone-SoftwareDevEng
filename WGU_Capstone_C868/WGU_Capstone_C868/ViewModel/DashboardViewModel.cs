@@ -4,13 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using WGU_Capstone_C868.Model;
 using WGU_Capstone_C868.Services.Calls;
+using WGU_Capstone_C868.View;
 
 namespace WGU_Capstone_C868.ViewModel
 {
-    public partial class DashboardViewModel : BaseViewModel
+    public partial class DashboardViewModel : BaseViewModel, IQueryAttributable, INotifyPropertyChanged
     {
+        public int ThisUserId { get; private set; }
+
         public bool initialDataLoaded;
 
         public CriticalObjects CritObj = new();
@@ -34,7 +38,7 @@ namespace WGU_Capstone_C868.ViewModel
         //TODO: Link to Last visit | Next visit
 
         [ObservableProperty]
-        internal User dashboardUser;
+        public User theUser;
 
         [ObservableProperty]
         internal string appointmentLocationName;
@@ -55,15 +59,25 @@ namespace WGU_Capstone_C868.ViewModel
             Init();
         }
 
+        public void ApplyQueryAttributes(IDictionary<string, object> navigationParameter)
+        {
+            ThisUserId = (Int32)navigationParameter["User"];
+            OnPropertyChanged("User");
+        }
+
         //TODO: Dashboard Page
         public async void Init()
         {
             pageTitle = "Dashboard";
 
-            CritObj.AppointmentData = await SetMRIsAndScansAppointment(dashboardUser.UserId);
+            CritObj.UserData = await ThisUser(ThisUserId);
+            Debug.WriteLine(CritObj.UserData.Name);
+            theUser = CritObj.UserData;
+
+            CritObj.AppointmentData = await SetMRIsAndScansAppointment(ThisUserId);
             Debug.WriteLine("Appointment: " + CritObj.AppointmentData.LocationName + " " + CritObj.AppointmentData.AppointmentId);
 
-            dashboardUser = CritObj.UserData;
+            //ThisUser = CritObj.UserData;
             appointmentLocationName = CritObj.AppointmentData.LocationName;
             appointmentPhone = CritObj.AppointmentData.PhoneNumber;
             appointmentTime = CritObj.AppointmentData.DateAndTime.ToString();
@@ -77,7 +91,22 @@ namespace WGU_Capstone_C868.ViewModel
             Debug.WriteLine("Address: " + CritObj.AddressData.StreetAddress + " " + CritObj.AddressData.AddressId);
         }
 
-        public static async Task<Address> ThisAddress(int addressId)
+        public async Task<User> ThisUser(int UserId)
+        {
+            User user = new();
+            try
+            {
+                user = await UserCalls.GetUserAsync(UserId);
+                return user;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
+            }
+        }
+
+        public async Task<Address> ThisAddress(int addressId)
         {
             Address address = new Address();
             try
@@ -93,7 +122,7 @@ namespace WGU_Capstone_C868.ViewModel
 
         } 
 
-        public static async Task<Proceedure> ThisProceedure(int proceedureId)
+        public async Task<Proceedure> ThisProceedure(int proceedureId)
         {
             Proceedure proceedure = new Proceedure();
             try
@@ -108,7 +137,7 @@ namespace WGU_Capstone_C868.ViewModel
             }
         }
 
-        public async static Task<Appointment> SetMRIsAndScansAppointment(int userId)
+        public async Task<Appointment> SetMRIsAndScansAppointment(int userId)
         {
             ObservableCollection<Appointment> appointments  = await AppointmentCalls.GetAppointmentsAsync();
             ObservableCollection<Appointment> usersAppointments = new();

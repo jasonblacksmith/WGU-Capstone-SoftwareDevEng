@@ -1,10 +1,13 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
+using System.Web;
 using WGU_Capstone_C868.Services.Calls;
 using WGU_Capstone_C868.View;
 
 namespace WGU_Capstone_C868.ViewModel
 {
-    public partial class LoginPageViewModel : BaseViewModel    
+    public partial class LoginPageViewModel : BaseViewModel
     {
         readonly UserCalls userCalls = new();
 
@@ -30,6 +33,8 @@ namespace WGU_Capstone_C868.ViewModel
         public string passwordInput;
         [ObservableProperty]
         public string name;
+
+
 
         [RelayCommand]
         public void SetAsLogin()
@@ -92,8 +97,11 @@ namespace WGU_Capstone_C868.ViewModel
                     if (password == U.Password)
                     {
                         theUser = U;
-                        await ;
-                        //await Shell.Current.GoToAsync($"//Dashboard", true);
+                        var navigationParameter = new Dictionary<string, object>
+                            {
+                                { "User", theUser.UserId }
+                            };
+                        await Shell.Current.GoToAsync($"//Dashboard", true, navigationParameter);
                     }
                 }
             }
@@ -104,8 +112,6 @@ namespace WGU_Capstone_C868.ViewModel
                 return;
             }
         }
-
-
 
         async Task AddNewUser(string userName, string password)
         {
@@ -147,6 +153,11 @@ namespace WGU_Capstone_C868.ViewModel
                 return true;
             }
             else { return false; }
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }
