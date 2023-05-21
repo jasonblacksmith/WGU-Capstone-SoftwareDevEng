@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -13,7 +14,7 @@ namespace WGU_Capstone_C868.ViewModel
 
         internal MoqDataLoader moqDataLoader = new();
 
-        public CriticalObjects CriticalObjects = new CriticalObjects();
+        public CriticalObjects CritObj = new CriticalObjects();
         
         public ObservableCollection<User> Users = new();
         public int UserId;
@@ -34,28 +35,26 @@ namespace WGU_Capstone_C868.ViewModel
         [ObservableProperty]
         public string name;
 
-
-
         [RelayCommand]
         public void SetAsLogin()
         {
             forLogin = true;
-            loginCreate = "  Login  ";
+            LoginCreate = "  Login  ";
         }
 
         [RelayCommand]
         public async void SetAsCreate()
         {
             forLogin = false;
-            loginCreate = "  Create  ";
+            LoginCreate = "  Create  ";
             await Shell.Current.DisplayAlert("Password Requirements", "Password must have 1 lowercase and 1 capital letter, 1 number, 1 special character, and be 8 characters or longer.", "OK");
         }
 
         [RelayCommand]
         public async Task LoginOrCreate()
         {
-            userName = userNameInput;
-            password = passwordInput;
+            userName = UserNameInput;
+            password = PasswordInput;
             if (forLogin && (userName is not null && password is not null))
             {
                 await ValidateUser(userName, password);
@@ -96,16 +95,13 @@ namespace WGU_Capstone_C868.ViewModel
                 {
                     if (password == U.Password)
                     {
-                        theUser = U;
-                        var navigationParameter = new Dictionary<string, object>
-                            {
-                                { "User", theUser.UserId }
-                            };
-                        await Shell.Current.GoToAsync($"//Dashboard", true, navigationParameter);
+                        TheUser = U;
+                        DashboardViewModel.ThisUser = TheUser;
+                        await Shell.Current.GoToAsync($"//Dashboard", true);
                     }
                 }
             }
-            if(theUser == null)
+            if(TheUser == null)
             {
                 await Shell.Current.DisplayAlert("Could Not Login",
                 $"Please check Username and Password and try again.", "OK");
@@ -125,7 +121,7 @@ namespace WGU_Capstone_C868.ViewModel
                 }
             }
 
-            theUser = new()
+            TheUser = new()
             {
                 UserName = userName,
                 Password = password,
@@ -134,7 +130,7 @@ namespace WGU_Capstone_C868.ViewModel
 
             try
             {
-                await userCalls.AddUserAsync(theUser);
+                await userCalls.AddUserAsync(TheUser);
                 await Shell.Current.DisplayAlert("User created!", "User created successfully! Please Login using your Username and Password", "OK");
                 SetAsLogin();
             }
@@ -147,7 +143,7 @@ namespace WGU_Capstone_C868.ViewModel
 
         bool ValidPassword(string Password)
         {
-            Match match = Regex.Match(Password, regexValidator);
+            Match match = Regex.Match(Password, RegexValidator);
             if(Password is not null && match.Success)
             {
                 return true;

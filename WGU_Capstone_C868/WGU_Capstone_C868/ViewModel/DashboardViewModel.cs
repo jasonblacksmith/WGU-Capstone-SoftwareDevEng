@@ -11,15 +11,13 @@ using WGU_Capstone_C868.View;
 
 namespace WGU_Capstone_C868.ViewModel
 {
-    public partial class DashboardViewModel : BaseViewModel, IQueryAttributable, INotifyPropertyChanged
+    public partial class DashboardViewModel : LoginPageViewModel
     {
-        public int ThisUserId { get; private set; }
+        public static User ThisUser = new User();
+        public Appointment AppointmentData = new Appointment();
 
         public bool initialDataLoaded;
 
-        public CriticalObjects CritObj = new();
-
-        private static UserCalls UserCalls = new UserCalls();
         private static AppointmentCalls AppointmentCalls = new AppointmentCalls();
         private static AppointmentStateCalls AppointmentStateCalls = new AppointmentStateCalls();
         private static ProceedureCalls ProceedureCalls = new ProceedureCalls();
@@ -36,9 +34,6 @@ namespace WGU_Capstone_C868.ViewModel
         //TODO: Notes/Questions Card
         //TODO: Link to Notes and Questions Page
         //TODO: Link to Last visit | Next visit
-
-        [ObservableProperty]
-        public User theUser;
 
         [ObservableProperty]
         internal string appointmentLocationName;
@@ -59,51 +54,80 @@ namespace WGU_Capstone_C868.ViewModel
             Init();
         }
 
-        public void ApplyQueryAttributes(IDictionary<string, object> navigationParameter)
-        {
-            ThisUserId = (Int32)navigationParameter["User"];
-            OnPropertyChanged("User");
-        }
-
         //TODO: Dashboard Page
-        public async void Init()
+        public async Task Init()
         {
-            pageTitle = "Dashboard";
-
-            CritObj.UserData = await ThisUser(ThisUserId);
-            Debug.WriteLine(CritObj.UserData.Name);
-            theUser = CritObj.UserData;
-
-            CritObj.AppointmentData = await SetMRIsAndScansAppointment(ThisUserId);
-            Debug.WriteLine("Appointment: " + CritObj.AppointmentData.LocationName + " " + CritObj.AppointmentData.AppointmentId);
-
-            //ThisUser = CritObj.UserData;
-            appointmentLocationName = CritObj.AppointmentData.LocationName;
-            appointmentPhone = CritObj.AppointmentData.PhoneNumber;
-            appointmentTime = CritObj.AppointmentData.DateAndTime.ToString();
-
-            CritObj.ProceedureData = await ThisProceedure(CritObj.AppointmentData.ProceedureId);
-            Debug.WriteLine("Proceedure: " + CritObj.ProceedureData.Title + " " + CritObj.ProceedureData.ProceedureId);
-
-            upcomingProceedure = CritObj.ProceedureData.Title;
-
-            CritObj.AddressData = await ThisAddress(CritObj.AppointmentData.AddressId);
-            Debug.WriteLine("Address: " + CritObj.AddressData.StreetAddress + " " + CritObj.AddressData.AddressId);
-        }
-
-        public async Task<User> ThisUser(int UserId)
-        {
-            User user = new();
             try
             {
-                user = await UserCalls.GetUserAsync(UserId);
-                return user;
+                PageTitle = "Dashboard";
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
+                throw;
             }
+
+            try
+            {
+                TheUser = ThisUser;
+                //CritObj.UserData = ThisUser;
+                Debug.WriteLine(TheUser.Name);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+
+            try
+            {
+                AppointmentData = await SetMRIsAndScansAppointment(TheUser.UserId);
+                Debug.WriteLine("Appointment: " + AppointmentData.LocationName + " " + AppointmentData.AppointmentId);
+                AppointmentLocationName = AppointmentData.LocationName;
+                AppointmentPhone = AppointmentData.PhoneNumber;
+                AppointmentTime = AppointmentData.DateAndTime.ToString("dd:MM:yy hh:mm:tt");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+
+            //try
+            //{
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex);
+            //    throw;
+            //}
+
+            try
+            {
+                CritObj.ProceedureData = await ThisProceedure(AppointmentData.ProceedureId);
+                Debug.WriteLine("Proceedure: " + CritObj.ProceedureData.Title + " " + CritObj.ProceedureData.ProceedureId);
+
+                UpcomingProceedure = $"Upcoming: {CritObj.ProceedureData.Title}";
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+
+            try
+            {
+                CritObj.AddressData = await ThisAddress(AppointmentData.AddressId);
+                Debug.WriteLine("Address: " + CritObj.AddressData.StreetAddress + " " + CritObj.AddressData.AddressId);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+
+            RefreshView refresh = new();
         }
 
         public async Task<Address> ThisAddress(int addressId)
@@ -119,7 +143,6 @@ namespace WGU_Capstone_C868.ViewModel
                 Debug.WriteLine(ex);
                 return null;
             }
-
         } 
 
         public async Task<Proceedure> ThisProceedure(int proceedureId)
@@ -139,7 +162,7 @@ namespace WGU_Capstone_C868.ViewModel
 
         public async Task<Appointment> SetMRIsAndScansAppointment(int userId)
         {
-            ObservableCollection<Appointment> appointments  = await AppointmentCalls.GetAppointmentsAsync();
+            ObservableCollection<Appointment> appointments = await AppointmentCalls.GetAppointmentsAsync();
             ObservableCollection<Appointment> usersAppointments = new();
             Appointment appointment = new();
             try
@@ -167,7 +190,7 @@ namespace WGU_Capstone_C868.ViewModel
             Location location = new Location(CritObj.AddressData.Latitude,CritObj.AddressData.Longitude);
             var options = new MapLaunchOptions
             {
-                Name = CritObj.AppointmentData.LocationName
+                Name = AppointmentData.LocationName
             };
 
             try

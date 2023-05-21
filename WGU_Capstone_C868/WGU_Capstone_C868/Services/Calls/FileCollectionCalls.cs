@@ -7,7 +7,7 @@ using WGU_Capstone_C868.Services.Interfaces;
 
 namespace WGU_Capstone_C868.Services.Calls
 {
-    public class FileCollectionCall : IFileCollectionCalls
+    public class FileCollectionCalls : IFileCollectionCalls
     {
         public FileCollection fileCollection;
         public ObservableCollection<FileCollection> fileCollections = new();

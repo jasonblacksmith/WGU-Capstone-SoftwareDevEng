@@ -9,51 +9,58 @@ namespace WGU_Capstone_C868.Services.Calls
 {
     public class AppointmentCalls : IAppointmentCalls
     {
+        public Appointment appointment = new();
         public ObservableCollection<Appointment> appointments = new();
 
         //Creates and adds new Appointment record to DB
         public async Task<Appointment> AddAppointmentAsync(Appointment appointment)
         {
-            Appointment AddAppointment = new();
-            AddAppointment = appointment;
+            this.appointment = appointment;
             try
             {
-                await SqLiteDataService.Db.InsertAsync(AddAppointment);
-                return appointment;
+                await SqLiteDataService.Db.InsertAsync(this.appointment);
+                return this.appointment;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
+                throw;            
             }
         }
 
         //Returns the desired Appointment record from the DB
         public async Task<Appointment> GetAppointmentAsync(int pk)
         {
-            Appointment appointment = new();
             try
             {
-                appointment = await SqLiteDataService.Db.GetAsync<Appointment>(pk);
-                return appointment;
+                this.appointment = await SqLiteDataService.Db.GetAsync<Appointment>(pk);
+                return this.appointment;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
-            }
+                throw;            }
         }
 
         //Returns an ObservableCollection of all Appointments int the table
         public async Task<ObservableCollection<Appointment>> GetAppointmentsAsync()
         {
-            List<Appointment> Appointments = new();
-            Appointments = await SqLiteDataService.Db.Table<Appointment>().ToListAsync();
-            foreach (Appointment Appointment in Appointments)
+            try
             {
-                appointments.Add(Appointment);
+                List<Appointment> Appointments = new();
+                Appointments = await SqLiteDataService.Db.Table<Appointment>().ToListAsync();
+                foreach (Appointment a in Appointments)
+                {
+                    appointments.Add(a);
+                }
+                return appointments;
             }
-            return appointments;
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+
         }
 
         //Removes or Deletes the desired Appointment record from the DB
@@ -61,31 +68,29 @@ namespace WGU_Capstone_C868.Services.Calls
         {
             try
             {
-                await SqLiteDataService.Db.DeleteAsync<Appointment>(appointment);
+                await SqLiteDataService.Db.DeleteAsync<Appointment>(appointment.AppointmentId);
 
                 return await Task.FromResult(true);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return false;
+                throw;
             }
         }
 
         //Updates the desired Appointment in the Appointment table in the DB
         public async Task<Appointment> UpdateAppointmentAsync(Appointment appointment)
         {
-            Appointment UpdateAppointment = new();
-            UpdateAppointment = appointment;
             try
             {
-                await SqLiteDataService.Db.UpdateAsync(UpdateAppointment);
-                return UpdateAppointment;
+                await SqLiteDataService.Db.UpdateAsync(appointment);
+                return appointment;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
+                throw;
             }
         }
     }

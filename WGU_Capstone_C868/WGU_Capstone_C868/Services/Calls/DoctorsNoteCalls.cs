@@ -10,7 +10,7 @@ namespace WGU_Capstone_C868.Services.Calls
     public class DoctorsNoteCalls : IDoctorsNoteCalls
     {
 
-        public DoctorsNote doctorsNote;
+        public DoctorsNote doctorsNote = new();
         public ObservableCollection<DoctorsNote> doctorsNotes = new();
 
         //Creates and adds new DoctorsNote record to DB
@@ -19,7 +19,7 @@ namespace WGU_Capstone_C868.Services.Calls
             DoctorsNote AddDoctorsNote = doctorsNote;
             try
             {
-                _ = await SqLiteDataService.Db.InsertAsync(AddDoctorsNote);
+                await SqLiteDataService.Db.InsertAsync(AddDoctorsNote);
                 return AddDoctorsNote;
             }
             catch (Exception ex)
@@ -32,10 +32,11 @@ namespace WGU_Capstone_C868.Services.Calls
         //Returns the desired DoctorsNote record from the DB
         public async Task<DoctorsNote> GetDoctorsNoteAsync(int pk)
         {
+            DoctorsNote doctorsNote = new();
             try
             {
-                DoctorsNote  GetDoctorsNote = await SqLiteDataService.Db.GetAsync<DoctorsNote>(pk);
-                return GetDoctorsNote;
+                doctorsNote = await SqLiteDataService.Db.GetAsync<DoctorsNote>(pk);
+                return doctorsNote;
             }
             catch (Exception ex)
             {
@@ -47,12 +48,21 @@ namespace WGU_Capstone_C868.Services.Calls
         //Returns an ObservableCollection of all DoctorsNotes int the table
         public async Task<ObservableCollection<DoctorsNote>> GetDoctorsNotesAsync()
         {
-            List<DoctorsNote> DoctorsNotes = await SqLiteDataService.Db.Table<DoctorsNote>().ToListAsync();
-            foreach (DoctorsNote doctorsNote in DoctorsNotes)
+            try
             {
-                doctorsNotes.Add(doctorsNote);
+                List<DoctorsNote> DoctorsNotes = new();
+                DoctorsNotes = await SqLiteDataService.Db.Table<DoctorsNote>().ToListAsync();
+                foreach (DoctorsNote doctorsNote in DoctorsNotes)
+                {
+                    doctorsNotes.Add(doctorsNote);
+                }
+                return doctorsNotes;
             }
-            return doctorsNotes;
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
         }
 
         //Removes or Deletes the desired DoctorsNote record from the DB
@@ -60,7 +70,7 @@ namespace WGU_Capstone_C868.Services.Calls
         {
             try
             {
-                _ = await SqLiteDataService.Db.DeleteAsync<DoctorsNote>(doctorsNote.DoctorsNoteId);
+                await SqLiteDataService.Db.DeleteAsync<DoctorsNote>(doctorsNote.DoctorsNoteId);
 
                 return await Task.FromResult(true);
             }
@@ -77,7 +87,7 @@ namespace WGU_Capstone_C868.Services.Calls
             DoctorsNote UpdateDoctorsNote = doctorsNote;
             try
             {
-                _ = await SqLiteDataService.Db.UpdateAsync(UpdateDoctorsNote);
+                await SqLiteDataService.Db.UpdateAsync(UpdateDoctorsNote);
                 return UpdateDoctorsNote;
             }
             catch (Exception ex)

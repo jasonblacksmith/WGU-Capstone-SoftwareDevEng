@@ -7,10 +7,9 @@ using WGU_Capstone_C868.Services.Interfaces;
 
 namespace WGU_Capstone_C868.Services.Calls
 {
-    //TODO: Clean Up Calls... ALL OF THEM
     public class AppointmentStateCalls : IAppointmentStateCalls
     {
-        public AppointmentState appointmentState;
+        public AppointmentState appointmentState = new();
         public ObservableCollection<AppointmentState> appointmentStates = new();
 
         //Returns the desired AppointmentState record from the DB
@@ -24,19 +23,27 @@ namespace WGU_Capstone_C868.Services.Calls
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
+                throw;
             }
         }
 
         //Returns an ObservableCollection of all AppointmentStates int the table
         public async Task<ObservableCollection<AppointmentState>> GetAppointmentStatesAsync()
         {
-            List<AppointmentState> AppointmentStates = await SqLiteDataService.Db.Table<AppointmentState>().ToListAsync();
-            foreach (AppointmentState AppointmentState in AppointmentStates)
+            try
             {
-                appointmentStates.Add(AppointmentState);
+                List<AppointmentState> AppointmentStates = await SqLiteDataService.Db.Table<AppointmentState>().ToListAsync();
+                foreach (AppointmentState AppointmentState in AppointmentStates)
+                {
+                    appointmentStates.Add(AppointmentState);
+                }
+                return appointmentStates;
             }
-            return appointmentStates;
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
         }
     }
 }

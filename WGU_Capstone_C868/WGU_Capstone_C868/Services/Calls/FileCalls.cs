@@ -8,16 +8,18 @@ namespace WGU_Capstone_C868.Services.Calls
     public class FileCalls : IFileCalls
     {
 
-        public Model.File file;
+        public Model.File file = new();
         public ObservableCollection<Model.File> files = new();
 
         //Creates and adds new File record to DB
         public async Task<Model.File> AddFileAsync(Model.File file)
         {
-            Model.File AddFile = file;
+
+            Model.File AddFile = new();
+            AddFile = file;
             try
             {
-                _ = await SqLiteDataService.Db.InsertAsync(AddFile);
+                await SqLiteDataService.Db.InsertAsync(AddFile);
                 return AddFile;
             }
             catch (Exception ex)
@@ -30,9 +32,10 @@ namespace WGU_Capstone_C868.Services.Calls
         //Returns the desired File record from the DB
         public async Task<Model.File> GetFileAsync(int pk)
         {
+            Model.File GetFile = new();
             try
             {
-                Model.File GetFile = await SqLiteDataService.Db.GetAsync<Model.File>(pk);
+                GetFile = await SqLiteDataService.Db.GetAsync<Model.File>(pk);
                 return GetFile;
             }
             catch (Exception ex)
@@ -75,7 +78,7 @@ namespace WGU_Capstone_C868.Services.Calls
             Model.File UpdateFile = file;
             try
             {
-                _ = await SqLiteDataService.Db.UpdateAsync(UpdateFile);
+                await SqLiteDataService.Db.UpdateAsync(UpdateFile);
                 return UpdateFile;
             }
             catch (Exception ex)
