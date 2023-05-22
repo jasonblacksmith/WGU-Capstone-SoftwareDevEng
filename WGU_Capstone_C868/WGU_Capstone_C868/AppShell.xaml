@@ -15,5 +15,8 @@
         Title="My MS Tracker Dashboard"
         ContentTemplate="{DataTemplate view:Dashboard}"
         Route="Dashboard" />
-
+    <ShellContent 
+        Title="My MS Tracker Imaging Or Labs"
+        ContentTemplate="{DataTemplate view:ImageOrLabPage}"
+        Route="ImageOrLabPage" />
 </Shell>

@@ -12,7 +12,6 @@ namespace WGU_Capstone_C868
         public Address AddressData = new Address();
 #pragma warning restore IDE0090 // Use 'new(...)'
         public Appointment AppointmentData = new Appointment();
-        public AppointmentState AppointmentStateData = new AppointmentState();
         public DoctorsNote DoctorsNoteData = new DoctorsNote();
         public Model.File FileData = new Model.File();
         public FileCollection FileCollectionData = new FileCollection();

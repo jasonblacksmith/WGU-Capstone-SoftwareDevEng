@@ -65,7 +65,6 @@ namespace WGU_Capstone_C868.Services
             coA.LocationName = "UVRMC Imaging";
             coA.AddressId = 1;
             coA.Notes = "Must be fasting and no metal on porson or clothing";
-            coA.StateId = 1;
             coA.Current = true;
             coA.PhoneNumber = "123-456-7890";
             coA.DateAndTime = DateTime.Now.AddDays(21);
@@ -90,7 +89,6 @@ namespace WGU_Capstone_C868.Services
             coB.LocationName = "UVRMC Imaging";
             coB.AddressId = 1;
             coB.Notes = "Must be fasting and no metal on person or clothing";
-            coB.StateId = 3;
             coB.Current = false;
             coB.PhoneNumber = "098-765-4321";
             coB.DateAndTime = DateTime.Now.AddMonths(-6);

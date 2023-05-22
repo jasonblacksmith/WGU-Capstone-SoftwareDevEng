@@ -91,13 +91,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="View\ImageOrLabPage.xaml.cs">
+	    <DependentUpon>ImageOrLabPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="View\MainPage.xaml.cs">
 	    <DependentUpon>MainPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <MauiXaml Update="View\AddOrEditMRI.xaml">
+	  <MauiXaml Update="View\ImageOrLabPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\Dashboard.xaml">

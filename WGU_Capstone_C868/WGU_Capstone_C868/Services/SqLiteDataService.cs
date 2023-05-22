@@ -14,8 +14,6 @@ namespace WGU_Capstone_C868.Services
     {
         public static SQLiteAsyncConnection Db;
 
-        private static List<AppointmentState> AppointmentStates = new();
-
         private static List<Proceedure> Proceedures = new();
 
         private static List<VisitType> VisitTypes = new();
@@ -25,10 +23,6 @@ namespace WGU_Capstone_C868.Services
 
         internal static Proceedure proceedure = new();
         internal static Proceedure proceedure1 = new();
-
-        internal static AppointmentState appointmentState = new();
-        internal static AppointmentState appointmentState1 = new();
-        internal static AppointmentState appointmentState2 = new();
 
         public static async Task Init()
         {
@@ -40,7 +34,7 @@ namespace WGU_Capstone_C868.Services
             Db = new SQLiteAsyncConnection(Path.Combine(Environment.GetFolderPath
            (Environment.SpecialFolder.Personal), "MSTrackerAppDb.db0"));
 
-            await Db.CreateTablesAsync<Address, Appointment, AppointmentState, DoctorsNote, Model.File>();
+            await Db.CreateTablesAsync<Address, Appointment, DoctorsNote, Model.File>();
             await Db.CreateTablesAsync<FileCollection, Proceedure, Question, Relapse, Result>();
             await Db.CreateTablesAsync<Symptom, SymptomCollection, Model.Trigger, TriggerCollection, User>();
             await Db.CreateTablesAsync<Visit, VisitType>();
@@ -48,17 +42,6 @@ namespace WGU_Capstone_C868.Services
             Debug.WriteLine("Tables Created");
             
         #region StaticDataInserts
-            appointmentState.StateId = 1;
-            appointmentState.Name = "Active";
-            AppointmentStates.Add(appointmentState);
-            appointmentState1.StateId = 2;
-            appointmentState1.Name = "Cancelled";
-            AppointmentStates.Add(appointmentState1);
-            appointmentState2.StateId = 3;
-            appointmentState2.Name = "Complete";
-            AppointmentStates.Add(appointmentState2);
-
-            await Db.InsertAllAsync(AppointmentStates);
 
             proceedure.ProceedureId = 1;
             proceedure.Title = "MRI";
@@ -86,7 +69,6 @@ namespace WGU_Capstone_C868.Services
         {
             await Db.DropTableAsync<Address>();
             await Db.DropTableAsync<Appointment>();
-            await Db.DropTableAsync<AppointmentState>();
             await Db.DropTableAsync<DoctorsNote>();
             await Db.DropTableAsync<Model.File>();
             await Db.DropTableAsync<FileCollection>();
@@ -104,7 +86,7 @@ namespace WGU_Capstone_C868.Services
 
             Debug.WriteLine("Tables Burned");
 
-            await Db.CreateTablesAsync<Address, Appointment, AppointmentState, DoctorsNote, Model.File>();
+            await Db.CreateTablesAsync<Address, Appointment, DoctorsNote, Model.File>();
             await Db.CreateTablesAsync<FileCollection, Proceedure, Question, Relapse, Result>();
             await Db.CreateTablesAsync<Symptom, SymptomCollection, Model.Trigger, TriggerCollection, User>();
             await Db.CreateTablesAsync<Visit, VisitType>();
@@ -112,17 +94,6 @@ namespace WGU_Capstone_C868.Services
             Debug.WriteLine("Tables Recreated");
 
             #region StaticDataInserts
-            appointmentState.StateId = 1;
-            appointmentState.Name = "Active";
-            AppointmentStates.Add(appointmentState);
-            appointmentState1.StateId = 2;
-            appointmentState1.Name = "Cancelled";
-            AppointmentStates.Add(appointmentState1);
-            appointmentState2.StateId = 3;
-            appointmentState2.Name = "Complete";
-            AppointmentStates.Add(appointmentState2);
-
-            await Db.InsertAllAsync(AppointmentStates);
 
             proceedure.ProceedureId = 1;
             proceedure.Title = "MRI";

@@ -51,9 +51,9 @@
             <Grid RowDefinitions="225, 225, 225" RowSpacing="15" Margin="0,20,0,0">
                 <Frame x:Name="MRIandScans" Grid.Row="0" CornerRadius="20" Margin="10" BorderColor="#9340D9" Padding="10,10,10,0" BackgroundColor="#170D21">
                     <Grid RowDefinitions="*,*,*,*,*,25">
-                        <Button x:Name="MRIsAndScansLabel" Grid.Row="0" Text="MRI's and Scans"  FontAttributes="Bold" Padding="0,0,4,0" Margin="0,0,5,0" FontSize="25" HorizontalOptions="StartAndExpand" WidthRequest="200" TextColor="#E2C3FF"
+                        <Button x:Name="ImagingOrLabsLabel" Grid.Row="0" Text="Imaging and Labs"  FontAttributes="Bold" Padding="0,0,4,0" Margin="0,0,5,0" FontSize="25" HorizontalOptions="Center" WidthRequest="300" TextColor="#E2C3FF" Command="{Binding ImageAndLabsButtonCommand}"
                           Background="Transparent"/>
-                        <Frame x:Name="UpcomingMRIorAppointment" CornerRadius="8" Grid.Row="1" Grid.RowSpan="4" Margin="3,0,3,0" BackgroundColor="#472861" BorderColor="#9340D9" Padding="0">
+                        <Frame x:Name="UpcomingImgLabOrAppointment" CornerRadius="8" Grid.Row="1" Grid.RowSpan="4" Margin="3,0,3,0" BackgroundColor="#472861" BorderColor="#9340D9" Padding="0">
                             <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,*">
                                 <Label x:Name="UpComingProceedureLabel" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding UpcomingProceedure}" Margin="15,5,15,8" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontAttributes="Bold" FontSize="Large"/>
                                 <Line x:Name="HorizontalRule" Grid.Row="1" Grid.ColumnSpan="2" Stroke="#9340D9" VerticalOptions="End" X1="310" Y1="0" X2="20" Y2="1" />
