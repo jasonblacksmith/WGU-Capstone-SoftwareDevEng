@@ -13,8 +13,6 @@ namespace WGU_Capstone_C868
 #pragma warning restore IDE0090 // Use 'new(...)'
         public Appointment AppointmentData = new Appointment();
         public DoctorsNote DoctorsNoteData = new DoctorsNote();
-        public Model.File FileData = new Model.File();
-        public FileCollection FileCollectionData = new FileCollection();
         public Proceedure ProceedureData = new Proceedure();
         public Question QuestionData = new Question();
         public Relapse RelapseData = new Relapse();

@@ -7,8 +7,6 @@ namespace WGU_Capstone_C868.ViewModel
         public static User ThisUser = new User();
         public Appointment AppointmentData = new Appointment();
 
-        public bool initialDataLoaded;
-
         private static AppointmentCalls AppointmentCalls = new AppointmentCalls();
         private static ProceedureCalls ProceedureCalls = new ProceedureCalls();
         private static AddressCalls AddressCalls = new AddressCalls();
@@ -24,6 +22,8 @@ namespace WGU_Capstone_C868.ViewModel
         //TODO: Notes/Questions Card
         //TODO: Link to Notes and Questions Page
         //TODO: Link to Last visit | Next visit
+        [ObservableProperty]
+        private bool upcomingTrue;
 
         [ObservableProperty]
         internal string appointmentLocationName;
@@ -41,33 +41,17 @@ namespace WGU_Capstone_C868.ViewModel
 
         public DashboardViewModel()
         {
+            //if (null) { } 
             Init();
         }
 
         //TODO: Dashboard Page
         public async Task Init()
         {
-            try
-            {
-                PageTitle = "Dashboard";
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                throw;
-            }
+            PageTitle = "Dashboard";
 
-            try
-            {
-                TheUser = ThisUser;
-                //CritObj.UserData = ThisUser;
-                Debug.WriteLine(TheUser.Name);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                throw;
-            }
+            TheUser = ThisUser;
+            Debug.WriteLine(TheUser.Name);
 
             try
             {
@@ -143,19 +127,23 @@ namespace WGU_Capstone_C868.ViewModel
         public async Task<Appointment> SetMRIsAndScansAppointment(int userId)
         {
             ObservableCollection<Appointment> appointments = await AppointmentCalls.GetAppointmentsAsync();
-            ObservableCollection<Appointment> usersAppointments = new();
             Appointment appointment = new();
             try
             {
                 foreach (Appointment a in appointments)
                 {
-                    if (a.UserId == userId)
+                    if((a.UserId == userId) && (a.DateAndTime < DateTime.Now) && (a.Current != false))
                     {
-                        usersAppointments.Add(a);
+                        a.Current = false;
+                        await AppointmentCalls.UpdateAppointmentAsync(a);
+                    } 
+                    else if(a.Current == true)
+                    {
+                        return appointment = a;
                     }
+                    appointments.Remove(a);
                 }
-                appointment = usersAppointments.OrderByDescending(a => a.DateAndTime).First();
-                return appointment;
+                return null;
             }
             catch (Exception ex)
             {
@@ -187,6 +175,8 @@ namespace WGU_Capstone_C868.ViewModel
         public async Task ImageAndLabsButton()
         {
             ImgOrLabViewModel.ThisUser = TheUser;
+            ImgOrLabViewModel.Edit = true;
+            ImgOrLabViewModel.EditAppointemntId = AppointmentData.AppointmentId;
             await Shell.Current.GoToAsync($"//ImageOrLabPage", true);
         }
     }

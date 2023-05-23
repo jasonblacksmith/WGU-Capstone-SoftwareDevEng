@@ -25,9 +25,6 @@ namespace WGU_Capstone_C868.Model
         [Column("ProceedureId")]
         public int ProceedureId { get; set; }
         [Indexed]
-        [Column("FileCollectionId")]
-        public int FileCollectionId { get; set; }
-        [Indexed]
         [Column("DoctorsNoteId")]
         public int DoctorsNoteId { get; set; }
         [Column("OtherNotes")]

@@ -74,6 +74,9 @@ namespace WGU_Capstone_C868.ViewModel
         public async Task KillTestData()
         {
             await SqLiteDataService.BurnAndRebuild();
+            await LoadData.Init();
+            await Shell.Current.DisplayAlert("Restart the App", "You must close and reopen the application for data to refresh!", "Close");
+            Application.Current.Quit();
             return;
         }
 

@@ -100,7 +100,6 @@ namespace WGU_Capstone_C868.Services
             result.AppointmentId = 2;
             result.UserId = 2;
             result.ProceedureId = 1;
-            result.FileCollectionId = 1;
             result.DoctorsNoteId = 1;
             result.OtherNotes = string.Empty;
             await resultCalls.AddResultAsync(result);

@@ -55,13 +55,7 @@
                         <Frame x:Name="Proceedure" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Start" Margin="0,0,0,2" Padding="10,0" BackgroundColor="#FF6D437B">
                             <Grid ColumnDefinitions="45,*" Margin="0" Padding="0" ColumnSpacing="5">
                                 <Label Grid.Column="0" Text="Select:" VerticalTextAlignment="Center" HorizontalTextAlignment="End"/>
-                                <Picker x:Name="ProceedureSelect" Title="Proceedure" SelectedIndex="{Binding SelectedProceedure}" Grid.Column="1" Margin="0" VerticalTextAlignment="Center" TextColor="GhostWhite" BackgroundColor="Transparent">
-                                    <Picker.ItemsSource>
-                                        <x:Array Type="{x:Type x:String}">
-                                            <x:String>MRI</x:String>
-                                            <x:String>Labs</x:String>
-                                        </x:Array>
-                                    </Picker.ItemsSource>
+                                <Picker x:Name="ProceedureSelect" Title="Proceedure"  Grid.Column="1" Margin="0" VerticalTextAlignment="Center" TextColor="GhostWhite" BackgroundColor="Transparent" ItemsSource="{Binding Proceedures}" ItemDisplayBinding="{Binding Title}">
                                 </Picker>
                             </Grid>
                         </Frame>
@@ -113,6 +107,13 @@
                             </Grid>
 
                             <Grid ColumnDefinitions="115,*" Margin="0" Padding="0" ColumnSpacing="5">
+                                <Label Text="State:" Grid.Column="0" Margin="0,12,0,0" Padding="0" VerticalTextAlignment="Start" HorizontalOptions="End"/>
+                                <Frame  Grid.Column="1" Margin="2" Padding="0">
+                                    <Entry Text="{Binding State}" Placeholder="state" IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B"/>
+                                </Frame>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="115,*" Margin="0" Padding="0" ColumnSpacing="5">
                                 <Label Text="Country:" Grid.Column="0" Margin="0,12,0,0" Padding="0" VerticalTextAlignment="Start" HorizontalOptions="End"/>
                                 <Frame  Grid.Column="1" Margin="2" Padding="0">
                                     <Entry Text="{Binding Country}" Placeholder="country" IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B"/>
@@ -121,7 +122,7 @@
 
                             <Frame Margin="15,2" Padding="0" BackgroundColor="#875993" BorderColor="Transparent">
                                 <StackLayout Margin="0" Padding="0">
-                                    <Button x:Name="GetGeoOfAddress" Text="Get Location" WidthRequest="100" HeightRequest="30" Padding="2" Margin="0,5,0,0" HorizontalOptions="Center" IsEnabled="False"/>
+                                    <Button x:Name="GetGeoOfAddress" Text="Get Location" WidthRequest="100" HeightRequest="30" Padding="2" Margin="0,5,0,0" HorizontalOptions="Center" IsEnabled="{Binding AddressValid}" Command="{Binding GetLocationCommand}"/>
                                     <Grid ColumnDefinitions="50,*,50,*" Margin="0,5" Padding="0">
                                         <Label Text="Lat:" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="End" Margin="5,0"/>
                                         <Frame Grid.Column="1" Margin="2" Padding="0" HorizontalOptions="Start" BackgroundColor="#FF6D437B" BorderColor="Transparent">
