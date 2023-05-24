@@ -10,6 +10,11 @@ public partial class Dashboard : ContentPage
 	{
         InitializeComponent();
         BindingContext = viewModel;
-        //viewModel.ThisUser = user;
+        Task task = LoadThisData();
+    }
+
+    private async Task LoadThisData()
+    {
+        await LoadData.Init();
     }
 }

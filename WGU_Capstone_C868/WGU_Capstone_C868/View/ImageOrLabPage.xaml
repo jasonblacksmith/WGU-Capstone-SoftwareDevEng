@@ -55,11 +55,11 @@
                         <Frame x:Name="Proceedure" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Start" Margin="0,0,0,2" Padding="10,0" BackgroundColor="#FF6D437B">
                             <Grid ColumnDefinitions="45,*" Margin="0" Padding="0" ColumnSpacing="5">
                                 <Label Grid.Column="0" Text="Select:" VerticalTextAlignment="Center" HorizontalTextAlignment="End"/>
-                                <Picker x:Name="ProceedureSelect" Title="Proceedure"  Grid.Column="1" Margin="0" VerticalTextAlignment="Center" TextColor="GhostWhite" BackgroundColor="Transparent" ItemsSource="{Binding Proceedures}" ItemDisplayBinding="{Binding Title}">
+                                <Picker x:Name="ProceedureSelect" Title="Proceedure"  Grid.Column="1" Margin="0" VerticalTextAlignment="Center" TextColor="GhostWhite" BackgroundColor="Transparent" SelectedIndex="{Binding SelectedProceedure}" ItemsSource="{Binding Proceedures, Mode=TwoWay  }" ItemDisplayBinding="{Binding Title}">
                                 </Picker>
                             </Grid>
                         </Frame>
-                        <Button x:Name="CancelButton" Grid.Column="3" Text="Cancel" Margin="2" Padding="10,2" MaximumHeightRequest="40" HorizontalOptions="End" VerticalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding IsEdit}"/>
+                        <Button x:Name="CancelButton" Grid.Column="3" Text="Cancel" Margin="2" Padding="10,2" MaximumHeightRequest="40" HorizontalOptions="End" VerticalOptions="Center" Command="{Binding CancelCommand}"/>
 
                     </Grid>
 
@@ -122,18 +122,22 @@
 
                             <Frame Margin="15,2" Padding="0" BackgroundColor="#875993" BorderColor="Transparent">
                                 <StackLayout Margin="0" Padding="0">
-                                    <Button x:Name="GetGeoOfAddress" Text="Get Location" WidthRequest="100" HeightRequest="30" Padding="2" Margin="0,5,0,0" HorizontalOptions="Center" IsEnabled="{Binding AddressValid}" Command="{Binding GetLocationCommand}"/>
-                                    <Grid ColumnDefinitions="50,*,50,*" Margin="0,5" Padding="0">
-                                        <Label Text="Lat:" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="End" Margin="5,0"/>
-                                        <Frame Grid.Column="1" Margin="2" Padding="0" HorizontalOptions="Start" BackgroundColor="#FF6D437B" BorderColor="Transparent">
-                                            <Entry Text="{Binding Latitute}" Margin="0" Placeholder="000.0000"  IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B" HeightRequest="35"/>
+                                    <Grid ColumnDefinitions="103,*" RowDefinitions="*,*" Margin="0,0" Padding="0">
+                                        <Label Text="Latitude:" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="End" Margin="5,0"/>
+                                        <Frame Grid.Column="1" Margin="2" Padding="0" HorizontalOptions="Start" WidthRequest="190" BackgroundColor="#FF6D437B" BorderColor="Transparent">
+                                            <Entry Text="{Binding InputLatitude}"  Margin="0" Placeholder="000.0000"  IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B" HeightRequest="35"/>
                                         </Frame>
 
-                                        <Label Text="Lng:" Grid.Column="2" VerticalOptions="Center" HorizontalOptions="End" Margin="5,0"/>
-                                        <Frame Grid.Column="3" Margin="2" Padding="0" HorizontalOptions="Start" BackgroundColor="#FF6D437B" BorderColor="Transparent">
-                                            <Entry Text="{Binding Longitude}" Margin="0" Placeholder="000.0000"  IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B" HeightRequest="35"/>
+                                        <Label Text="Longitude:" Grid.Column="0" Grid.Row="1" VerticalOptions="Center" HorizontalOptions="End" Margin="5,0"/>
+                                        <Frame Grid.Column="1" Grid.Row="1" Margin="2" Padding="0" HorizontalOptions="Start" WidthRequest="190" BackgroundColor="#FF6D437B" BorderColor="Transparent">
+                                            <Entry Text="{Binding InputLongitude}" Margin="0" Placeholder="000.0000"  IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B" HeightRequest="35"/>
                                         </Frame>
                                     </Grid>
+                                    <Grid ColumnDefinitions="*,*">
+                                        <Label Text="For Google Maps" Margin="5,5,5,0" VerticalOptions="Center"/>
+                                        <Button x:Name="GetGeoOfAddress" Text="Get Location Coordinates" Grid.Column="1" WidthRequest="200" HeightRequest="30" Padding="2" Margin="5" HorizontalOptions="End" IsEnabled="{Binding AddressValid}" Command="{Binding GetLocationCommand}"/>
+                                    </Grid>
+
                                 </StackLayout>
                             </Frame>
                         </StackLayout>
@@ -142,7 +146,7 @@
                         <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" RowSpacing="1" ColumnSpacing="1">
                             <Label Text="Appointemnt Time:" Margin="0" Padding="0"/>
                             <Frame Grid.Column="0" Grid.Row="1" Margin="2" Padding="0" HeightRequest="40" VerticalOptions="End" BackgroundColor="#FF6D437B" BorderColor="Transparent">
-                                <DatePicker Date="{Binding DateAppointment}" Margin="0" HorizontalOptions="Center" BackgroundColor="#FF6D437B" TextColor="#E2C3FF" HeightRequest="35"></DatePicker>
+                                <DatePicker Date="{Binding DateAppointment}" MinimumDate="{Binding DateValidMin}" Margin="0" HorizontalOptions="Center" BackgroundColor="#FF6D437B" TextColor="#E2C3FF" HeightRequest="35"></DatePicker>
                             </Frame>
                             <Frame Grid.Column="1" Grid.Row="1" Margin="2" Padding="0" HeightRequest="40" VerticalOptions="End" BackgroundColor="#FF6D437B" BorderColor="Transparent">
                                 <TimePicker Time="{Binding TimeAppointment}" Margin="0" HorizontalOptions="Center" BackgroundColor="#FF6D437B" TextColor="#E2C3FF" HeightRequest="35"></TimePicker>

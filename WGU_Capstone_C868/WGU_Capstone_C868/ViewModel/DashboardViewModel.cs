@@ -4,24 +4,18 @@ namespace WGU_Capstone_C868.ViewModel
 {
     public partial class DashboardViewModel : LoginPageViewModel
     {
-        public static User ThisUser = new User();
+        public static User ThisUser = new();
+        #region Variables and Classes for Img/Lab Appointemnts
+
         public Appointment AppointmentData = new Appointment();
+        public Address AddressData = new Address();
+        public Proceedure ProceedureData = new Proceedure();
 
         private static AppointmentCalls AppointmentCalls = new AppointmentCalls();
         private static ProceedureCalls ProceedureCalls = new ProceedureCalls();
         private static AddressCalls AddressCalls = new AddressCalls();
-        private static ResultCalls ResultCalls = new ResultCalls();
-        private static RelapseCalls RelapseCalls = new RelapseCalls();
-        //TODO: !!!Empty State "Add your first proceedure!" Links to adding a new Proceedure Appointment
+        //private static ResultCalls ResultCalls = new ResultCalls();
 
-        //TODO: Relapse Diary Card
-        //TODO: Link to Relapse Diary Page
-        //TODO: Counter of days since last active relapse
-
-
-        //TODO: Notes/Questions Card
-        //TODO: Link to Notes and Questions Page
-        //TODO: Link to Last visit | Next visit
         [ObservableProperty]
         private bool upcomingTrue;
 
@@ -37,8 +31,17 @@ namespace WGU_Capstone_C868.ViewModel
         [ObservableProperty]
         internal string upcomingProceedure;
 
+        [ObservableProperty]
+        internal bool noAppointment;
+
+        [ObservableProperty]
+        internal bool yesAppointment;
+
         internal string mapsLocation;
 
+        #endregion
+
+        #region Init
         public DashboardViewModel()
         {
             //if (null) { } 
@@ -56,10 +59,21 @@ namespace WGU_Capstone_C868.ViewModel
             try
             {
                 AppointmentData = await SetMRIsAndScansAppointment(TheUser.UserId);
-                Debug.WriteLine("Appointment: " + AppointmentData.LocationName + " " + AppointmentData.AppointmentId);
-                AppointmentLocationName = AppointmentData.LocationName;
-                AppointmentPhone = AppointmentData.PhoneNumber;
-                AppointmentTime = AppointmentData.DateAndTime.ToString("dd:MM:yy hh:mm:tt");
+
+                if (AppointmentData == null)
+                {
+                    NoAppointment = true;
+                    YesAppointment = false;
+                }
+                else
+                {
+                    NoAppointment = false;
+                    YesAppointment = true;
+                    Debug.WriteLine("Appointment: " + AppointmentData.LocationName + " " + AppointmentData.AppointmentId);
+                    AppointmentLocationName = AppointmentData.LocationName;
+                    AppointmentPhone = AppointmentData.PhoneNumber;
+                    AppointmentTime = AppointmentData.DateAndTime.ToString("MM:dd:yy hh:mm:tt");
+                }
             }
             catch (Exception ex)
             {
@@ -69,10 +83,10 @@ namespace WGU_Capstone_C868.ViewModel
 
             try
             {
-                CritObj.ProceedureData = await ThisProceedure(AppointmentData.ProceedureId);
-                Debug.WriteLine("Proceedure: " + CritObj.ProceedureData.Title + " " + CritObj.ProceedureData.ProceedureId);
+                ProceedureData = await ProceedureCalls.GetProceedureAsync(AppointmentData.ProceedureId); ;
+                Debug.WriteLine("Proceedure: " + ProceedureData.Title + " " + ProceedureData.ProceedureId);
 
-                UpcomingProceedure = $"Upcoming: {CritObj.ProceedureData.Title}";
+                UpcomingProceedure = $"Upcoming: {ProceedureData.Title}";
             }
             catch (Exception ex)
             {
@@ -82,8 +96,8 @@ namespace WGU_Capstone_C868.ViewModel
 
             try
             {
-                CritObj.AddressData = await ThisAddress(AppointmentData.AddressId);
-                Debug.WriteLine("Address: " + CritObj.AddressData.StreetAddress + " " + CritObj.AddressData.AddressId);
+                AddressData = await ThisAddress(AppointmentData.AddressId);
+                Debug.WriteLine("Address: " + AddressData.StreetAddress + " " + AddressData.AddressId);
             }
             catch (Exception ex)
             {
@@ -93,6 +107,26 @@ namespace WGU_Capstone_C868.ViewModel
 
             RefreshView refresh = new();
         }
+        #endregion
+
+        #region Variables and Classes for Relapse Diary
+        public static Relapse ThisRelapse = new();
+
+        private static RelapseCalls RelapseCalls = new RelapseCalls();
+        //TODO: Relapse Diary Card
+        //TODO: Link to Relapse Diary Page
+        //TODO: Counter of days since last active relapse
+        #endregion
+
+        #region Variables and Classes for Dr Visit Notes
+
+        //TODO: Notes/Questions Card
+        //TODO: Link to Notes and Questions Page
+        //TODO: Link to Last visit | Next visit
+
+        #endregion
+
+        #region ViewModel Methods for Img/Lab Appointments
 
         public async Task<Address> ThisAddress(int addressId)
         {
@@ -107,7 +141,7 @@ namespace WGU_Capstone_C868.ViewModel
                 Debug.WriteLine(ex);
                 return null;
             }
-        } 
+        }
 
         public async Task<Proceedure> ThisProceedure(int proceedureId)
         {
@@ -127,35 +161,49 @@ namespace WGU_Capstone_C868.ViewModel
         public async Task<Appointment> SetMRIsAndScansAppointment(int userId)
         {
             ObservableCollection<Appointment> appointments = await AppointmentCalls.GetAppointmentsAsync();
-            Appointment appointment = new();
             try
             {
                 foreach (Appointment a in appointments)
                 {
-                    if((a.UserId == userId) && (a.DateAndTime < DateTime.Now) && (a.Current != false))
+                    //Check to see if there is a current Appointment and
+                    //make sure to set ones set current that are out dated for the user
+                    //to not current.
+                    if (a.DateAndTime < DateTime.Now)
                     {
                         a.Current = false;
                         await AppointmentCalls.UpdateAppointmentAsync(a);
-                    } 
-                    else if(a.Current == true)
-                    {
-                        return appointment = a;
                     }
-                    appointments.Remove(a);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
+            }
+            ObservableCollection<Appointment> appointments1 = await AppointmentCalls.GetAppointmentsAsync();
+            try
+            {
+                foreach (Appointment a in appointments1)
+                {
+                    //Return the current appointment for the user
+                    if ((a.UserId == userId) && (a.DateAndTime > DateTime.Now) && (a.Current == true))
+                    {
+                        return a;
+                    }
                 }
                 return null;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
-            }            
+                throw;
+            }
         }
 
         [RelayCommand]
         public async Task OpenMaps()
         {
-            Location location = new Location(CritObj.AddressData.Latitude,CritObj.AddressData.Longitude);
+            Location location = new Location(AddressData.Latitude, AddressData.Longitude);
             var options = new MapLaunchOptions
             {
                 Name = AppointmentData.LocationName
@@ -172,12 +220,23 @@ namespace WGU_Capstone_C868.ViewModel
         }
 
         [RelayCommand]
-        public async Task ImageAndLabsButton()
+        public async Task AddNewAppointment()
+        {
+            ImgOrLabViewModel.ThisUser = TheUser;
+            ImgOrLabViewModel.Edit = false;
+            await Shell.Current.GoToAsync($"//ImageOrLabPage", true);
+        }
+
+        [RelayCommand]
+        public async Task OpenCurrentAppointment()
         {
             ImgOrLabViewModel.ThisUser = TheUser;
             ImgOrLabViewModel.Edit = true;
             ImgOrLabViewModel.EditAppointemntId = AppointmentData.AppointmentId;
             await Shell.Current.GoToAsync($"//ImageOrLabPage", true);
         }
+
+        #endregion
+
     }
 }

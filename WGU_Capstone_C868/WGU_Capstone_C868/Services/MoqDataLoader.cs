@@ -50,6 +50,13 @@ namespace WGU_Capstone_C868.Services
                 user1.Name = "Jason Tester";
                 user1.Password = "Telec@st3rHH";
                 await userCalls.AddUserAsync(user1);
+
+                User user2 = new User();
+                user2.UserId = 3;
+                user2.UserName = "Test3";
+                user2.Name = "Tester Testapalooza";
+                user2.Password = "Test1234!";
+                await userCalls.AddUserAsync(user2);
             }
             catch (Exception ex)
             {
@@ -57,136 +64,223 @@ namespace WGU_Capstone_C868.Services
                 throw;
             }
 
-
             //One Upcoming Appointment
-            Appointment coA = CriticalObjects.AppointmentData;
-            coA.AppointmentId = 1;
-            coA.ProceedureId = 1;
-            coA.LocationName = "UVRMC Imaging";
-            coA.AddressId = 1;
-            coA.Notes = "Must be fasting and no metal on porson or clothing";
-            coA.Current = true;
-            coA.PhoneNumber = "123-456-7890";
-            coA.DateAndTime = DateTime.Now.AddDays(21);
-            coA.UserId = 1;
+            Appointment coA = new()
+            {
+                AppointmentId = 1,
+                ProceedureId = 1,
+                LocationName = "UVRMC Imaging",
+                AddressId = 1,
+                Notes = "Must be fasting and no metal on person or clothing",
+                Current = true,
+                PhoneNumber = "123-456-7890",
+                DateAndTime = DateTime.Now.AddDays(21),
+                UserId = 1
+            };
             await appointmentCalls.AddAppointmentAsync(coA);
+
             //Associated Address
-            Address address = CriticalObjects.AddressData;
-            address.AddressId = 1;
-            address.StreetAddress = "1034 N 500 W";
-            address.SuiteNumber = string.Empty;
-            address.City = "Provo";
-            address.ZipCode = "84604";
-            address.Country = "United States";
-            address.Latitude = 40.24762438250751;
-            address.Longitude = -111.6656509881319;
+            Address address = new()
+            {
+                AddressId = 1,
+                StreetAddress = "1034 N 500 W",
+                SuiteNumber = string.Empty,
+                City = "Provo",
+                ZipCode = "84604",
+                State = "Utah",
+                Country = "United States",
+                Latitude = 40.24762438250751,
+                Longitude = -111.6656509881319
+            };
             await addressCalls.AddAddressAsync(address);
 
             //One Completed Appointment
-            Appointment coB = CriticalObjects.AppointmentData;
-            coB.AppointmentId = 2;
-            coB.ProceedureId = 1;
-            coB.LocationName = "UVRMC Imaging";
-            coB.AddressId = 1;
-            coB.Notes = "Must be fasting and no metal on person or clothing";
-            coB.Current = false;
-            coB.PhoneNumber = "098-765-4321";
-            coB.DateAndTime = DateTime.Now.AddMonths(-6);
-            coB.UserId = 2;
+            Appointment coB = new()
+            {
+                AppointmentId = 2,
+                ProceedureId = 1,
+                LocationName = "Rodizio Grill Img",
+                AddressId = 2,
+                Notes = "Must be fasting and no metal on person or clothing",
+                Current = false,
+                PhoneNumber = "(480) 813-5400",
+                DateAndTime = DateTime.Now.AddMonths(-4),
+                UserId = 2
+            };
             await appointmentCalls.AddAppointmentAsync(coB);
+
+            //Associated Address
+            Address address1 = new()
+            {
+                AddressId = 2,
+                StreetAddress = "1840 S Val Vista Dr,",
+                SuiteNumber = string.Empty,
+                City = "Mesa",
+                ZipCode = "85204",
+                State = "Arizona",
+                Country = "United States",
+                Latitude = 33.3822353,
+                Longitude = -111.757013
+            };
+            await addressCalls.AddAddressAsync(address);
+
+            //One Upcoming Appointment
+            Appointment coC = new()
+            {
+                AppointmentId = 3,
+                ProceedureId = 2,
+                LocationName = "Nalu's South Shore Grill",
+                AddressId = 3,
+                Notes = "Come hungry and ready to dig in, Hawaii's #1 Poke!",
+                Current = true,
+                PhoneNumber = "(808) 891-8650",
+                DateAndTime = DateTime.Now.AddMonths(4),
+                UserId = 3
+            };
+            await appointmentCalls.AddAppointmentAsync(coC);
+
+            //Associated Address
+            Address address2 = new()
+            {
+                AddressId = 3,
+                StreetAddress = "1280 S Kihei Rd",
+                SuiteNumber = string.Empty,
+                City = "Kihei",
+                ZipCode = "96753",
+                State = "Hawaii",
+                Country = "United States",
+                Latitude = 20.749231,
+                Longitude = -156.456857
+            };
+            await addressCalls.AddAddressAsync(address2);
+
             //Associated Results
-            Model.Result result = CriticalObjects.ThisResult;
-            result.ResultId = 1;
-            result.AppointmentId = 2;
-            result.UserId = 2;
-            result.ProceedureId = 1;
-            result.DoctorsNoteId = 1;
-            result.OtherNotes = string.Empty;
+            Model.Result result = new()
+            {
+                ResultId = 1,
+                AppointmentId = 2,
+                UserId = 2,
+                ProceedureId = 1,
+                DoctorsNoteId = 1,
+                OtherNotes = string.Empty
+            };
             await resultCalls.AddResultAsync(result);
+
             //Associated Doctors Note
-            DoctorsNote doctorsNote = new DoctorsNote();
-            doctorsNote.DoctorsNoteId = 1;
-            doctorsNote.VisitId = 1;
-            doctorsNote.Title = "MRI Follow Up Notes";
-            doctorsNote.Content = "Bacon ipsum dolor amet jerky tri-tip meatball corned beef. Sausage filet mignon corned beef turkey andouille, tail shank boudin turducken short loin ground round pork prosciutto. Hamburger biltong capicola tri-tip drumstick beef pancetta chuck turducken ham hock ribeye buffalo salami alcatra porchetta. Shoulder chislic sirloin, landjaeger andouille burgdoggen ground round spare ribs.";
-            doctorsNote.DoctorsName = "Matrim Cauthorn";
-            doctorsNote.WithResults = true;
-            doctorsNote.ResultsId = 1;
+            DoctorsNote doctorsNote = new()
+            {
+                DoctorsNoteId = 1,
+                VisitId = 1,
+                Title = "MRI Follow Up Notes",
+                Content = "Bacon ipsum dolor amet jerky tri-tip meatball corned beef. Sausage filet mignon corned beef turkey andouille, tail shank boudin turducken short loin ground round pork prosciutto. Hamburger biltong capicola tri-tip drumstick beef pancetta chuck turducken ham hock ribeye buffalo salami alcatra porchetta. Shoulder chislic sirloin, landjaeger andouille burgdoggen ground round spare ribs.",
+                DoctorsName = "Matrim Cauthorn",
+                WithResults = true,
+                ResultsId = 1
+            };
             await doctorsNoteCalls.AddDoctorsNoteAsync(doctorsNote);
+
             //Associated Visit
-            Visit visit = new Visit();
-            visit.VisitId = 1;
-            visit.UserId = 2;
-            visit.VisitTypeId = 2;
-            visit.DateAndTime = DateTime.Now.AddMonths(-5);
+            Visit visit = new()
+            {
+                VisitId = 1,
+                UserId = 2,
+                VisitTypeId = 2,
+                DateAndTime = DateTime.Now.AddMonths(-5)
+            };
             await visitCalls.AddVisitAsync(visit);
 
             //Relapse Diary
-            Relapse relapse = new Relapse();
-            relapse.RelapseId = 1;
-            relapse.UserId = 2;
-            relapse.Location = "Family Gathering";
-            relapse.DateAndTime = DateTime.Now.AddMonths(-10);
-            relapse.TriggersCollectionId = 1;
-            relapse.SymptomCollectionId = 1;
+            Relapse relapse = new()
+            {
+                RelapseId = 1,
+                UserId = 2,
+                Location = "Family Gathering",
+                DateAndTime = DateTime.Now.AddMonths(-10),
+                TriggersCollectionId = 1,
+                SymptomCollectionId = 1
+            };
             await relapseCalls.AddRelapseAsync(relapse);
+
             //Associated TriggerCollection
-            TriggerCollection tC = new TriggerCollection();
-            tC.TriggerCollectionId = 1;
-            tC.UserId = 2;
+            TriggerCollection tC = new TriggerCollection
+            {
+                TriggerCollectionId = 1,
+                UserId = 2
+            };
             await tCC.AddTriggerCollectionAsync(tC);
+
             //Associated Triggers
-            Model.Trigger trigger = new Model.Trigger();
-            Model.Trigger trigger1 = new Model.Trigger();
-            Model.Trigger trigger2 = new Model.Trigger();
-            trigger.TriggerId = 1;
-            trigger.TriggerCollectionId = 1;
-            trigger.Title = "Family Gathering";
-            trigger.Description = "When I am around family that I don't like at family gatherings my stress goes way up and it can trigger a relapse";
-            trigger.IsNew = false;
+            Model.Trigger trigger = new()
+            {
+                TriggerId = 1,
+                TriggerCollectionId = 1,
+                Title = "Family Gathering",
+                Description = "When I am around family that I don't like at family gatherings my stress goes way up and it can trigger a relapse",
+                IsNew = false
+            };
             await tCalls.AddTriggerAsync(trigger);
+
             //Another one
-            trigger1.TriggerId = 2;
-            trigger1.TriggerCollectionId = 1;
-            trigger1.Title = "Work stress";
-            trigger1.Description = "When difficult at work my stress increases and it can trigger a relapse";
-            trigger1.IsNew = false;
+            Model.Trigger trigger1 = new Model.Trigger
+            {
+                TriggerId = 2,
+                TriggerCollectionId = 1,
+                Title = "Work stress",
+                Description = "When difficult at work my stress increases and it can trigger a relapse",
+                IsNew = false
+            };
             await tCalls.AddTriggerAsync(trigger1);
+
             //And one more for the show
-            trigger2.TriggerId = 3;
-            trigger2.TriggerCollectionId = 1;
-            trigger2.Title = "Clowns";
-            trigger2.Description = "Clowns freak me out and have caused a relapse recently";
-            trigger2.IsNew = true;
+            Model.Trigger trigger2 = new Model.Trigger
+            {
+                TriggerId = 3,
+                TriggerCollectionId = 1,
+                Title = "Clowns",
+                Description = "Clowns freak me out and have caused a relapse recently",
+                IsNew = true
+            };
             await tCalls.AddTriggerAsync(trigger2);
+
             //Associated SymptomCollection
-            SymptomCollection sC = new SymptomCollection();
-            sC.SymptomCollectionId = 1;
-            sC.UserId = 2;
+            SymptomCollection sC = new SymptomCollection
+            {
+                SymptomCollectionId = 1,
+                UserId = 2
+            };
             await sCC.AddSymptomCollectionAsync(sC);
+
             //Associated Symptoms
-            Symptom symptom = new Symptom();
-            Symptom symptom1 = new Symptom();
-            Symptom symptom2 = new Symptom();
-            symptom.SymptomId = 1;
-            symptom.SymptomCollectionId = 1;
-            symptom.Title = "Tingling in hands";
-            symptom.Description = "Tingling and numbness in my fingers and hands";
-            symptom.IsNew = false;
+            Symptom symptom = new Symptom
+            {
+                SymptomId = 1,
+                SymptomCollectionId = 1,
+                Title = "Tingling in hands",
+                Description = "Tingling and numbness in my fingers and hands",
+                IsNew = false
+            };
             await sCalls.AddSymptomAsync(symptom);
+
             //Another one
-            symptom1.SymptomId = 2;
-            symptom1.SymptomCollectionId = 1;
-            symptom1.Title = "Fatigue";
-            symptom1.Description = "Very tired or easily exhausted";
-            symptom1.IsNew = false;
+            Symptom symptom1 = new Symptom
+            {
+                SymptomId = 2,
+                SymptomCollectionId = 1,
+                Title = "Fatigue",
+                Description = "Very tired or easily exhausted",
+                IsNew = false
+            };
             await sCalls.AddSymptomAsync(symptom1);
+
             //And one more for the show
-            symptom2.SymptomId = 3;
-            symptom2.SymptomCollectionId = 1;
-            symptom2.Title = "Right Leg Slow";
-            symptom2.Description = "My right leg feels heavy and is slow to react sometimes when I go to walk from sitting or laying down";
-            symptom2.IsNew = true;
+            Symptom symptom2 = new Symptom
+            {
+                SymptomId = 3,
+                SymptomCollectionId = 1,
+                Title = "Right Leg Slow",
+                Description = "My right leg feels heavy and is slow to react sometimes when I go to walk from sitting or laying down",
+                IsNew = true
+            };
             await sCalls.AddSymptomAsync(symptom2);
         }
     }

@@ -8,6 +8,7 @@ using WGU_Capstone_C868.Model;
 using WGU_Capstone_C868.Services.Calls;
 using WGU_Capstone_C868.View;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.VisualBasic;
 
 namespace WGU_Capstone_C868.ViewModel
 {
@@ -34,7 +35,7 @@ namespace WGU_Capstone_C868.ViewModel
         private static ResultCalls ResultCalls = new();
 
         [ObservableProperty]
-        public string selectedProceedure;
+        public int selectedProceedure;
 
         [ObservableProperty]
         private string locationName;
@@ -61,10 +62,10 @@ namespace WGU_Capstone_C868.ViewModel
         private string country;
 
         [ObservableProperty]
-        private string latitute;
+        private double inputLatitude;
 
         [ObservableProperty]
-        private string longitude;
+        private double inputLongitude;
 
         [ObservableProperty]
         private DateTime dateAppointment;
@@ -84,12 +85,14 @@ namespace WGU_Capstone_C868.ViewModel
         [ObservableProperty]
         private bool addressValid = false;
 
+        [ObservableProperty]
+        private DateTime dateValidMin = DateTime.Now;
         public ImgOrLabViewModel() 
         {
             PageTitle = "Imaging and Labs";
             TheUser = ThisUser;
             EditMode(Edit);
-            Init();
+            Task task = Init();
 
         }
 
@@ -108,14 +111,49 @@ namespace WGU_Capstone_C868.ViewModel
                 throw;
             }
 
+            try
+            {
+                if (IsEdit)
+                {
+                    await LoadAppointmentAndAddress();
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
 
             //Add other asyncs here
         }
 
         [RelayCommand]
-        public void Delete()
+        public async Task Delete()
         {
+            try
+            {
+                await AddressCalls.RemoveAddressAsync(CurrentAddress);
+            }
+            catch(Exception ex) 
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
 
+        [RelayCommand]
+        public async Task Cancel()
+        {
+            try
+            {
+                DashboardViewModel.ThisUser = TheUser;
+                await Shell.Current.GoToAsync($"//Dashboard", true);
+            }
+            catch( Exception ex )
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
         }
 
         public void EditMode(bool edit)
@@ -134,12 +172,23 @@ namespace WGU_Capstone_C868.ViewModel
 
         public async Task LoadAppointmentAndAddress()
         {
+            CurrentAppointment = await AppointmentCalls.GetAppointmentAsync(EditAppointemntId);
+            CurrentAddress = await AddressCalls.GetAddressAsync(CurrentAppointment.AddressId);
 
-        }
-
-        public void OnSelectedProceedureChanged()
-        {
-
+            SelectedProceedure = CurrentAppointment.ProceedureId;
+            LocationName = CurrentAppointment.LocationName;
+            PhoneNum = CurrentAppointment.PhoneNumber;
+            StreetAddress = CurrentAddress.StreetAddress;
+            SuiteOrBuilding = CurrentAddress.SuiteNumber;
+            City = CurrentAddress.City;
+            ZipCode = CurrentAddress.ZipCode;
+            State = CurrentAddress.State;
+            Country = CurrentAddress.Country;
+            InputLatitude = CurrentAddress.Latitude;
+            InputLongitude = CurrentAddress.Longitude;
+            DateAppointment = CurrentAppointment.DateAndTime.Date;
+            TimeAppointment = CurrentAppointment.DateAndTime.TimeOfDay;
+            NoteAppointment = CurrentAppointment.Notes;
         }
 
         public bool ValidateAddress()
@@ -175,34 +224,91 @@ namespace WGU_Capstone_C868.ViewModel
         }
 
         [RelayCommand]
-        public void Save()
+        public async void Save()
         {
-            Appointment newAppointment = new() { 
-                
-            };
-            Address newAddress = new() {
-                StreetAddress = StreetAddress,
-                SuiteNumber = SuiteOrBuilding,
-                City = City,
-                ZipCode = ZipCode,
-                State = State,
-                Country = Country,
-                Latitude = Double.Parse(Latitute),
-                Longitude = Double.Parse(Longitude)
-            };
-
-
-            Debug.WriteLine(newAppointment);
-            Debug.WriteLine(newAddress);
-
             if(IsEdit)
             {
+                Appointment newAppointment = new()
+                {
+                    AppointmentId = CurrentAppointment.AppointmentId,
+                    ProceedureId = SelectedProceedure + 1,
+                    LocationName = LocationName,
+                    AddressId = CurrentAppointment.AddressId,
+                    Notes = NoteAppointment,
+                    PhoneNumber = PhoneNum,
+                    Current = CheckDateTimeCurrent(DateAppointment.Date + TimeAppointment),
+                    DateAndTime = DateAppointment.Date + TimeAppointment,
+                    UserId = CurrentAppointment.UserId
+                };
+                Address newAddress = new()
+                {
+                    AddressId = CurrentAddress.AddressId,
+                    StreetAddress = StreetAddress,
+                    SuiteNumber = SuiteOrBuilding,
+                    City = City,
+                    ZipCode = ZipCode,
+                    State = State,
+                    Country = Country,
+                    Latitude = InputLatitude,
+                    Longitude = InputLongitude
+                };
 
+                Debug.WriteLine(newAppointment);
+                Debug.WriteLine(newAddress);
+
+                if (!CurrentAddress.Equals(newAddress))
+                {
+                    await AddressCalls.UpdateAddressAsync(newAddress);
+                }
+                if (!CurrentAppointment.Equals(newAppointment))
+                { 
+                    await AppointmentCalls.UpdateAppointmentAsync(newAppointment);
+                }
             }
             else
             {
+                Appointment newAppointment = new()
+                {
+                    AppointmentId = 0,
+                    ProceedureId = SelectedProceedure + 1,
+                    LocationName = LocationName,
+                    AddressId = CurrentAppointment.AddressId,
+                    Notes = NoteAppointment,
+                    PhoneNumber = PhoneNum,
+                    Current = CheckDateTimeCurrent(DateAppointment.Date + TimeAppointment),
+                    DateAndTime = DateAppointment.Date + TimeAppointment,
+                    UserId = TheUser.UserId
+                };
+                Address newAddress = new()
+                {
+                    AddressId = 0,
+                    StreetAddress = StreetAddress,
+                    SuiteNumber = SuiteOrBuilding,
+                    City = City,
+                    ZipCode = ZipCode,
+                    State = State,
+                    Country = Country,
+                    Latitude = InputLatitude,
+                    Longitude = InputLongitude
+                };
 
+                await AddressCalls.AddAddressAsync(newAddress);
+                await AppointmentCalls.AddAppointmentAsync(newAppointment);
             }
+        }
+
+        private DateTime ReconstructDateTime(DateTime date, TimeSpan time)
+        {
+            return date.Date + time; ;
+        }
+
+        private bool CheckDateTimeCurrent(DateTime dateTime)
+        {
+            if(dateTime < DateTime.Now)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

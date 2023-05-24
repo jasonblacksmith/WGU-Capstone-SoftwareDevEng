@@ -55,7 +55,7 @@ namespace WGU_Capstone_C868.Services
                 visitType.Title = "Check Up";
                 VisitTypes.Add(visitType);
                 visitType1.VisitTypeId = 2;
-                visitType1.Title = "Results Follow Up";
+                visitType1.Title = "Follow Up";
                 VisitTypes.Add(visitType1);
 
                 await SqLiteDataService.Db.InsertAllAsync(VisitTypes);
