@@ -37,8 +37,8 @@ namespace WGU_Capstone_C868.Services.Calls
         {
             try
             {
-                this.address = await SqLiteDataService.Db.GetAsync<Address>(pk);
-                return this.address;
+                address = await SqLiteDataService.Db.GetAsync<Address>(pk);
+                return address;
             } 
             catch (Exception ex)
             { 

@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Net.Http;
+using System.IO;
+using System.Web;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using WGU_Capstone_C868.Model;
 using WGU_Capstone_C868.Services.Calls;
 using WGU_Capstone_C868.View;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 
 namespace WGU_Capstone_C868.ViewModel
 {
@@ -89,11 +93,19 @@ namespace WGU_Capstone_C868.ViewModel
         private DateTime dateValidMin = DateTime.Now;
         public ImgOrLabViewModel() 
         {
+            //PageTitle = "Imaging and Labs";
+            //TheUser = ThisUser;
+            //EditMode(Edit);
+            //Task task = Init();
+        }
+
+        [RelayCommand]
+        public async Task Reload()
+        {
             PageTitle = "Imaging and Labs";
             TheUser = ThisUser;
             EditMode(Edit);
-            Task task = Init();
-
+            await Init();
         }
 
         public async Task Init()
@@ -132,13 +144,17 @@ namespace WGU_Capstone_C868.ViewModel
         {
             try
             {
-                await AddressCalls.RemoveAddressAsync(CurrentAddress);
+                await AppointmentAddressCascadeDelete(CurrentAppointment, CurrentAddress);
             }
             catch(Exception ex) 
             {
                 Debug.WriteLine(ex);
                 throw;
             }
+            await Shell.Current.DisplayAlert("Deleted!", "Appointment has been deleted.", "Okay");
+
+            DashboardViewModel.ThisUser = TheUser;
+            await Shell.Current.GoToAsync($"//Dashboard", true);
         }
 
         [RelayCommand]
@@ -191,36 +207,39 @@ namespace WGU_Capstone_C868.ViewModel
             NoteAppointment = CurrentAppointment.Notes;
         }
 
-        public bool ValidateAddress()
+        public void ValidateAddress()
         {
-            //Add in address from fields and see if it is all there!
-            return false;
+            if ((StreetAddress is not null || StreetAddress != string.Empty)
+                && (City is not null || City != string.Empty)
+                && (ZipCode is not null || ZipCode != string.Empty)
+                && (State is not null || State != string.Empty) 
+                && (Country is not null || Country != string.Empty))
+            {
+                AddressValid = true;
+            }
+            else
+            {
+                AddressValid = false;
+            }
         }
 
         public async Task<bool> AppointmentAddressCascadeDelete(Appointment appointment, Address address)
         {
             try
             {
-                //Get Address by Appointment AddressId
-                
                 await AddressCalls.RemoveAddressAsync(address);
+
+                await AppointmentCalls.RemoveAppointmentAsync(appointment);
+
+                return true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                return false;
                 throw;
             }
-            return false;
-        }
 
-        [RelayCommand]
-        public void GetLocation(Address address)
-        {
-            //TODO: Get the Location coordinates  
-            //Constrict the Request URL from the address
-            //Request and see if a valid location is returned
-            //If Not: Alert
-            //If Yes: Confirm and populate data into fields
         }
 
         [RelayCommand]
@@ -228,18 +247,6 @@ namespace WGU_Capstone_C868.ViewModel
         {
             if(IsEdit)
             {
-                Appointment newAppointment = new()
-                {
-                    AppointmentId = CurrentAppointment.AppointmentId,
-                    ProceedureId = SelectedProceedure + 1,
-                    LocationName = LocationName,
-                    AddressId = CurrentAppointment.AddressId,
-                    Notes = NoteAppointment,
-                    PhoneNumber = PhoneNum,
-                    Current = CheckDateTimeCurrent(DateAppointment.Date + TimeAppointment),
-                    DateAndTime = DateAppointment.Date + TimeAppointment,
-                    UserId = CurrentAppointment.UserId
-                };
                 Address newAddress = new()
                 {
                     AddressId = CurrentAddress.AddressId,
@@ -253,23 +260,23 @@ namespace WGU_Capstone_C868.ViewModel
                     Longitude = InputLongitude
                 };
 
-                Debug.WriteLine(newAppointment);
-                Debug.WriteLine(newAddress);
-
-                if (!CurrentAddress.Equals(newAddress))
+                try
                 {
-                    await AddressCalls.UpdateAddressAsync(newAddress);
+                    if (!CurrentAddress.Equals(newAddress))
+                    {
+                        await AddressCalls.UpdateAddressAsync(newAddress);
+                        CurrentAppointment.AddressId = newAddress.AddressId;
+                    }
                 }
-                if (!CurrentAppointment.Equals(newAppointment))
-                { 
-                    await AppointmentCalls.UpdateAppointmentAsync(newAppointment);
+                catch(Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    throw;
                 }
-            }
-            else
-            {
+
                 Appointment newAppointment = new()
                 {
-                    AppointmentId = 0,
+                    AppointmentId = CurrentAppointment.AppointmentId,
                     ProceedureId = SelectedProceedure + 1,
                     LocationName = LocationName,
                     AddressId = CurrentAppointment.AddressId,
@@ -277,23 +284,75 @@ namespace WGU_Capstone_C868.ViewModel
                     PhoneNumber = PhoneNum,
                     Current = CheckDateTimeCurrent(DateAppointment.Date + TimeAppointment),
                     DateAndTime = DateAppointment.Date + TimeAppointment,
-                    UserId = TheUser.UserId
-                };
-                Address newAddress = new()
-                {
-                    AddressId = 0,
-                    StreetAddress = StreetAddress,
-                    SuiteNumber = SuiteOrBuilding,
-                    City = City,
-                    ZipCode = ZipCode,
-                    State = State,
-                    Country = Country,
-                    Latitude = InputLatitude,
-                    Longitude = InputLongitude
+                    UserId = CurrentAppointment.UserId
                 };
 
-                await AddressCalls.AddAddressAsync(newAddress);
-                await AppointmentCalls.AddAppointmentAsync(newAppointment);
+                try
+                {
+                    if (!CurrentAppointment.Equals(newAppointment))
+                    {
+                        await AppointmentCalls.UpdateAppointmentAsync(newAppointment);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    throw;
+                }
+
+                Debug.WriteLine(newAppointment);
+                Debug.WriteLine(newAddress);
+
+                await Shell.Current.DisplayAlert("Updated!", "Appointment is updated.", "Okay");
+
+                DashboardViewModel.ThisUser = TheUser;
+                await Shell.Current.GoToAsync($"//Dashboard", true);
+            }
+            else
+            {
+
+                try
+                {
+                    Address newAddress = new()
+                    {
+                        AddressId = 0,
+                        StreetAddress = StreetAddress,
+                        SuiteNumber = SuiteOrBuilding,
+                        City = City,
+                        ZipCode = ZipCode,
+                        State = State,
+                        Country = Country,
+                        Latitude = InputLatitude,
+                        Longitude = InputLongitude
+                    };
+
+                    await AddressCalls.AddAddressAsync(newAddress);
+
+                    Appointment newAppointment = new()
+                    {
+                        AppointmentId = 0,
+                        ProceedureId = SelectedProceedure + 1,
+                        LocationName = LocationName,
+                        AddressId = newAddress.AddressId,
+                        Notes = NoteAppointment,
+                        PhoneNumber = PhoneNum,
+                        Current = CheckDateTimeCurrent(DateAppointment.Date + TimeAppointment),
+                        DateAndTime = DateAppointment.Date + TimeAppointment,
+                        UserId = TheUser.UserId
+                    };
+
+                    await AppointmentCalls.AddAppointmentAsync(newAppointment);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    throw;
+                }
+
+                await Shell.Current.DisplayAlert("Saved!", "Appointemnt was saved.", "Okay");
+
+                DashboardViewModel.ThisUser = TheUser;
+                await Shell.Current.GoToAsync($"//Dashboard", true);
             }
         }
 
@@ -309,6 +368,42 @@ namespace WGU_Capstone_C868.ViewModel
                 return false;
             }
             return true;
+        }
+
+        [RelayCommand]
+        private async Task GetCoordinates()
+        {
+            try
+            {
+                string address = $"{StreetAddress}, {City}, {State} {ZipCode}, {Country}";
+                var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + HttpUtility.UrlEncode(address) + "&key=AIzaSyCz6a7X5kUHfLZIw9CBwaWa1m4LYfcxzBo";
+
+                var client = new HttpClient();
+                var response = await client.GetAsync(url);
+                var result = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine(result);
+
+                dynamic geo = JsonConvert.DeserializeObject(result);
+
+                //Parse AND set Latitude double and Longitude double
+                InputLatitude = (double)geo.results[0].geometry.location.lat;
+                InputLongitude = (double)geo.results[0].geometry.location.lng;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        [RelayCommand]
+        public async Task BackToLogin()
+        {
+            TheUser = null;
+            ThisUser = null;
+
+            // Load new page
+            await Shell.Current.GoToAsync("//MainPage", false);
         }
     }
 }

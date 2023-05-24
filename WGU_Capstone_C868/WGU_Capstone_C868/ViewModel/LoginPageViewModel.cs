@@ -43,6 +43,13 @@ namespace WGU_Capstone_C868.ViewModel
         }
 
         [RelayCommand]
+        public void ClearLogin()
+        {
+            UserNameInput = null;
+            PasswordInput = null;
+        }
+
+        [RelayCommand]
         public async void SetAsCreate()
         {
             forLogin = false;
@@ -158,5 +165,7 @@ namespace WGU_Capstone_C868.ViewModel
         {
             throw new NotImplementedException();
         }
+
+
     }
 }

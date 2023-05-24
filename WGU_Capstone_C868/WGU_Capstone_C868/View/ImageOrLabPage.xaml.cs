@@ -6,7 +6,7 @@ namespace WGU_Capstone_C868.View;
 
 public partial class ImageOrLabPage : ContentPage
 {
-	public ImageOrLabPage(ImgOrLabViewModel viewModel)
+    public ImageOrLabPage(ImgOrLabViewModel viewModel)
 	{
 		InitializeComponent();
 		BindingContext = viewModel;

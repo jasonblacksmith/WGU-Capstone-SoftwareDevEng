@@ -1,4 +1,5 @@
-﻿using WGU_Capstone_C868.Services.Calls;
+﻿using Microsoft.Extensions.Configuration;
+using WGU_Capstone_C868.Services.Calls;
 
 namespace WGU_Capstone_C868.ViewModel
 {
@@ -44,8 +45,20 @@ namespace WGU_Capstone_C868.ViewModel
         #region Init
         public DashboardViewModel()
         {
-            //if (null) { } 
-            Init();
+
+        }
+
+        [RelayCommand]
+        public async Task Reload()
+        {
+            AppointmentData = null;
+            AddressData = null;
+            AppointmentLocationName = null;
+            AppointmentPhone = null;
+            AppointmentTime = null;
+            UpcomingProceedure = null;
+            mapsLocation = null;
+            await Init();
         }
 
         //TODO: Dashboard Page
@@ -83,10 +96,14 @@ namespace WGU_Capstone_C868.ViewModel
 
             try
             {
-                ProceedureData = await ProceedureCalls.GetProceedureAsync(AppointmentData.ProceedureId); ;
-                Debug.WriteLine("Proceedure: " + ProceedureData.Title + " " + ProceedureData.ProceedureId);
+                if (YesAppointment)
+                {
+                    ProceedureData = await ProceedureCalls.GetProceedureAsync(AppointmentData.ProceedureId); ;
+                    Debug.WriteLine("Proceedure: " + ProceedureData.Title + " " + ProceedureData.ProceedureId);
 
-                UpcomingProceedure = $"Upcoming: {ProceedureData.Title}";
+                    UpcomingProceedure = $"Upcoming: {ProceedureData.Title}";
+                }
+
             }
             catch (Exception ex)
             {
@@ -96,8 +113,11 @@ namespace WGU_Capstone_C868.ViewModel
 
             try
             {
-                AddressData = await ThisAddress(AppointmentData.AddressId);
-                Debug.WriteLine("Address: " + AddressData.StreetAddress + " " + AddressData.AddressId);
+                if(YesAppointment)
+                {
+                    AddressData = await ThisAddress(AppointmentData.AddressId);
+                    Debug.WriteLine("Address: " + AddressData.StreetAddress + " " + AddressData.AddressId);
+                }
             }
             catch (Exception ex)
             {
@@ -238,5 +258,14 @@ namespace WGU_Capstone_C868.ViewModel
 
         #endregion
 
+        [RelayCommand]
+        public async Task BackToLogin()
+        {
+            TheUser = null;
+            ThisUser = null;
+
+            // Load new page
+            await Shell.Current.GoToAsync("//MainPage", true);
+        }
     }
 }

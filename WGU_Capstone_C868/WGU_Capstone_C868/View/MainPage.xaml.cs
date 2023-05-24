@@ -6,7 +6,7 @@ public partial class MainPage : ContentPage
 	{
 		InitializeComponent();
         Task task0 = StartDb();
-		Task task1 = LoadThisData();
+		//Task task1 = LoadThisData();
 		BindingContext = viewModel;
 	}
 
@@ -15,9 +15,4 @@ public partial class MainPage : ContentPage
         await SqLiteDataService.Init();
     }
 
-
-	private async Task LoadThisData()
-	{
-		await LoadData.Init();
-	}
 }
