@@ -135,6 +135,12 @@ namespace WGU_Capstone_C868.ViewModel
         private static RelapseCalls RelapseCalls = new RelapseCalls();
         //TODO: Relapse Diary Card
         //TODO: Link to Relapse Diary Page
+        [RelayCommand]
+        public async Task ToRelapseDiary()
+        {
+            RelapseDiaryViewModel.ThisUser = TheUser;
+            await Shell.Current.GoToAsync("//RelapseDiary", true);
+        }
         //TODO: Counter of days since last active relapse
         #endregion
 

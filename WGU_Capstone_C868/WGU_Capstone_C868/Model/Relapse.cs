@@ -23,7 +23,7 @@ namespace WGU_Capstone_C868.Model
         public DateTime DateAndTime { get; set; }
         [Indexed]
         [Column("TriggersCollectionId")]
-        public int TriggersCollectionId { get; set; }
+        public int TriggerCollectionId { get; set; }
         [Indexed]
         [Column("SymptomCollectionId")]
         public int SymptomCollectionId { get; set; }

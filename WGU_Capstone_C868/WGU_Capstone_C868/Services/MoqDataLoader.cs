@@ -196,7 +196,7 @@ namespace WGU_Capstone_C868.Services
                 UserId = 2,
                 Location = "Family Gathering",
                 DateAndTime = DateTime.Now.AddMonths(-10),
-                TriggersCollectionId = 1,
+                TriggerCollectionId = 1,
                 SymptomCollectionId = 1
             };
             await relapseCalls.AddRelapseAsync(relapse);

@@ -7,6 +7,11 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="WGU_Capstone_C868.View.RelapseDiary"
              x:DataType="viewmodel:RelapseDiaryViewModel">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding ReloadCommand}"/>
+    </ContentPage.Behaviors>
     <Shell.TitleView>
         <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" Margin="0">
             <Grid.Shadow>
@@ -29,6 +34,14 @@
                 HorizontalOptions="Start"
                 VerticalOptions="Center"
                 FontSize="15" />
+            <Button 
+                x:Name="LogOut" 
+                Text="Log Out" 
+                Grid.ColumnSpan="2" 
+                Grid.RowSpan="2" 
+                HorizontalOptions="Center" 
+                VerticalOptions="Center"
+                Command="{Binding BackToLoginCommand}"/>
             <Label
                 Text="{Binding TheUser.Name}"
                 Grid.Column="1"
@@ -47,9 +60,60 @@
         </Grid>
     </Shell.TitleView>
     <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+        <Button Text="Add Entry" Command="{Binding AddEntryCommand}" BorderColor="#9340D9" BorderWidth="1" Margin="5,5,5,0"/>
+        <Frame Margin="5" Padding="10">
+            <Grid x:Name="CollectionViewAreaOfDiaryEntries">
+                <CollectionView ItemsSource="{Binding RelapseDiaryEntries}" Margin="5" Grid.Row="0" VerticalScrollBarVisibility="Default">
+                    <CollectionView.Header>
+                        <StackLayout>
+                            <Label Text="Entries:" Grid.Row="0" Margin="5,0,0,10" Padding="0" FontSize="20" FontAttributes="Bold"/>
+                        </StackLayout>
+                    </CollectionView.Header>
+                    <CollectionView.EmptyView>
+                        <Grid RowDefinitions="*,*">
+                            <Label Text="Add a Relapse Diary Entry to get started!"/>
+                        </Grid>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <ContentView Padding="0" Margin="0">
+                                <Frame Margin="0" Padding="0,10">
+                                    <toolkit:Expander>
+                                        <toolkit:Expander.Header>
+                                            <Grid ColumnDefinitions="*,10,*" Margin="0" Padding="0" x:DataType="model:Relapse">
+                                                <Label Text="{Binding DateAndTime}" Grid.Column="0" Grid.Row="0" HorizontalOptions="End" VerticalOptions="Center" Margin="5" Padding="0" FontSize="16"/>
+                                                <Label Text="|" FontSize="Title" Grid.Column="1" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" Padding="0,0,0,5" Margin="0" />
+                                                <Label Text="{Binding Location}" Grid.Column="2" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" Margin="5" Padding="0" FontSize="16"/>
+                                            </Grid>
+                                        </toolkit:Expander.Header>
+                                        <StackLayout>
+                                            <Grid x:Name="Triggers" Margin="5">
+                                                <Label Text="Triggers:"/>
+                                                <CollectionView ItemsSource="{Binding TriggersForUser}">
+                                                    <CollectionView.EmptyView>
+                                                        <Label Text="Add Trigger to diary entry!"/>
+                                                    </CollectionView.EmptyView>
+                                                    <CollectionView.ItemTemplate>
+                                                        <DataTemplate x:DataType="model:Trigger">
+                                                            <Grid RowDefinitions="*,*">
+                                                                <Label Text="{Binding Title}" Grid.Row="0"/>
+                                                                <Label Text="{Binding Description}" Grid.Row="0"/>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </CollectionView.ItemTemplate>
+                                                </CollectionView>
+                                            </Grid>
+                                            <Grid x:Name="Symptoms" Margin="5">
+                                                <Label Text="Symptoms:"/>
+                                            </Grid>
+                                        </StackLayout>
+                                    </toolkit:Expander>
+                                </Frame>
+                            </ContentView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Frame>
     </VerticalStackLayout>
 </ContentPage>
