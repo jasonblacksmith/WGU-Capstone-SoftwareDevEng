@@ -49,6 +49,10 @@ namespace WGU_Capstone_C868.Services.Calls
             try
             {
                 List<Proceedure> Proceedures = new();
+
+                proceedures.Clear();
+                Proceedures.Clear();
+
                 Proceedures = await SqLiteDataService.Db.Table<Proceedure>().ToListAsync();
                 foreach (Proceedure Proceedure in Proceedures)
                 {

@@ -36,7 +36,6 @@ namespace WGU_Capstone_C868.ViewModel
         private static AppointmentCalls AppointmentCalls = new();
         private static ProceedureCalls ProceedureCalls = new();
         private static AddressCalls AddressCalls = new();
-        private static ResultCalls ResultCalls = new();
 
         [ObservableProperty]
         public int selectedProceedure;

@@ -46,7 +46,12 @@ namespace WGU_Capstone_C868.Services.Calls
         //Returns an ObservableCollection of all Model.Triggers int the table
         public async Task<ObservableCollection<Model.Trigger>> GetTriggersAsync()
         {
-            List<Model.Trigger> Triggers = await SqLiteDataService.Db.Table<Model.Trigger>().ToListAsync();
+            List<Model.Trigger> Triggers = new();
+
+            triggers.Clear();
+            Triggers.Clear();
+
+            Triggers = await SqLiteDataService.Db.Table<Model.Trigger>().ToListAsync();
             foreach (Model.Trigger Trigger in Triggers)
             {
                 triggers.Add(Trigger);

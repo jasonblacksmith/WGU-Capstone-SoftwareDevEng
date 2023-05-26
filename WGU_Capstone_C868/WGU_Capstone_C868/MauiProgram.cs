@@ -28,8 +28,6 @@ public static class MauiProgram
         builder.Services.AddTransient<ImgOrLabViewModel>();
         builder.Services.AddTransient<RelapseDiary>();
         builder.Services.AddTransient<RelapseDiaryViewModel>();
-        builder.Services.AddTransient<DrVisitNotes>();
-        builder.Services.AddTransient<DrVisitNotesViewModel>();
 
         return builder.Build();
     }

@@ -94,18 +94,6 @@
                     </Grid>
 
                 </Frame>
-
-                <Frame x:Name="NotesQuestions" Grid.Row="2" CornerRadius="20" Margin="20" BorderColor="#9340D9" BackgroundColor="#170D21" Padding="0">
-                    <Grid RowDefinitions="*,*" ColumnDefinitions="*,*" Margin="0" Padding="0">
-                        <Label x:Name="QuestionsNotesLabel" Grid.Row="0" Grid.ColumnSpan="2" Text="Notes/Questions" FontSize="35" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="End" Margin="0,0,0,10" Padding="0"/>
-
-                        <Button x:Name="OverlayButtonNotesQuestions" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" BackgroundColor="Transparent" Padding="0"/>
-
-                        <Button x:Name="LastVisitButton" Grid.Row="1" Grid.Column="0" Text="Last Visit" Padding="0,0,4,0" Margin="3,0,3,5" FontSize="Large" HorizontalOptions="End" VerticalOptions="Start" WidthRequest="120" HeightRequest="40" TextColor="#E2C3FF" BackgroundColor="Transparent"/>
-
-                        <Button x:Name="NextVisitButton" Grid.Row="1" Grid.Column="1" Text="Next Visit" Padding="0,0,4,0" Margin="3,0,3,5" FontSize="Large" HorizontalOptions="Start" VerticalOptions="Start" WidthRequest="120" HeightRequest="40" TextColor="#E2C3FF" BackgroundColor="Transparent"/>
-                    </Grid>
-                </Frame>
             </Grid>
         </VerticalStackLayout>
     </ScrollView>

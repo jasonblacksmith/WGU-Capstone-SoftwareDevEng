@@ -53,6 +53,10 @@ namespace WGU_Capstone_C868.Services.Calls
             try
             {
                 List<Address> Addresses = new();
+
+                addresses.Clear();
+                Addresses.Clear();
+
                 Addresses = await SqLiteDataService.Db.Table<Address>().ToListAsync();
                 foreach (Address Address in Addresses)
                 {

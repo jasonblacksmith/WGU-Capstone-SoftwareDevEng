@@ -24,10 +24,10 @@ namespace WGU_Capstone_C868.Services
             Db = new SQLiteAsyncConnection(Path.Combine(Environment.GetFolderPath
            (Environment.SpecialFolder.Personal), "MSTrackerAppDb.db0"));
 
-            await Db.CreateTablesAsync<Address, Appointment, DoctorsNote>();
-            await Db.CreateTablesAsync<Proceedure, Question, Relapse, Result>();
-            await Db.CreateTablesAsync<Symptom, SymptomCollection, Model.Trigger, TriggerCollection, User>();
-            await Db.CreateTablesAsync<Visit, VisitType>();
+            await Db.CreateTablesAsync<Address, Appointment>();
+            await Db.CreateTablesAsync<Proceedure, Relapse>();
+            await Db.CreateTablesAsync<Symptom, Model.Trigger, User>();
+
 
             Debug.WriteLine("Tables Created");
         }
@@ -36,25 +36,17 @@ namespace WGU_Capstone_C868.Services
         {
             await Db.DropTableAsync<Address>();
             await Db.DropTableAsync<Appointment>();
-            await Db.DropTableAsync<DoctorsNote>();
             await Db.DropTableAsync<Proceedure>();
-            await Db.DropTableAsync<Question>();
             await Db.DropTableAsync<Relapse>();
-            await Db.DropTableAsync<Result>();
             await Db.DropTableAsync<Symptom>();
-            await Db.DropTableAsync<SymptomCollection>();
             await Db.DropTableAsync<Model.Trigger>();
-            await Db.DropTableAsync<TriggerCollection>();
             await Db.DropTableAsync<User>();
-            await Db.DropTableAsync<Visit>();
-            await Db.DropTableAsync<VisitType>();
 
             Debug.WriteLine("Tables Burned");
 
-            await Db.CreateTablesAsync<Address, Appointment, DoctorsNote>();
-            await Db.CreateTablesAsync<Proceedure, Question, Relapse, Result>();
-            await Db.CreateTablesAsync<Symptom, SymptomCollection, Model.Trigger, TriggerCollection, User>();
-            await Db.CreateTablesAsync<Visit, VisitType>();
+            await Db.CreateTablesAsync<Address, Appointment>();
+            await Db.CreateTablesAsync<Proceedure, Relapse>();
+            await Db.CreateTablesAsync<Symptom, Model.Trigger, User>();
 
             Debug.WriteLine("Tables Recreated");
         }

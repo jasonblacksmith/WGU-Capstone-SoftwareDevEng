@@ -48,6 +48,10 @@ namespace WGU_Capstone_C868.Services.Calls
         public async Task<ObservableCollection<User>> GetUsersAsync()
         {
             List<User> Users = new();
+
+            users.Clear();
+            Users.Clear();
+
             Users = await SqLiteDataService.Db.Table<User>().ToListAsync();
             foreach (User User in Users)
             {

@@ -101,9 +101,6 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <MauiXaml Update="View\DrVisitNotes.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="View\ImageOrLabPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -14,12 +14,7 @@ namespace WGU_Capstone_C868.Services
         private UserCalls userCalls = new UserCalls();
         private AppointmentCalls appointmentCalls = new AppointmentCalls();
         private AddressCalls addressCalls = new AddressCalls();
-        private ResultCalls resultCalls = new ResultCalls();
-        private DoctorsNoteCalls doctorsNoteCalls = new DoctorsNoteCalls();
-        private VisitCalls visitCalls = new VisitCalls();
         private RelapseCalls relapseCalls = new RelapseCalls();
-        private TriggerCollectionCalls tCC = new TriggerCollectionCalls();
-        private SymptomCollectionCalls sCC = new SymptomCollectionCalls();
         private TriggerCalls tCalls = new TriggerCalls();
         private SymptomCalls sCalls = new SymptomCalls();
 
@@ -154,60 +149,18 @@ namespace WGU_Capstone_C868.Services
             };
             await addressCalls.AddAddressAsync(address2);
 
-            //Associated Results
-            Model.Result result = new()
-            {
-                ResultId = 1,
-                AppointmentId = 2,
-                UserId = 2,
-                ProceedureId = 1,
-                DoctorsNoteId = 1,
-                OtherNotes = string.Empty
-            };
-            await resultCalls.AddResultAsync(result);
-
-            //Associated Doctors Note
-            DoctorsNote doctorsNote = new()
-            {
-                DoctorsNoteId = 1,
-                VisitId = 1,
-                Title = "MRI Follow Up Notes",
-                Content = "Bacon ipsum dolor amet jerky tri-tip meatball corned beef. Sausage filet mignon corned beef turkey andouille, tail shank boudin turducken short loin ground round pork prosciutto. Hamburger biltong capicola tri-tip drumstick beef pancetta chuck turducken ham hock ribeye buffalo salami alcatra porchetta. Shoulder chislic sirloin, landjaeger andouille burgdoggen ground round spare ribs.",
-                DoctorsName = "Matrim Cauthorn",
-                WithResults = true,
-                ResultsId = 1
-            };
-            await doctorsNoteCalls.AddDoctorsNoteAsync(doctorsNote);
-
-            //Associated Visit
-            Visit visit = new()
-            {
-                VisitId = 1,
-                UserId = 2,
-                VisitTypeId = 2,
-                DateAndTime = DateTime.Now.AddMonths(-5)
-            };
-            await visitCalls.AddVisitAsync(visit);
-
-            //Relapse Diary
+            //Relapse Diary Entry
             Relapse relapse = new()
             {
                 RelapseId = 1,
                 UserId = 2,
                 Location = "Family Gathering",
                 DateAndTime = DateTime.Now.AddMonths(-10),
+                Notes = "Bacon ipsum dolor amet jerky tri-tip meatball corned beef. Sausage filet mignon corned beef turkey andouille, tail shank boudin turducken short loin ground round pork prosciutto. Hamburger biltong capicola tri-tip drumstick beef pancetta chuck turducken ham hock ribeye buffalo salami alcatra porchetta. Shoulder chislic sirloin, landjaeger andouille burgdoggen ground round spare ribs.",
                 TriggerCollectionId = 1,
                 SymptomCollectionId = 1
             };
             await relapseCalls.AddRelapseAsync(relapse);
-
-            //Associated TriggerCollection
-            TriggerCollection tC = new TriggerCollection
-            {
-                TriggerCollectionId = 1,
-                UserId = 2
-            };
-            await tCC.AddTriggerCollectionAsync(tC);
 
             //Associated Triggers
             Model.Trigger trigger = new()
@@ -242,14 +195,6 @@ namespace WGU_Capstone_C868.Services
             };
             await tCalls.AddTriggerAsync(trigger2);
 
-            //Associated SymptomCollection
-            SymptomCollection sC = new SymptomCollection
-            {
-                SymptomCollectionId = 1,
-                UserId = 2
-            };
-            await sCC.AddSymptomCollectionAsync(sC);
-
             //Associated Symptoms
             Symptom symptom = new Symptom
             {
@@ -282,6 +227,19 @@ namespace WGU_Capstone_C868.Services
                 IsNew = true
             };
             await sCalls.AddSymptomAsync(symptom2);
+
+            //Relapse Diary Entry
+            Relapse relapse1 = new()
+            {
+                RelapseId = 2,
+                UserId = 2,
+                Location = "Mowing Lawn Drinking MntDew",
+                DateAndTime = DateTime.Now.AddMonths(-3),
+                Notes = "Bacon ipsum dolor amet jerky tri-tip meatball corned beef. Sausage filet mignon corned beef turkey andouille, tail shank boudin turducken short loin ground round pork prosciutto. Hamburger biltong capicola tri-tip drumstick beef pancetta chuck turducken ham hock ribeye buffalo salami alcatra porchetta. Shoulder chislic sirloin, landjaeger andouille burgdoggen ground round spare ribs.",
+                TriggerCollectionId = 1,
+                SymptomCollectionId = 1
+            };
+            await relapseCalls.AddRelapseAsync(relapse1);
         }
     }
 }

@@ -20,11 +20,7 @@
         ContentTemplate="{DataTemplate view:ImageOrLabPage}"
         Route="ImageOrLabPage" />
     <ShellContent
-        Title="My MS Tracker Relapse Diary"
+        Title="My MS Tracker MS Diary"
         ContentTemplate="{DataTemplate view:RelapseDiary}"
         Route="RelapseDiary"/>
-    <ShellContent
-        Title="My MS Tracker Dr Visit Notes"
-        ContentTemplate="{DataTemplate view:DrVisitNotes}"
-        Route="DrVisitNotes"/>
 </Shell>

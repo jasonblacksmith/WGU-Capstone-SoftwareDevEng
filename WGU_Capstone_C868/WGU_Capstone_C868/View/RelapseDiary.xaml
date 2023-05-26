@@ -59,7 +59,143 @@
                 Margin="0,0,5,0" />
         </Grid>
     </Shell.TitleView>
-    <VerticalStackLayout>
+    <StackLayout>
+        <Frame x:Name="DiaryFrame" BorderColor="#2B2B2B" CornerRadius="3" BackgroundColor="#141414" Padding="0" Margin="0" IsVisible="True">
+            <Grid Padding="8" Margin="0" HeightRequest="200" RowDefinitions="*,*,*,*">
+                <CollectionView x:Name="EntriesListView"
+                          BackgroundColor="#141414"
+                          ItemsSource="{Binding RelapseDiaryEntries}"
+                          SelectedItem="{x:Binding SelectedRelapse, Mode=TwoWay}" 
+                          Grid.Row="0"
+                          Grid.RowSpan="4"
+                          IsVisible="{Binding IsNotes, Mode=TwoWay}">
+                    <CollectionView.Header>
+                        <Grid>
+                            <Label Grid.Column="1" Text="Diary Entries" FontSize="Large"  FontAttributes="Bold" Padding="2" Margin="0" VerticalTextAlignment="Center" TextColor="#a1a1a1" />
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:Relapse">
+                            <StackLayout Height="100">
+                                <Grid>
+                                    <Frame x:Name="EntryItem" Padding="2" Margin="2">
+                                        <Grid ColumnDefinitions="*,7,*" ColumnSpacing="5">
+                                            <Label Text="{Binding DateAndTime}" Grid.Column="0" FontSize="16" TextColor="#FFD0D0D0" Margin="0" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                            <Label Text="|" FontSize="20" Grid.Column="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Start"/>
+                                            <Label Text="{Binding Location}" Grid.Column="2" FontSize="16" TextColor="#FFD0D0D0" Margin="0" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        </Grid>
+                                    </Frame>
+                                </Grid>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <CollectionView x:Name="TriggersListView"
+                          BackgroundColor="#141414"
+                          ItemsSource="{Binding TriggersForUser, Mode=TwoWay}"
+                          SelectedItem="{x:Binding SelectedTrigger, Mode=TwoWay}" 
+                          IsVisible="{Binding IsTriggers, Mode=TwoWay}"
+                          Grid.Row="0"
+                          Grid.RowSpan="4"
+                          >
+                    <CollectionView.Header>
+                        <Grid>
+                            <Label Grid.Column="1" Text="Triggers:" FontSize="10" FontAttributes="Bold" Padding="2" Margin="0" VerticalTextAlignment="Center" TextColor="#a1a1a1" />
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:Trigger">
+                            <StackLayout Height="200">
+                                <Grid>
+                                    <Frame Padding="2" Margin="2">
+                                        <Grid>
+                                            <Label Text="{Binding Title}" Grid.Column="0" FontSize="16" TextColor="#FFD0D0D0" Margin="0" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        </Grid>
+                                    </Frame>
+                                </Grid>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <CollectionView x:Name="SymptomsListView"
+                          BackgroundColor="#141414"
+                          ItemsSource="{Binding SymptomsForUser, Mode=TwoWay}"
+                          SelectedItem="{x:Binding SelectedSymptom, Mode=TwoWay}" 
+                          IsVisible="{Binding IsSymptoms, Mode=TwoWay}"
+                          Grid.Row="0"
+                          Grid.RowSpan="4">
+                    <CollectionView.Header>
+                        <Grid>
+                            <Label Grid.Column="1" Text="Symptoms:" FontSize="10" FontAttributes="Bold" Padding="2" Margin="0" VerticalTextAlignment="Center" TextColor="#a1a1a1" />
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:Symptom">
+                            <StackLayout Height="200">
+                                <Grid>
+                                    <Frame Padding="2" Margin="2">
+                                        <Grid ColumnSpacing="5">
+                                            <Label x:Name="DateAndTime" Text="{Binding Title}" Grid.Column="0" FontSize="16" TextColor="#FFD0D0D0" Margin="0" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        </Grid>
+                                    </Frame>
+                                </Grid>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Frame>
+
+        <Frame x:Name="EditEntryFrame" Padding="2" Margin="2" IsVisible="True" HeightRequest="50" WidthRequest="100">
+            <Button x:Name="EditEntry" Text="Edit Entry" Command="{Binding EditEntryCommand}" Padding="1, 1, 6, 1" BackgroundColor="Transparent" />
+        </Frame>
+
+        <Frame x:Name="NewEntryNameFrame" Padding="2" Margin="2">
+            <Entry x:Name="NewEtryLocation" Placeholder="Enter Location Name"/>
+        </Frame>
+        <Grid ColumnDefinitions="*,*,*,*,*">
+            <Frame x:Name="Notes" Grid.Column="0" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
+                <Button Text="Notes" BackgroundColor="Transparent" Padding="5" Command="{Binding NotesSelectedCommand}" IsEnabled="{Binding IsNotesButton, Mode=TwoWay}"/>
+            </Frame>
+            <Frame x:Name="Triggers" Grid.Column="1" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
+                <Button Text="Triggers" BackgroundColor="Transparent" Padding="5" Command="{Binding TriggersSelectedCommand}" IsEnabled="{Binding IsTriggersButton, Mode=TwoWay}"/>
+            </Frame>
+            <Frame x:Name="Symptoms" Grid.Column="2" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
+                <Button Text="Symptoms" BackgroundColor="Transparent" Padding="5" Command="{Binding SymptomsSelectedCommand}" IsEnabled="{Binding IsSymptomsButton, Mode=TwoWay}"/>
+            </Frame>
+        </Grid>
+        <Frame HeightRequest="275" BorderColor="Transparent">
+            <StackLayout>
+                <Editor x:Name="EntryNoteContentInput" MaxLength="500" HeightRequest="250" Placeholder="Enter note" Text="{Binding EntryNote}" IsVisible="{Binding IsNotes, Mode=TwoWay}"/>
+
+                <Grid IsVisible="{Binding IsTriggers, Mode=TwoWay}" RowDefinitions="*,225">
+                    <Frame Grid.Row="0" Margin="5">
+                        <Entry x:Name="TriggerTitle" Text="{Binding SelectedTrigger.Title}"/>
+                    </Frame>
+                    <Frame Grid.Row="1" Padding="5">
+                        <Editor x:Name="TriggerDescription" Text="{Binding SelectedTrigger.Description}" TextColor="WhiteSmoke" HeightRequest="100"/>
+                    </Frame>
+                </Grid>
+            </StackLayout>
+
+
+        </Frame>
+
+        <Frame>
+            <Grid ColumnDefinitions="10,*,*,*,*,10" Padding="0" Margin="0">
+                <Button x:Name="CancelNote" Text="Cancel" Command="{Binding CancelCommand}" Grid.Column="1" Padding="0" Margin="8" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="60" VerticalOptions="End"/>
+
+                <Button x:Name="AddNewNote" Text="Add" Command="{Binding AddEntryCommand}" Grid.Column="2" Padding="0" Margin="8" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="60" VerticalOptions="End"/>
+
+                <Button x:Name="SaveNote" Text="Save" Command="{Binding SaveEntryCommand}" Grid.Column="3" Padding="0" Margin="8" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="60" VerticalOptions="End"/>
+
+                <Button x:Name="DeleteNote" Text="Delete" Command="{Binding DeleteEntryCommand}" Grid.Column="4" Padding="0" Margin="8" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="60" VerticalOptions="End"/>
+            </Grid>
+        </Frame>
+
+    </StackLayout>
+
+    <!--<VerticalStackLayout>
         <Button Text="Add Entry" Command="{Binding AddEntryCommand}" BorderColor="#9340D9" BorderWidth="1" Margin="5,5,5,0"/>
         <Frame Margin="5" Padding="10">
             <Grid x:Name="CollectionViewAreaOfDiaryEntries">
@@ -75,37 +211,60 @@
                         </Grid>
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="viewmodel:RelapseDiaryViewModel">
                             <ContentView Padding="0" Margin="0">
                                 <Frame Margin="0" Padding="0,10">
                                     <toolkit:Expander>
                                         <toolkit:Expander.Header>
-                                            <Grid ColumnDefinitions="*,10,*" Margin="0" Padding="0" x:DataType="model:Relapse">
+                                            <Grid ColumnDefinitions="*,10,*" Margin="0" Padding="0" x:DataType="model:Relapse" >
                                                 <Label Text="{Binding DateAndTime}" Grid.Column="0" Grid.Row="0" HorizontalOptions="End" VerticalOptions="Center" Margin="5" Padding="0" FontSize="16"/>
                                                 <Label Text="|" FontSize="Title" Grid.Column="1" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" Padding="0,0,0,5" Margin="0" />
-                                                <Label Text="{Binding Location}" Grid.Column="2" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" Margin="5" Padding="0" FontSize="16"/>
+                                                <Label  Text="{Binding Location}" Grid.Column="2" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" Margin="5" Padding="0" FontSize="16"/>
                                             </Grid>
                                         </toolkit:Expander.Header>
-                                        <StackLayout>
-                                            <Grid x:Name="Triggers" Margin="5">
-                                                <Label Text="Triggers:"/>
-                                                <CollectionView ItemsSource="{Binding TriggersForUser}">
-                                                    <CollectionView.EmptyView>
-                                                        <Label Text="Add Trigger to diary entry!"/>
-                                                    </CollectionView.EmptyView>
-                                                    <CollectionView.ItemTemplate>
+                                        <StackLayout HeightRequest="300" x:DataType="{x:Null}">
+                                            <Frame Padding="0" Margin="5" BackgroundColor="Black">
+                                                <StackLayout x:DataType="viewmodel:RelapseDiaryViewModel" BindableLayout.ItemsSource="{Binding TriggersForUser}" HeightRequest="135" Background="black" Margin="0" Padding="0">
+                                                    <BindableLayout.ItemTemplate>
                                                         <DataTemplate x:DataType="model:Trigger">
-                                                            <Grid RowDefinitions="*,*">
-                                                                <Label Text="{Binding Title}" Grid.Row="0"/>
-                                                                <Label Text="{Binding Description}" Grid.Row="0"/>
+                                                            <Grid x:Name="Triggers" Margin="5" RowDefinitions="*,*" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Padding="0" BackgroundColor="Red">
+                                                                <Label Text="Triggers:" TextColor="AliceBlue" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Margin="0" Padding="0" Grid.Row="0"/>
+                                                                <Frame Grid.Row="0" Margin="0" Padding="0" BackgroundColor="Pink">
+                                                                    <Grid RowDefinitions="*,*">
+                                                                        <toolkit:Expander>
+                                                                            <toolkit:Expander.Header>
+                                                                                <Label Text="{Binding Title}" Grid.Row="0"/>
+                                                                            </toolkit:Expander.Header>
+                                                                            <Label Text="{Binding Description}" Grid.Row="1"/>
+                                                                        </toolkit:Expander>
+                                                                    </Grid>
+                                                                </Frame>
                                                             </Grid>
                                                         </DataTemplate>
-                                                    </CollectionView.ItemTemplate>
-                                                </CollectionView>
-                                            </Grid>
-                                            <Grid x:Name="Symptoms" Margin="5">
-                                                <Label Text="Symptoms:"/>
-                                            </Grid>
+                                                    </BindableLayout.ItemTemplate>
+                                                </StackLayout>
+                                            </Frame>
+                                            <Frame Padding="0" Margin="5" BackgroundColor="Black">
+                                                <StackLayout BindableLayout.ItemsSource="{Binding SymptomsForUser}" HeightRequest="135" Background="black" Margin="3">
+                                                    <BindableLayout.ItemTemplate>
+                                                        <DataTemplate x:DataType="model:Symptom">
+                                                            <Grid x:Name="Symptoms" Margin="5" RowDefinitions="*,*">
+                                                                <Label Text="Symptoms:" Grid.Row="0" TextColor="AliceBlue"/>
+                                                                <Frame BorderColor="White" Grid.Row="1">
+                                                                    <Grid RowDefinitions="*,*">
+                                                                        <toolkit:Expander>
+                                                                            <toolkit:Expander.Header>
+                                                                                <Label Text="{Binding Title}" Grid.Row="0" TextColor="White"/>
+                                                                            </toolkit:Expander.Header>
+                                                                            <Label Text="{Binding Description}" Grid.Row="1" TextColor="White"/>
+                                                                        </toolkit:Expander>
+                                                                    </Grid>
+                                                                </Frame>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </BindableLayout.ItemTemplate>
+                                                </StackLayout>
+                                            </Frame>
                                         </StackLayout>
                                     </toolkit:Expander>
                                 </Frame>
@@ -115,5 +274,5 @@
                 </CollectionView>
             </Grid>
         </Frame>
-    </VerticalStackLayout>
+    </VerticalStackLayout>-->
 </ContentPage>

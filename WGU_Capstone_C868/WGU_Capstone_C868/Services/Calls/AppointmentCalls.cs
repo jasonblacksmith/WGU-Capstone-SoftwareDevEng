@@ -48,6 +48,10 @@ namespace WGU_Capstone_C868.Services.Calls
             try
             {
                 List<Appointment> Appointments = new();
+
+                appointments.Clear();
+                Appointments.Clear();
+
                 Appointments = await SqLiteDataService.Db.Table<Appointment>().ToListAsync();
                 foreach (Appointment a in Appointments)
                 {

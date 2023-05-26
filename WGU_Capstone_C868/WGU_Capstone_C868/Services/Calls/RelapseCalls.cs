@@ -46,7 +46,12 @@ namespace WGU_Capstone_C868.Services.Calls
         //Returns an ObservableCollection of all Relapses int the table
         public async Task<ObservableCollection<Relapse>> GetRelapsesAsync()
         {
-            List<Relapse> Relapses = await SqLiteDataService.Db.Table<Relapse>().ToListAsync();
+            List<Relapse> Relapses = new();
+
+            relapses.Clear();
+            Relapses.Clear();
+
+            Relapses = await SqLiteDataService.Db.Table<Relapse>().ToListAsync();
             foreach (Relapse Relapse in Relapses) 
             {
                 relapses.Add(Relapse);

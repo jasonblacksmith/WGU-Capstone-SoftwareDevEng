@@ -46,7 +46,12 @@ namespace WGU_Capstone_C868.Services.Calls
         //Returns an ObservableCollection of all Symptoms int the table
         public async Task<ObservableCollection<Symptom>> GetSymptomsAsync()
         {
-            List<Symptom> Symptoms = await SqLiteDataService.Db.Table<Symptom>().ToListAsync();
+            List<Symptom> Symptoms = new();
+
+            symptoms.Clear();
+            Symptoms.Clear();
+
+            Symptoms = await SqLiteDataService.Db.Table<Symptom>().ToListAsync();
             foreach (Symptom Symptom in Symptoms)
             {
                 symptoms.Add(Symptom);

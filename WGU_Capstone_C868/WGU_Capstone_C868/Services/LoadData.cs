@@ -10,22 +10,16 @@ namespace WGU_Capstone_C868.Services
 {
     internal class LoadData
     {
-        internal static VisitType visitType = new();
-        internal static VisitType visitType1 = new();
-
         internal static Proceedure proceedure = new();
         internal static Proceedure proceedure1 = new();
 
         private static ProceedureCalls ProceedureCalls = new();
         private static ObservableCollection<Proceedure> Proceedures = new();
 
-        private static VisitTypeCalls VisitTypeCalls = new();
-        private static ObservableCollection<VisitType> VisitTypes = new();
-
         public static async Task Init() 
         {
             await AddProceedures();
-            await AddVisitTypes();
+            Debug.WriteLine("Static Data Loaded");
         }
 
         private static async Task AddProceedures()
@@ -43,25 +37,6 @@ namespace WGU_Capstone_C868.Services
 
                 await SqLiteDataService.Db.InsertAllAsync(Proceedures);
             }
-        }
-
-        private static async Task AddVisitTypes()
-        {
-            VisitTypes = await VisitTypeCalls.GetVisitTypesAsync();
-
-            if (VisitTypes.Count == 0)
-            {
-                visitType.VisitTypeId = 1;
-                visitType.Title = "Check Up";
-                VisitTypes.Add(visitType);
-                visitType1.VisitTypeId = 2;
-                visitType1.Title = "Follow Up";
-                VisitTypes.Add(visitType1);
-
-                await SqLiteDataService.Db.InsertAllAsync(VisitTypes);
-            }
-
-            Debug.WriteLine("Static Data Loaded");
         }
     }
 }
