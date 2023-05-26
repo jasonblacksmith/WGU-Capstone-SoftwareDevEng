@@ -12,6 +12,23 @@
             EventName="Appearing"
             Command="{Binding ReloadCommand}"/>
     </ContentPage.Behaviors>
+    <ContentPage.Resources>
+        <Style TargetType="Button">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="MediumPurple" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
     <Shell.TitleView>
         <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" Margin="0">
             <Grid.Shadow>
@@ -60,29 +77,38 @@
         </Grid>
     </Shell.TitleView>
     <StackLayout>
+        <Grid ColumnDefinitions="*,*,*">
+            <Label Text="Days since last Relapse:000" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Padding="5"/>
+            <Frame x:Name="CancelEntryFrame" Grid.Column="2" Padding="2" Margin="2" IsVisible="True" HeightRequest="50" WidthRequest="100" HorizontalOptions="End">
+                <Button x:Name="CancelEntry" Text="Cancel" Command="{Binding CancelCommand}" Padding="1, 1, 6, 1" BackgroundColor="Transparent" HorizontalOptions="Center"/>
+            </Frame>
+        </Grid>
+
         <Frame x:Name="DiaryFrame" BorderColor="#2B2B2B" CornerRadius="3" BackgroundColor="#141414" Padding="0" Margin="0" IsVisible="True">
             <Grid Padding="8" Margin="0" HeightRequest="200" RowDefinitions="*,*,*,*">
                 <CollectionView x:Name="EntriesListView"
                           BackgroundColor="#141414"
+                          SelectionMode="Single" 
                           ItemsSource="{Binding RelapseDiaryEntries}"
-                          SelectedItem="{x:Binding SelectedRelapse, Mode=TwoWay}" 
+                          SelectedItem="{x:Binding SelectedRelapse, Mode=TwoWay}"
                           Grid.Row="0"
                           Grid.RowSpan="4"
                           IsVisible="{Binding IsNotes, Mode=TwoWay}">
                     <CollectionView.Header>
                         <Grid>
-                            <Label Grid.Column="1" Text="Diary Entries" FontSize="Large"  FontAttributes="Bold" Padding="2" Margin="0" VerticalTextAlignment="Center" TextColor="#a1a1a1" />
+                            <Label Grid.Column="1" Text="Diary Entries" FontSize="16"  FontAttributes="Bold" Padding="2" Margin="0" VerticalTextAlignment="Center" TextColor="#a1a1a1" />
                         </Grid>
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:Relapse">
-                            <StackLayout Height="100">
+                            <StackLayout>
                                 <Grid>
                                     <Frame x:Name="EntryItem" Padding="2" Margin="2">
                                         <Grid ColumnDefinitions="*,7,*" ColumnSpacing="5">
                                             <Label Text="{Binding DateAndTime}" Grid.Column="0" FontSize="16" TextColor="#FFD0D0D0" Margin="0" HorizontalOptions="Center" VerticalOptions="Center"/>
                                             <Label Text="|" FontSize="20" Grid.Column="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Start"/>
                                             <Label Text="{Binding Location}" Grid.Column="2" FontSize="16" TextColor="#FFD0D0D0" Margin="0" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                            <Button Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:RelapseDiaryViewModel}}, Path=RelapseSelectedCommand}" CommandParameter="{Binding .}" BorderColor="Transparent" Grid.ColumnSpan="3" BackgroundColor="Transparent" Margin="0" Padding="0"/>
                                         </Grid>
                                     </Frame>
                                 </Grid>
@@ -92,12 +118,12 @@
                 </CollectionView>
                 <CollectionView x:Name="TriggersListView"
                           BackgroundColor="#141414"
+                          SelectionMode="Single" 
                           ItemsSource="{Binding TriggersForUser, Mode=TwoWay}"
                           SelectedItem="{x:Binding SelectedTrigger, Mode=TwoWay}" 
                           IsVisible="{Binding IsTriggers, Mode=TwoWay}"
                           Grid.Row="0"
-                          Grid.RowSpan="4"
-                          >
+                          Grid.RowSpan="4">
                     <CollectionView.Header>
                         <Grid>
                             <Label Grid.Column="1" Text="Triggers:" FontSize="10" FontAttributes="Bold" Padding="2" Margin="0" VerticalTextAlignment="Center" TextColor="#a1a1a1" />
@@ -105,11 +131,12 @@
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:Trigger">
-                            <StackLayout Height="200">
+                            <StackLayout>
                                 <Grid>
                                     <Frame Padding="2" Margin="2">
                                         <Grid>
                                             <Label Text="{Binding Title}" Grid.Column="0" FontSize="16" TextColor="#FFD0D0D0" Margin="0" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                            <Button Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:RelapseDiaryViewModel}}, Path=TriggerSelectedCommand}" CommandParameter="{Binding .}" BorderColor="Transparent" BackgroundColor="Transparent" Margin="0" Padding="0"/>
                                         </Grid>
                                     </Frame>
                                 </Grid>
@@ -119,6 +146,7 @@
                 </CollectionView>
                 <CollectionView x:Name="SymptomsListView"
                           BackgroundColor="#141414"
+                          SelectionMode="Single" 
                           ItemsSource="{Binding SymptomsForUser, Mode=TwoWay}"
                           SelectedItem="{x:Binding SelectedSymptom, Mode=TwoWay}" 
                           IsVisible="{Binding IsSymptoms, Mode=TwoWay}"
@@ -131,11 +159,12 @@
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:Symptom">
-                            <StackLayout Height="200">
+                            <StackLayout>
                                 <Grid>
                                     <Frame Padding="2" Margin="2">
                                         <Grid ColumnSpacing="5">
                                             <Label x:Name="DateAndTime" Text="{Binding Title}" Grid.Column="0" FontSize="16" TextColor="#FFD0D0D0" Margin="0" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                            <Button Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:RelapseDiaryViewModel}}, Path=SymptomSelectedCommand}" CommandParameter="{Binding .}"  BorderColor="Transparent" BackgroundColor="Transparent" Margin="0" Padding="0"/>
                                         </Grid>
                                     </Frame>
                                 </Grid>
@@ -146,13 +175,6 @@
             </Grid>
         </Frame>
 
-        <Frame x:Name="EditEntryFrame" Padding="2" Margin="2" IsVisible="True" HeightRequest="50" WidthRequest="100">
-            <Button x:Name="EditEntry" Text="Edit Entry" Command="{Binding EditEntryCommand}" Padding="1, 1, 6, 1" BackgroundColor="Transparent" />
-        </Frame>
-
-        <Frame x:Name="NewEntryNameFrame" Padding="2" Margin="2">
-            <Entry x:Name="NewEtryLocation" Placeholder="Enter Location Name"/>
-        </Frame>
         <Grid ColumnDefinitions="*,*,*,*,*">
             <Frame x:Name="Notes" Grid.Column="0" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
                 <Button Text="Notes" BackgroundColor="Transparent" Padding="5" Command="{Binding NotesSelectedCommand}" IsEnabled="{Binding IsNotesButton, Mode=TwoWay}"/>
@@ -163,36 +185,50 @@
             <Frame x:Name="Symptoms" Grid.Column="2" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
                 <Button Text="Symptoms" BackgroundColor="Transparent" Padding="5" Command="{Binding SymptomsSelectedCommand}" IsEnabled="{Binding IsSymptomsButton, Mode=TwoWay}"/>
             </Frame>
+            <Frame x:Name="Clear" Grid.Column="2" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
+                <Button x:Name="NewItem" BackgroundColor="Transparent" Padding="5" Text="{Binding SelectedItem}" Command="{Binding AddNew}" IsEnabled="{Binding IsSymptomsButton, Mode=TwoWay}"/>
+            </Frame>
         </Grid>
-        <Frame HeightRequest="275" BorderColor="Transparent">
+        
+        <Frame x:Name="NewEntryNameFrame" Padding="2" Margin="2" IsVisible="{Binding IsNotes}">
+            <Grid ColumnDefinitions="250,*">
+                <Entry x:Name="NewEntryLocation" Text="{Binding SelectedRelapse.Location}" Placeholder="Enter Location Name" Grid.Column="0" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="WhiteSmoke"/>
+                <DatePicker Date="{Binding SelectedRelapse.DateAndTime, Mode=TwoWay}" Grid.Column="1" TextColor="#ffD0D0D0" HorizontalOptions="Center"/>
+            </Grid>
+        </Frame>
+        
+        <Frame BorderColor="Transparent">
             <StackLayout>
-                <Editor x:Name="EntryNoteContentInput" MaxLength="500" HeightRequest="250" Placeholder="Enter note" Text="{Binding EntryNote}" IsVisible="{Binding IsNotes, Mode=TwoWay}"/>
+                <Editor x:Name="EntryNoteContentInput" MaxLength="500" HeightRequest="240" Placeholder="Enter note" Text="{Binding SelectedRelapse.Notes}" IsVisible="{Binding IsNotes, Mode=TwoWay}" TextColor="WhiteSmoke" BackgroundColor="#9354AD"/>
 
-                <Grid IsVisible="{Binding IsTriggers, Mode=TwoWay}" RowDefinitions="*,225">
-                    <Frame Grid.Row="0" Margin="5">
-                        <Entry x:Name="TriggerTitle" Text="{Binding SelectedTrigger.Title}"/>
+                <Grid IsVisible="{Binding IsTriggers, Mode=TwoWay}" RowDefinitions="50,240">
+                    <Frame Grid.Row="0" Padding="0" Margin="0">
+                        <Entry x:Name="TriggerTitle" Text="{Binding SelectedTrigger.Title}" Placeholder="Trigger title" Margin="5"/>
                     </Frame>
                     <Frame Grid.Row="1" Padding="5">
-                        <Editor x:Name="TriggerDescription" Text="{Binding SelectedTrigger.Description}" TextColor="WhiteSmoke" HeightRequest="100"/>
+                        <Editor x:Name="TriggerDescription" Text="{Binding SelectedTrigger.Description}" TextColor="WhiteSmoke" HeightRequest="200" VerticalOptions="StartAndExpand" BackgroundColor="#9354AD"/>
+                    </Frame>
+                </Grid>
+                <Grid IsVisible="{Binding IsSymptoms, Mode=TwoWay}" RowDefinitions="50,240">
+                    <Frame Grid.Row="0" Padding="0" Margin="0">
+                        <Entry x:Name="SymptomTitle" Text="{Binding SelectedSymptom.Title}" Placeholder="Symptom title" Margin="5"/>
+                    </Frame>
+                    <Frame Grid.Row="1" Padding="5">
+                        <Editor x:Name="SymptomDescription" Text="{Binding SelectedSymptom.Description}" TextColor="WhiteSmoke" HeightRequest="200" VerticalOptions="StartAndExpand" BackgroundColor="#9354AD"/>
                     </Frame>
                 </Grid>
             </StackLayout>
-
-
         </Frame>
+        
+        <Frame Margin="3" Padding="3">
+            <Grid ColumnDefinitions="10,*,*,*,10" Padding="0" Margin="0">
+                <Button x:Name="EditNote" Text="Edit" Command="{Binding EditEntryCommand}" Grid.Column="1" Padding="0" Margin="4" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="40" VerticalOptions="End"/>
 
-        <Frame>
-            <Grid ColumnDefinitions="10,*,*,*,*,10" Padding="0" Margin="0">
-                <Button x:Name="CancelNote" Text="Cancel" Command="{Binding CancelCommand}" Grid.Column="1" Padding="0" Margin="8" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="60" VerticalOptions="End"/>
+                <Button x:Name="SaveNote" Text="Save" Command="{Binding SaveEntryCommand}" Grid.Column="2" Padding="0" Margin="4" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="40" VerticalOptions="End"/>
 
-                <Button x:Name="AddNewNote" Text="Add" Command="{Binding AddEntryCommand}" Grid.Column="2" Padding="0" Margin="8" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="60" VerticalOptions="End"/>
-
-                <Button x:Name="SaveNote" Text="Save" Command="{Binding SaveEntryCommand}" Grid.Column="3" Padding="0" Margin="8" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="60" VerticalOptions="End"/>
-
-                <Button x:Name="DeleteNote" Text="Delete" Command="{Binding DeleteEntryCommand}" Grid.Column="4" Padding="0" Margin="8" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="60" VerticalOptions="End"/>
+                <Button x:Name="DeleteNote" Text="Delete" Command="{Binding DeleteEntryCommand}" Grid.Column="3" Padding="0" Margin="4" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="40" VerticalOptions="End"/>
             </Grid>
         </Frame>
-
     </StackLayout>
 
     <!--<VerticalStackLayout>

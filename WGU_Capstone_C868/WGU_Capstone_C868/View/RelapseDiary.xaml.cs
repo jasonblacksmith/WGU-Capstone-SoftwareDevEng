@@ -7,4 +7,9 @@ public partial class RelapseDiary : ContentPage
 		InitializeComponent();
         BindingContext = viewModel;
     }
+
+    private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    {
+
+    }
 }

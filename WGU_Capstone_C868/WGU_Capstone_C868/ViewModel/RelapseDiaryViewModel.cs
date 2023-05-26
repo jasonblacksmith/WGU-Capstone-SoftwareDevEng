@@ -53,6 +53,9 @@ namespace WGU_Capstone_C868.ViewModel
         [ObservableProperty]
         bool isSymptomsButton;
 
+        [ObservableProperty]
+        string selectedItem;
+
         ObservableCollection<Relapse> _relapseDiaryEntries = new ObservableCollection<Relapse>();
         public ObservableCollection<Relapse> RelapseDiaryEntries
         {
@@ -190,15 +193,27 @@ namespace WGU_Capstone_C868.ViewModel
         }
 
         [RelayCommand]
-        private async Task Cancel()
+        private void RelapseSelected(Relapse relapse)
         {
-            await Shell.Current.GoToAsync("Dashboard", true);
+            SelectedRelapse = relapse;
         }
 
         [RelayCommand]
-        private async Task AddEntry()
+        private void TriggerSelected(Model.Trigger trigger)
         {
-            //Open Add Or Edit Page
+            SelectedTrigger = trigger;
+        }
+
+        [RelayCommand]
+        private void SymptomSelected(Symptom symptom)
+        {
+            SelectedSymptom = symptom;
+        }
+
+        [RelayCommand]
+        private async Task Cancel()
+        {
+            await Shell.Current.GoToAsync("//Dashboard", true);
         }
 
         [RelayCommand]
@@ -219,6 +234,24 @@ namespace WGU_Capstone_C868.ViewModel
         private async Task SaveEntry()
         {
 
+        }
+
+        [RelayCommand]
+        private void AddNew()
+        {
+            if (IsNotesButton && SelectedRelapse is null)
+            {
+                
+            }
+            else
+            {
+
+            }
+
+            if (IsTriggersButton && SelectedTrigger is null)
+            {
+
+            }
         }
 
         [RelayCommand]

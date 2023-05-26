@@ -9,7 +9,7 @@ namespace WGU_Capstone_C868.Services.Calls
 {
     internal class RelapseCalls : IRelapseCalls
     {
-        public Relapse relapse;
+        public Relapse relapse = new();
         public ObservableCollection<Relapse> relapses = new();
 
         //Creates and adds new Relapse record to DB
