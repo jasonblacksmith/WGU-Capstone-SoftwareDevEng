@@ -23,6 +23,11 @@ namespace WGU_Capstone_C868.ViewModel
         Model.Trigger newtrigger = new();
         Symptom newSymptom = new();
 
+        int newTriggerCollectionId;
+        int newSymptomCollectionId;
+
+        bool IsEdit;
+
         [ObservableProperty]
         Relapse selectedRelapse = new();
 
@@ -83,7 +88,7 @@ namespace WGU_Capstone_C868.ViewModel
             PageTitle = "Relapse Diary";
             TheUser = ThisUser;
             await Init();
-            SelectedRelapse = RelapseDiaryEntries.FirstOrDefault();
+            SelectedRelapse = RelapseDiaryEntries.FirstOrDefault();//Deffault on load
         }
 
         public async Task Init()
@@ -108,6 +113,11 @@ namespace WGU_Capstone_C868.ViewModel
             IsTriggersButton = true;
             IsSymptomsButton = true;
 
+            newTriggerCollectionId = SelectedRelapse.TriggerCollectionId;
+            newSymptomCollectionId = SelectedRelapse.SymptomCollectionId;
+
+            SelectedItem = "New Entry";
+
             allRelapses = await RelapseCalls.GetRelapsesAsync();
 
             foreach (Relapse r in allRelapses)
@@ -117,31 +127,17 @@ namespace WGU_Capstone_C868.ViewModel
                     RelapseDiaryEntries.Add(r);
                 }
             }
-        }
 
-        private async Task<Model.Trigger> SaveNewTrigger(Model.Trigger trigger)
-        {
-
-            //TODO: Put Save Trigger Logic Here
-
-            await TriggerCalls.AddTriggerAsync(trigger);
-            return trigger;
-        }
-
-        private async Task<Symptom> SaveNewSymptom(Symptom symptom)
-        {
-
-            //TODO: Put Save Trigger Logic Here
-
-            await SymptomCalls.AddSymptomAsync(symptom);
-            return symptom;
-        }
+            if(SelectedRelapse.UserId > 0)
+            {
+                IsEdit = true;
+            }
+        } 
 
         [RelayCommand]
         private async Task TriggersSelected()
         {
             ObservableCollection<Model.Trigger> _triggersAll = new();
-            Relapse relapse = SelectedRelapse;
 
             TriggersForUser.Clear();
             _triggersAll.Clear();
@@ -154,22 +150,28 @@ namespace WGU_Capstone_C868.ViewModel
             IsTriggersButton = false;
             IsSymptomsButton = true;
 
+            SelectedItem = "New Trigger";
+
             _triggersAll = await TriggerCalls.GetTriggersAsync();
 
             foreach (Model.Trigger t in _triggersAll)
             {
-                if(relapse.TriggerCollectionId == t.TriggerCollectionId)
+                if(newTriggerCollectionId == t.TriggerCollectionId)
                 {
                     TriggersForUser.Add(t);
                 }
             }
-        }
 
+            if (SelectedTrigger.TriggerId > 0)
+            {
+                IsEdit = true;
+            }
+        }
+        
         [RelayCommand]
         private async Task SymptomsSelected()
         {
             ObservableCollection<Symptom> _symptomsAll = new();
-            Relapse relapse = SelectedRelapse;
 
             SymptomsForUser.Clear();
             _symptomsAll.Clear();
@@ -182,13 +184,20 @@ namespace WGU_Capstone_C868.ViewModel
             IsTriggersButton = true;
             IsSymptomsButton = false;
 
+            SelectedItem = "New Symptom";
+
             _symptomsAll = await SymptomCalls.GetSymptomsAsync();
             foreach (Symptom s in _symptomsAll)
             {
-                if (relapse.SymptomCollectionId == s.SymptomCollectionId)
+                if (newSymptomCollectionId == s.SymptomCollectionId)
                 {
                     SymptomsForUser.Add(s);
                 }
+            }
+
+            if (SelectedSymptom.SymptomId > 0)
+            {
+                IsEdit = true;
             }
         }
 
@@ -217,40 +226,126 @@ namespace WGU_Capstone_C868.ViewModel
         }
 
         [RelayCommand]
-        private async Task EditEntry()
-        {
-            Relapse relapse = SelectedRelapse;
-            await RelapseCalls.UpdateRelapseAsync(relapse);
-        }
-
-        [RelayCommand]
         private async Task DeleteEntry()
         {
-            Relapse relapse = SelectedRelapse;
-            await RelapseCalls.RemoveRelapseAsync(relapse);                                   
+            if (IsNotes)
+            {
+                Relapse relapse = SelectedRelapse;
+                await RelapseCalls.RemoveRelapseAsync(relapse);//Removes the currently selected Relapse Record
+                await NotesSelected();//Reloads the current dataview
+            }
+
+            if (IsTriggers)
+            {
+                Model.Trigger trigger = SelectedTrigger;
+                await TriggerCalls.RemoveTriggerAsync(trigger);//Removes the currently selected Trigger Record
+                await TriggersSelected();//Reloads the current dataview
+            }
+
+            if (IsSymptoms)
+            {
+                Symptom symptom = SelectedSymptom;
+                await SymptomCalls.RemoveSymptomAsync(symptom);//Removes the currently selected Symptom Record
+                await SymptomsSelected();//Reloads the current dataview
+            }
+                              
         }
 
         [RelayCommand]
         private async Task SaveEntry()
         {
+            if (IsEdit)
+            {
+                //TODO: Test that these reload!
+                if (IsNotes)
+                {
+                    Relapse relapse = SelectedRelapse;
+                    await RelapseCalls.UpdateRelapseAsync(relapse);//Updates the currently selected Relapse record
+                    await NotesSelected();//Reloads the current dataview
+                }
 
+                if (IsTriggers)
+                {
+                    Model.Trigger trigger = SelectedTrigger;
+                    await TriggerCalls.UpdateTriggerAsync(trigger);//Updates the currently selected Trigger record
+                    await TriggersSelected();//Reloads the current dataview
+                }
+
+                if (IsSymptoms)
+                {
+                    Symptom symptom = SelectedSymptom;
+                    await SymptomCalls.UpdateSymptomAsync(symptom);//Updates the currently selected Symptom record
+                    await SymptomsSelected();//Reloads the current dataview
+                }
+            }
+            else
+            {
+                if (IsNotes)
+                {
+                    Relapse relapse = SelectedRelapse;
+                    await RelapseCalls.AddRelapseAsync(relapse);//Adds the new Relapse record
+                    await NotesSelected();//Reloads the current dataview
+                }
+
+                if (IsTriggers)
+                {
+                    Model.Trigger trigger = SelectedTrigger;
+                    await TriggerCalls.AddTriggerAsync(trigger);//Adds the new Trigger record
+                    await TriggersSelected();//Reloads the current dataview
+                }
+
+                if (IsSymptoms)
+                {
+                    Symptom symptom = SelectedSymptom;
+                    await SymptomCalls.AddSymptomAsync(symptom);//Adds the new Symptom record
+                    await SymptomsSelected();//Reloads the current dataview
+                }
+            }
         }
 
         [RelayCommand]
         private void AddNew()
         {
-            if (IsNotesButton && SelectedRelapse is null)
+            IsEdit = false;
+            if (IsNotes)
             {
-                
+                Relapse _newRelapse = new()
+                {
+                    RelapseId = 0,
+                    UserId = SelectedRelapse.UserId,
+                    Location = null,
+                    DateAndTime = DateTime.Now,
+                    Notes = null,
+                    TriggerCollectionId = SelectedRelapse.TriggerCollectionId,
+                    SymptomCollectionId = SelectedRelapse.SymptomCollectionId
+                };
+                SelectedRelapse = _newRelapse;
             }
-            else
-            {
 
+            if (IsTriggers)
+            {
+                Model.Trigger _newTrigger = new()
+                {
+                    TriggerId = 0,
+                    TriggerCollectionId= SelectedTrigger.TriggerCollectionId,
+                    Title = null,
+                    Description = null,
+                    IsNew = true
+                };
+                SelectedTrigger = _newTrigger;
             }
 
-            if (IsTriggersButton && SelectedTrigger is null)
+            if (IsSymptoms)
             {
-
+                Symptom _newSymptom = new()
+                {
+                    SymptomId = 0,
+                    SymptomCollectionId = SelectedSymptom.SymptomCollectionId,
+                    Title = null,
+                    Description = null,
+                    IsNew = true
+                };
+                SelectedSymptom = _newSymptom;
             }
         }
 

@@ -176,8 +176,8 @@
         </Frame>
 
         <Grid ColumnDefinitions="*,*,*,*,*">
-            <Frame x:Name="Notes" Grid.Column="0" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
-                <Button Text="Notes" BackgroundColor="Transparent" Padding="5" Command="{Binding NotesSelectedCommand}" IsEnabled="{Binding IsNotesButton, Mode=TwoWay}"/>
+            <Frame x:Name="Entries" Grid.Column="0" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
+                <Button Text="Entry" BackgroundColor="Transparent" Padding="5" Command="{Binding NotesSelectedCommand}" IsEnabled="{Binding IsNotesButton, Mode=TwoWay}"/>
             </Frame>
             <Frame x:Name="Triggers" Grid.Column="1" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
                 <Button Text="Triggers" BackgroundColor="Transparent" Padding="5" Command="{Binding TriggersSelectedCommand}" IsEnabled="{Binding IsTriggersButton, Mode=TwoWay}"/>
@@ -185,21 +185,21 @@
             <Frame x:Name="Symptoms" Grid.Column="2" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
                 <Button Text="Symptoms" BackgroundColor="Transparent" Padding="5" Command="{Binding SymptomsSelectedCommand}" IsEnabled="{Binding IsSymptomsButton, Mode=TwoWay}"/>
             </Frame>
-            <Frame x:Name="Clear" Grid.Column="2" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
-                <Button x:Name="NewItem" BackgroundColor="Transparent" Padding="5" Text="{Binding SelectedItem}" Command="{Binding AddNew}" IsEnabled="{Binding IsSymptomsButton, Mode=TwoWay}"/>
+            <Frame x:Name="Clear" Grid.Column="4" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
+                <Button x:Name="NewItem" BackgroundColor="Transparent" Padding="5" Text="{Binding SelectedItem}" Command="{Binding AddNewCommand}" />
             </Frame>
         </Grid>
         
         <Frame x:Name="NewEntryNameFrame" Padding="2" Margin="2" IsVisible="{Binding IsNotes}">
             <Grid ColumnDefinitions="250,*">
-                <Entry x:Name="NewEntryLocation" Text="{Binding SelectedRelapse.Location}" Placeholder="Enter Location Name" Grid.Column="0" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="WhiteSmoke"/>
+                <Entry x:Name="NewEntryLocation" Text="{Binding SelectedRelapse.Location, Mode=TwoWay}" Placeholder="Enter Location Name" Grid.Column="0" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="WhiteSmoke"/>
                 <DatePicker Date="{Binding SelectedRelapse.DateAndTime, Mode=TwoWay}" Grid.Column="1" TextColor="#ffD0D0D0" HorizontalOptions="Center"/>
             </Grid>
         </Frame>
         
         <Frame BorderColor="Transparent">
             <StackLayout>
-                <Editor x:Name="EntryNoteContentInput" MaxLength="500" HeightRequest="240" Placeholder="Enter note" Text="{Binding SelectedRelapse.Notes}" IsVisible="{Binding IsNotes, Mode=TwoWay}" TextColor="WhiteSmoke" BackgroundColor="#9354AD"/>
+                <Editor x:Name="EntryNoteContentInput" MaxLength="500" HeightRequest="240" Placeholder="Enter note" Text="{Binding SelectedRelapse.Notes, Mode=TwoWay}" IsVisible="{Binding IsNotes, Mode=TwoWay}" TextColor="WhiteSmoke" BackgroundColor="#9354AD"/>
 
                 <Grid IsVisible="{Binding IsTriggers, Mode=TwoWay}" RowDefinitions="50,240">
                     <Frame Grid.Row="0" Padding="0" Margin="0">
@@ -221,12 +221,10 @@
         </Frame>
         
         <Frame Margin="3" Padding="3">
-            <Grid ColumnDefinitions="10,*,*,*,10" Padding="0" Margin="0">
-                <Button x:Name="EditNote" Text="Edit" Command="{Binding EditEntryCommand}" Grid.Column="1" Padding="0" Margin="4" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="40" VerticalOptions="End"/>
+            <Grid ColumnDefinitions="10,*,*,10" Padding="0" Margin="0">
+                <Button x:Name="SaveNote" Text="Save" Command="{Binding SaveEntryCommand}" Grid.Column="1" Padding="0" Margin="4" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="40" VerticalOptions="End"/>
 
-                <Button x:Name="SaveNote" Text="Save" Command="{Binding SaveEntryCommand}" Grid.Column="2" Padding="0" Margin="4" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="40" VerticalOptions="End"/>
-
-                <Button x:Name="DeleteNote" Text="Delete" Command="{Binding DeleteEntryCommand}" Grid.Column="3" Padding="0" Margin="4" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="40" VerticalOptions="End"/>
+                <Button x:Name="DeleteNote" Text="Delete" Command="{Binding DeleteEntryCommand}" Grid.Column="2" Padding="0" Margin="4" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="40" VerticalOptions="End"/>
             </Grid>
         </Frame>
     </StackLayout>
