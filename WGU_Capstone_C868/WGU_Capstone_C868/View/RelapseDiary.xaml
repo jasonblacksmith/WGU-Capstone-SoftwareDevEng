@@ -193,7 +193,7 @@
         <Frame x:Name="NewEntryNameFrame" Padding="2" Margin="2" IsVisible="{Binding IsNotes}">
             <Grid ColumnDefinitions="250,*">
                 <Entry x:Name="NewEntryLocation" Text="{Binding SelectedRelapse.Location, Mode=TwoWay}" Placeholder="Enter Location Name" Grid.Column="0" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="WhiteSmoke"/>
-                <DatePicker Date="{Binding SelectedRelapse.DateAndTime, Mode=TwoWay}" Grid.Column="1" TextColor="#ffD0D0D0" HorizontalOptions="Center"/>
+                <DatePicker Date="{Binding SelectedRelapse.DateAndTime, Mode=TwoWay}" MaximumDate="{Binding DateTimeNow}" Grid.Column="1" TextColor="#ffD0D0D0" HorizontalOptions="Center"/>
             </Grid>
         </Frame>
         

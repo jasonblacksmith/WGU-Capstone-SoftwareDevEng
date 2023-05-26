@@ -61,6 +61,9 @@ namespace WGU_Capstone_C868.ViewModel
         [ObservableProperty]
         string selectedItem;
 
+        [ObservableProperty]
+        private DateTime dateTimeNow = DateTime.Now;
+
         ObservableCollection<Relapse> _relapseDiaryEntries = new ObservableCollection<Relapse>();
         public ObservableCollection<Relapse> RelapseDiaryEntries
         {
@@ -88,7 +91,6 @@ namespace WGU_Capstone_C868.ViewModel
             PageTitle = "Relapse Diary";
             TheUser = ThisUser;
             await Init();
-            SelectedRelapse = RelapseDiaryEntries.FirstOrDefault();//Deffault on load
         }
 
         public async Task Init()
@@ -113,9 +115,6 @@ namespace WGU_Capstone_C868.ViewModel
             IsTriggersButton = true;
             IsSymptomsButton = true;
 
-            newTriggerCollectionId = SelectedRelapse.TriggerCollectionId;
-            newSymptomCollectionId = SelectedRelapse.SymptomCollectionId;
-
             SelectedItem = "New Entry";
 
             allRelapses = await RelapseCalls.GetRelapsesAsync();
@@ -133,6 +132,10 @@ namespace WGU_Capstone_C868.ViewModel
             {
                 IsEdit = true;
             }
+
+            SelectedRelapse = RelapseDiaryEntries.FirstOrDefault();//Deffault on load
+            newTriggerCollectionId = SelectedRelapse.TriggerCollectionId;
+            newSymptomCollectionId = SelectedRelapse.SymptomCollectionId;
         } 
 
         [RelayCommand]
@@ -168,6 +171,7 @@ namespace WGU_Capstone_C868.ViewModel
             {
                 IsEdit = true;
             }
+            SelectedTrigger = TriggersForUser.FirstOrDefault();
         }
         
         [RelayCommand]
@@ -202,6 +206,7 @@ namespace WGU_Capstone_C868.ViewModel
             {
                 IsEdit = true;
             }
+            SelectedSymptom = SymptomsForUser.FirstOrDefault();
         }
 
         [RelayCommand]
