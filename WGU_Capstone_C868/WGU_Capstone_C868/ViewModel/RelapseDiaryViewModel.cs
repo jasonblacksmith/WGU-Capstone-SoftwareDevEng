@@ -128,7 +128,8 @@ namespace WGU_Capstone_C868.ViewModel
                 }
             }
 
-            if(SelectedRelapse.UserId > 0)
+            //Set Edit Status
+            if (SelectedRelapse.UserId > 0)
             {
                 IsEdit = true;
             }
@@ -162,6 +163,7 @@ namespace WGU_Capstone_C868.ViewModel
                 }
             }
 
+            //Set Edit Status
             if (SelectedTrigger.TriggerId > 0)
             {
                 IsEdit = true;
@@ -195,6 +197,7 @@ namespace WGU_Capstone_C868.ViewModel
                 }
             }
 
+            //Set Edit Status
             if (SelectedSymptom.SymptomId > 0)
             {
                 IsEdit = true;
@@ -233,6 +236,7 @@ namespace WGU_Capstone_C868.ViewModel
                 Relapse relapse = SelectedRelapse;
                 await RelapseCalls.RemoveRelapseAsync(relapse);//Removes the currently selected Relapse Record
                 await NotesSelected();//Reloads the current dataview
+                SelectedRelapse = RelapseDiaryEntries.FirstOrDefault();
             }
 
             if (IsTriggers)
@@ -240,6 +244,7 @@ namespace WGU_Capstone_C868.ViewModel
                 Model.Trigger trigger = SelectedTrigger;
                 await TriggerCalls.RemoveTriggerAsync(trigger);//Removes the currently selected Trigger Record
                 await TriggersSelected();//Reloads the current dataview
+                SelectedTrigger = TriggersForUser.FirstOrDefault();
             }
 
             if (IsSymptoms)
@@ -247,6 +252,7 @@ namespace WGU_Capstone_C868.ViewModel
                 Symptom symptom = SelectedSymptom;
                 await SymptomCalls.RemoveSymptomAsync(symptom);//Removes the currently selected Symptom Record
                 await SymptomsSelected();//Reloads the current dataview
+                SelectedSymptom = SymptomsForUser.FirstOrDefault();//Deffault on load
             }
                               
         }
