@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:services="clr-Namespace.WGU_Capstone_C868.Services"
+             xmlns:model="clr-namespace:WGU_Capstone_C868.Model"
+             xmlns:viewmodel="clr-namespace:WGU_Capstone_C868.ViewModel" 
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="WGU_Capstone_C868.View.MetricsData"
+             x:DataType="viewmodel:MetricsDataViewModel">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding ReloadCommand}"/>
+    </ContentPage.Behaviors>
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" Margin="0">
+            <Grid.Shadow>
+                <Shadow Brush="Black"
+                        Offset="0,20"
+                        Radius="40"
+                        Opacity="0.8"/>
+            </Grid.Shadow>
+            <Label 
+                Text="{Binding Title}"
+                Grid.Column="0"
+                Grid.Row="0"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                FontSize="20" />
+            <Label
+                Text="{Binding PageTitle}"
+                Grid.Column="0"
+                Grid.Row="1"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                FontSize="15" />
+            <Button 
+                x:Name="LogOut" 
+                Text="Log Out" 
+                Grid.ColumnSpan="2" 
+                Grid.RowSpan="2" 
+                HorizontalOptions="Center" 
+                VerticalOptions="Center"
+                Command="{Binding BackToLoginCommand}"/>
+            <Label
+                Text="{Binding TheUser.Name}"
+                Grid.Column="1"
+                Grid.Row="0"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,5,0" />
+            <Label 
+                x:Name="DateTimeHeader"
+                Text="{Binding DateToday}"
+                Grid.Column="1"
+                Grid.Row="1"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Margin="0,0,5,0" />
+        </Grid>
+    </Shell.TitleView>
+    <ScrollView>
+        <VerticalStackLayout>
+            <Grid>
+                <Frame>
+                    <TableView>
+                        
+                    </TableView>
+                </Frame>
+            </Grid>
+            <TableView></TableView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

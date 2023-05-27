@@ -18,7 +18,6 @@ namespace WGU_Capstone_C868.ViewModel
 {
     public partial class ImgOrLabViewModel : LoginPageViewModel
     {
-        //TODO: Look into removing the Critical Objects file.
         public static User ThisUser = new User();
         public static bool Edit = false;
         public static int EditAppointemntId;

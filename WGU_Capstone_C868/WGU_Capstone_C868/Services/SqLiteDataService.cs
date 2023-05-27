@@ -28,7 +28,6 @@ namespace WGU_Capstone_C868.Services
             await Db.CreateTablesAsync<Proceedure, Relapse>();
             await Db.CreateTablesAsync<Symptom, Model.Trigger, User>();
 
-
             Debug.WriteLine("Tables Created");
         }
 
