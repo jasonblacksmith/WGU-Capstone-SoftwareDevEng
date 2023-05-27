@@ -6,7 +6,6 @@ public partial class MainPage : ContentPage
 	{
 		InitializeComponent();
         Task task0 = StartDb();
-		//Task task1 = LoadThisData();
 		BindingContext = viewModel;
 	}
 

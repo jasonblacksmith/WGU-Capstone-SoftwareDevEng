@@ -290,6 +290,15 @@ namespace WGU_Capstone_C868.ViewModel
         #endregion
 
         [RelayCommand]
+        public async Task ToMetricsAndData()
+        {
+            MetricsDataViewModel.ThisUser = TheUser;
+
+            // Load new page
+            await Shell.Current.GoToAsync("//MetricsData", true);
+        }
+
+        [RelayCommand]
         public async Task BackToLogin()
         {
             TheUser = null;

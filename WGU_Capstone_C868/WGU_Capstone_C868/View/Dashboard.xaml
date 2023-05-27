@@ -88,11 +88,14 @@
 
                         <Label x:Name="DaysSinceLastLabel" Grid.Row="1" Text="{Binding DaysSinceLastRelapse}" FontSize="Large" HorizontalOptions="Center" Margin="0,15,0,0" />
 
-                        <Button x:Name="OverlayButtonRelapseDiary" Grid.Row="0" Grid.RowSpan="2" BackgroundColor="Transparent" Padding="0"
-                                Command="{Binding ToRelapseDiaryCommand}"/>
+                        <Button x:Name="OverlayButtonRelapseDiary" Grid.Row="0" Grid.RowSpan="2" BackgroundColor="Transparent" Padding="0" Command="{Binding ToRelapseDiaryCommand}"/>
                     </Grid>
-
                 </Frame>
+
+                <Frame Grid.Row="2" CornerRadius="20" Margin="20" BorderColor="#9340D9" BackgroundColor="#170D21" Padding="0">
+                    <Button x:Name="ToMetricsAndData" Text="Your Metrics and Data" FontSize="30" Command="{Binding ToMetricsAndDataCommand}" Margin="0" Padding="0" TextColor="#E2C3FF" FontAttributes="Bold" CornerRadius="20" BackgroundColor="Transparent" BorderColor="Transparent"/>
+                </Frame>
+
             </Grid>
         </VerticalStackLayout>
     </ScrollView>

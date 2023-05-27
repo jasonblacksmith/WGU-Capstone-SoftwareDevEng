@@ -160,12 +160,5 @@ namespace WGU_Capstone_C868.ViewModel
             }
             else { return false; }
         }
-
-        public IEnumerator GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-
     }
 }
