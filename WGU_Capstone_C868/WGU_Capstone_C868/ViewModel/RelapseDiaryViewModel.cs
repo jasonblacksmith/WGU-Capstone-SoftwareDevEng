@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Handlers.Items;
+using Microsoft.Maui.Graphics;
 using System.Collections;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -14,6 +16,7 @@ namespace WGU_Capstone_C868.ViewModel
     public partial class RelapseDiaryViewModel : LoginPageViewModel
     {
         public static User ThisUser = new User();
+        public static string ThisDaysSinceMessage = "";
 
         RelapseCalls RelapseCalls = new();
         TriggerCalls TriggerCalls = new();
@@ -64,6 +67,9 @@ namespace WGU_Capstone_C868.ViewModel
         [ObservableProperty]
         private DateTime dateTimeNow = DateTime.Now;
 
+        [ObservableProperty]
+        public string daysSinceMessage;
+
         ObservableCollection<Relapse> _relapseDiaryEntries = new ObservableCollection<Relapse>();
         public ObservableCollection<Relapse> RelapseDiaryEntries
         {
@@ -90,6 +96,7 @@ namespace WGU_Capstone_C868.ViewModel
         {
             PageTitle = "Relapse Diary";
             TheUser = ThisUser;
+            DaysSinceMessage = ThisDaysSinceMessage;
             await Init();
         }
 
@@ -118,7 +125,7 @@ namespace WGU_Capstone_C868.ViewModel
             SelectedItem = "New Entry";
 
             allRelapses = await RelapseCalls.GetRelapsesAsync();
-
+            allRelapses.OrderBy(x => x.DateAndTime).ToList();
             foreach (Relapse r in allRelapses)
             {
                 if (r.UserId == UserId)
@@ -267,55 +274,97 @@ namespace WGU_Capstone_C868.ViewModel
         {
             if (IsEdit)
             {
-                //TODO: Test that these reload!
                 if (IsNotes)
                 {
-                    Relapse relapse = SelectedRelapse;
-                    await RelapseCalls.UpdateRelapseAsync(relapse);//Updates the currently selected Relapse record
-                    await NotesSelected();//Reloads the current dataview
+                    if (ValidateRelapse())
+                    {
+                        Relapse relapse = SelectedRelapse;
+                        await RelapseCalls.UpdateRelapseAsync(relapse);//Updates the currently selected Relapse record
+                        await NotesSelected();//Reloads the current dataview
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Missing Inputs?", "Please make sure that there is a location name, date, and notes filled out or selected.", "Ok");
+                    }
+
                 }
 
                 if (IsTriggers)
                 {
-                    Model.Trigger trigger = SelectedTrigger;
-                    await TriggerCalls.UpdateTriggerAsync(trigger);//Updates the currently selected Trigger record
-                    await TriggersSelected();//Reloads the current dataview
+                    if (ValidateTrigger())
+                    {
+                        Model.Trigger trigger = SelectedTrigger;
+                        await TriggerCalls.UpdateTriggerAsync(trigger);//Updates the currently selected Trigger record
+                        await TriggersSelected();//Reloads the current dataview
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Missing Inputs?", "Please make sure that there is a title, and description filled out.", "Ok");
+                    }
                 }
 
                 if (IsSymptoms)
                 {
-                    Symptom symptom = SelectedSymptom;
-                    await SymptomCalls.UpdateSymptomAsync(symptom);//Updates the currently selected Symptom record
-                    await SymptomsSelected();//Reloads the current dataview
+                    if (ValidateSymptom())
+                    {
+                        Symptom symptom = SelectedSymptom;
+                        await SymptomCalls.UpdateSymptomAsync(symptom);//Updates the currently selected Symptom record
+                        await SymptomsSelected();//Reloads the current dataview
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Missing Inputs?", "Please make sure that there is a title, and description filled out.", "Ok");
+                    }
                 }
             }
             else
             {
                 if (IsNotes)
                 {
-                    Relapse relapse = SelectedRelapse;
-                    await RelapseCalls.AddRelapseAsync(relapse);//Adds the new Relapse record
-                    await NotesSelected();//Reloads the current dataview
+                    if (ValidateRelapse())
+                    {
+                        Relapse relapse = SelectedRelapse;
+                        await RelapseCalls.AddRelapseAsync(relapse);//Adds the new Relapse record
+                        await NotesSelected();//Reloads the current dataview
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Missing Inputs?", "Please make sure that there is a location name, date, and notes filled out or selected.", "Ok");
+                    }
                 }
 
                 if (IsTriggers)
                 {
-                    Model.Trigger trigger = SelectedTrigger;
-                    await TriggerCalls.AddTriggerAsync(trigger);//Adds the new Trigger record
-                    await TriggersSelected();//Reloads the current dataview
+                    if (ValidateTrigger())
+                    {
+                        Model.Trigger trigger = SelectedTrigger;
+                        await TriggerCalls.AddTriggerAsync(trigger);//Adds the new Trigger record
+                        await TriggersSelected();//Reloads the current dataview
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Missing Inputs?", "Please make sure that there is a title, and description filled out.", "Ok");
+                    }
                 }
 
                 if (IsSymptoms)
                 {
-                    Symptom symptom = SelectedSymptom;
-                    await SymptomCalls.AddSymptomAsync(symptom);//Adds the new Symptom record
-                    await SymptomsSelected();//Reloads the current dataview
+                    if (ValidateSymptom())
+                    {
+                        Symptom symptom = SelectedSymptom;
+                        await SymptomCalls.AddSymptomAsync(symptom);//Adds the new Symptom record
+                        await SymptomsSelected();//Reloads the current dataview
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Missing Inputs?", "Please make sure that there is a title, and description filled out.", "Ok");
+                    }
                 }
             }
         }
 
         [RelayCommand]
-        private void AddNew()
+        private void AddANew()
         {
             IsEdit = false;
             if (IsNotes)
@@ -368,6 +417,59 @@ namespace WGU_Capstone_C868.ViewModel
 
             // Load new page
             await Shell.Current.GoToAsync("//MainPage", false);
+        }
+
+        public bool ValidateRelapse() //Bind on Unfocused event
+        {
+            if(SelectedRelapse != null && SelectedRelapse.Location != null && SelectedRelapse.Notes != null)
+            {
+                SelectedRelapse.Location.Trim();
+                SelectedRelapse.Notes.Trim();
+                if(SelectedRelapse.Location != null 
+                    && SelectedRelapse.Location != "" 
+                    && SelectedRelapse.Notes != null 
+                    && SelectedRelapse.Notes != "")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool ValidateTrigger()
+        {
+            if(SelectedTrigger != null && SelectedTrigger.Title != null && SelectedTrigger.Description != null)
+            {
+                SelectedTrigger.Title.Trim();
+                SelectedTrigger.Description.Trim();
+
+                if (SelectedTrigger.Title != null 
+                    && SelectedTrigger.Title != "" 
+                    && SelectedTrigger.Description != null 
+                    && SelectedTrigger.Description != "")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool ValidateSymptom()
+        {
+            if (SelectedSymptom != null && SelectedSymptom.Title != null && SelectedSymptom.Description != null)
+            {
+                SelectedSymptom.Title.Trim();
+                SelectedSymptom.Description.Trim();
+
+                if (SelectedSymptom.Title != null
+                    && SelectedSymptom.Title != ""
+                    && SelectedSymptom.Description != null
+                    && SelectedSymptom.Description != "")
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

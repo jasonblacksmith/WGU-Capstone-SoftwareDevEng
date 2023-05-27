@@ -23,4 +23,8 @@
         Title="My MS Tracker MS Diary"
         ContentTemplate="{DataTemplate view:RelapseDiary}"
         Route="RelapseDiary"/>
+    <ShellContent 
+        Title="My MS Tracker Metrics and Data"
+        ContentTemplate="{DataTemplate view:MetricsData}"
+        Route="MetricsData"/>
 </Shell>

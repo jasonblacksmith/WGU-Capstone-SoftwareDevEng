@@ -13,20 +13,17 @@
             Command="{Binding ReloadCommand}"/>
     </ContentPage.Behaviors>
     <ContentPage.Resources>
-        <Style TargetType="Button">
-            <Setter Property="VisualStateManager.VisualStateGroups">
-                <VisualStateGroupList>
-                    <VisualStateGroup x:Name="CommonStates">
-                        <VisualState x:Name="Normal" />
-                        <VisualState x:Name="Selected">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor"
-                                        Value="MediumPurple" />
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateGroupList>
-            </Setter>
+        <Style x:Key="InvalidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Red" />
+        </Style>
+        <Style x:Key="ValidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Aqua" />
+        </Style>
+        <Style x:Key="InvalidEditorStyle" TargetType="Editor">
+            <Setter Property="TextColor" Value="Red" />
+        </Style>
+        <Style x:Key="ValidEditorStyle" TargetType="Editor">
+            <Setter Property="TextColor" Value="Aqua" />
         </Style>
     </ContentPage.Resources>
     <Shell.TitleView>
@@ -78,7 +75,7 @@
     </Shell.TitleView>
     <StackLayout>
         <Grid ColumnDefinitions="*,*,*">
-            <Label Text="Days since last Relapse:000" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Padding="5"/>
+            <Label Text="{Binding DaysSinceMessage}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Padding="5"/>
             <Frame x:Name="CancelEntryFrame" Grid.Column="2" Padding="2" Margin="2" IsVisible="True" HeightRequest="50" WidthRequest="100" HorizontalOptions="End">
                 <Button x:Name="CancelEntry" Text="Cancel" Command="{Binding CancelCommand}" Padding="1, 1, 6, 1" BackgroundColor="Transparent" HorizontalOptions="Center"/>
             </Frame>
@@ -186,40 +183,95 @@
                 <Button Text="Symptoms" BackgroundColor="Transparent" Padding="5" Command="{Binding SymptomsSelectedCommand}" IsEnabled="{Binding IsSymptomsButton, Mode=TwoWay}"/>
             </Frame>
             <Frame x:Name="Clear" Grid.Column="4" Padding="0" Margin="0" IsVisible="True" BorderColor="Transparent">
-                <Button x:Name="NewItem" BackgroundColor="Transparent" Padding="5" Text="{Binding SelectedItem}" Command="{Binding AddNewCommand}" />
+                <Button x:Name="NewItem" BackgroundColor="Transparent" Padding="5" Text="{Binding SelectedItem}" Command="{Binding AddANewCommand}" />
             </Frame>
         </Grid>
-        
+
         <Frame x:Name="NewEntryNameFrame" Padding="2" Margin="2" IsVisible="{Binding IsNotes}">
             <Grid ColumnDefinitions="250,*">
-                <Entry x:Name="NewEntryLocation" Text="{Binding SelectedRelapse.Location, Mode=TwoWay}" Placeholder="Enter Location Name" Grid.Column="0" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="WhiteSmoke"/>
-                <DatePicker Date="{Binding SelectedRelapse.DateAndTime, Mode=TwoWay}" MaximumDate="{Binding DateTimeNow}" Grid.Column="1" TextColor="#ffD0D0D0" HorizontalOptions="Center"/>
+                <Entry x:Name="NewEntryLocation" Text="{Binding SelectedRelapse.Location, Mode=TwoWay}" 
+                     Placeholder="Enter Location Name" Grid.Column="0" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="WhiteSmoke">
+                    <Entry.Behaviors>
+                        <toolkit:TextValidationBehavior 
+                            InvalidStyle="{StaticResource InvalidEntryStyle}"  
+                            ValidStyle="{StaticResource ValidEntryStyle}"
+                            Flags="ValidateOnUnfocusing"
+                            MinimumLength="2"
+                            MaximumLength="20" />
+                    </Entry.Behaviors>
+                </Entry>
+                <DatePicker Date="{Binding SelectedRelapse.DateAndTime, Mode=TwoWay}" MaximumDate="{Binding DateTimeNow}" MinimumDate="01/01/2010" Grid.Column="1" TextColor="#ffD0D0D0" HorizontalOptions="Center"/>
             </Grid>
         </Frame>
-        
+
         <Frame BorderColor="Transparent">
             <StackLayout>
-                <Editor x:Name="EntryNoteContentInput" MaxLength="500" HeightRequest="240" Placeholder="Enter note" Text="{Binding SelectedRelapse.Notes, Mode=TwoWay}" IsVisible="{Binding IsNotes, Mode=TwoWay}" TextColor="WhiteSmoke" BackgroundColor="#9354AD"/>
+                <Editor x:Name="EntryNoteContentInput" MaxLength="500" HeightRequest="240" Placeholder="Enter note" Text="{Binding SelectedRelapse.Notes, Mode=TwoWay}" IsVisible="{Binding IsNotes, Mode=TwoWay}" TextColor="WhiteSmoke" BackgroundColor="#9354AD">
+                    <Editor.Behaviors>
+                        <toolkit:TextValidationBehavior 
+                            InvalidStyle="{StaticResource InvalidEditorStyle}"  
+                            ValidStyle="{StaticResource ValidEditorStyle}"
+                            Flags="ValidateOnUnfocusing"
+                            MinimumLength="2"
+                            MaximumLength="500" />
+                    </Editor.Behaviors>
+                </Editor>
 
                 <Grid IsVisible="{Binding IsTriggers, Mode=TwoWay}" RowDefinitions="50,240">
                     <Frame Grid.Row="0" Padding="0" Margin="0">
-                        <Entry x:Name="TriggerTitle" Text="{Binding SelectedTrigger.Title}" Placeholder="Trigger title" Margin="5"/>
+                        <Entry x:Name="TriggerTitle" Text="{Binding SelectedTrigger.Title, Mode=TwoWay}" Placeholder="Trigger title" Margin="5">
+                            <Entry.Behaviors>
+                                <toolkit:TextValidationBehavior 
+                                    InvalidStyle="{StaticResource InvalidEntryStyle}"  
+                                    ValidStyle="{StaticResource ValidEntryStyle}"
+                                    Flags="ValidateOnUnfocusing"
+                                    MinimumLength="2"
+                                    MaximumLength="20" />
+                            </Entry.Behaviors>
+                        </Entry>
                     </Frame>
                     <Frame Grid.Row="1" Padding="5">
-                        <Editor x:Name="TriggerDescription" Text="{Binding SelectedTrigger.Description}" TextColor="WhiteSmoke" HeightRequest="200" VerticalOptions="StartAndExpand" BackgroundColor="#9354AD"/>
+                        <Editor x:Name="TriggerDescription" Text="{Binding SelectedTrigger.Description, Mode=TwoWay}" TextColor="WhiteSmoke" HeightRequest="200" VerticalOptions="StartAndExpand" BackgroundColor="#9354AD">
+                            <Editor.Behaviors>
+                                <toolkit:TextValidationBehavior 
+                                    InvalidStyle="{StaticResource InvalidEditorStyle}"  
+                                    ValidStyle="{StaticResource ValidEditorStyle}"
+                                    Flags="ValidateOnUnfocusing"
+                                    MinimumLength="2"
+                                    MaximumLength="500" />
+                            </Editor.Behaviors>
+                        </Editor>
                     </Frame>
                 </Grid>
                 <Grid IsVisible="{Binding IsSymptoms, Mode=TwoWay}" RowDefinitions="50,240">
                     <Frame Grid.Row="0" Padding="0" Margin="0">
-                        <Entry x:Name="SymptomTitle" Text="{Binding SelectedSymptom.Title}" Placeholder="Symptom title" Margin="5"/>
+                        <Entry x:Name="SymptomTitle" Text="{Binding SelectedSymptom.Title, Mode=TwoWay}" Placeholder="Symptom title" Margin="5" >
+                            <Entry.Behaviors>
+                                <toolkit:TextValidationBehavior 
+									InvalidStyle="{StaticResource InvalidEntryStyle}"  
+									ValidStyle="{StaticResource ValidEntryStyle}"
+									Flags="ValidateOnUnfocusing"
+									MinimumLength="1"
+									MaximumLength="20" />
+                            </Entry.Behaviors>
+                        </Entry>
                     </Frame>
                     <Frame Grid.Row="1" Padding="5">
-                        <Editor x:Name="SymptomDescription" Text="{Binding SelectedSymptom.Description}" TextColor="WhiteSmoke" HeightRequest="200" VerticalOptions="StartAndExpand" BackgroundColor="#9354AD"/>
+                        <Editor x:Name="SymptomDescription" Text="{Binding SelectedSymptom.Description, Mode=TwoWay}" TextColor="WhiteSmoke" HeightRequest="200" VerticalOptions="StartAndExpand" BackgroundColor="#9354AD">
+                            <Editor.Behaviors>
+                                <toolkit:TextValidationBehavior 
+                                    InvalidStyle="{StaticResource InvalidEditorStyle}"  
+                                    ValidStyle="{StaticResource ValidEditorStyle}"
+                                    Flags="ValidateOnUnfocusing"
+                                    MinimumLength="2"
+                                    MaximumLength="500" />
+                            </Editor.Behaviors>
+                        </Editor>
                     </Frame>
                 </Grid>
             </StackLayout>
         </Frame>
-        
+
         <Frame Margin="3" Padding="3">
             <Grid ColumnDefinitions="10,*,*,10" Padding="0" Margin="0">
                 <Button x:Name="SaveNote" Text="Save" Command="{Binding SaveEntryCommand}" Grid.Column="1" Padding="0" Margin="4" BorderColor="DarkMagenta" BorderWidth="2" HeightRequest="40" VerticalOptions="End"/>
@@ -228,85 +280,4 @@
             </Grid>
         </Frame>
     </StackLayout>
-
-    <!--<VerticalStackLayout>
-        <Button Text="Add Entry" Command="{Binding AddEntryCommand}" BorderColor="#9340D9" BorderWidth="1" Margin="5,5,5,0"/>
-        <Frame Margin="5" Padding="10">
-            <Grid x:Name="CollectionViewAreaOfDiaryEntries">
-                <CollectionView ItemsSource="{Binding RelapseDiaryEntries}" Margin="5" Grid.Row="0" VerticalScrollBarVisibility="Default">
-                    <CollectionView.Header>
-                        <StackLayout>
-                            <Label Text="Entries:" Grid.Row="0" Margin="5,0,0,10" Padding="0" FontSize="20" FontAttributes="Bold"/>
-                        </StackLayout>
-                    </CollectionView.Header>
-                    <CollectionView.EmptyView>
-                        <Grid RowDefinitions="*,*">
-                            <Label Text="Add a Relapse Diary Entry to get started!"/>
-                        </Grid>
-                    </CollectionView.EmptyView>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="viewmodel:RelapseDiaryViewModel">
-                            <ContentView Padding="0" Margin="0">
-                                <Frame Margin="0" Padding="0,10">
-                                    <toolkit:Expander>
-                                        <toolkit:Expander.Header>
-                                            <Grid ColumnDefinitions="*,10,*" Margin="0" Padding="0" x:DataType="model:Relapse" >
-                                                <Label Text="{Binding DateAndTime}" Grid.Column="0" Grid.Row="0" HorizontalOptions="End" VerticalOptions="Center" Margin="5" Padding="0" FontSize="16"/>
-                                                <Label Text="|" FontSize="Title" Grid.Column="1" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" Padding="0,0,0,5" Margin="0" />
-                                                <Label  Text="{Binding Location}" Grid.Column="2" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" Margin="5" Padding="0" FontSize="16"/>
-                                            </Grid>
-                                        </toolkit:Expander.Header>
-                                        <StackLayout HeightRequest="300" x:DataType="{x:Null}">
-                                            <Frame Padding="0" Margin="5" BackgroundColor="Black">
-                                                <StackLayout x:DataType="viewmodel:RelapseDiaryViewModel" BindableLayout.ItemsSource="{Binding TriggersForUser}" HeightRequest="135" Background="black" Margin="0" Padding="0">
-                                                    <BindableLayout.ItemTemplate>
-                                                        <DataTemplate x:DataType="model:Trigger">
-                                                            <Grid x:Name="Triggers" Margin="5" RowDefinitions="*,*" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Padding="0" BackgroundColor="Red">
-                                                                <Label Text="Triggers:" TextColor="AliceBlue" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Margin="0" Padding="0" Grid.Row="0"/>
-                                                                <Frame Grid.Row="0" Margin="0" Padding="0" BackgroundColor="Pink">
-                                                                    <Grid RowDefinitions="*,*">
-                                                                        <toolkit:Expander>
-                                                                            <toolkit:Expander.Header>
-                                                                                <Label Text="{Binding Title}" Grid.Row="0"/>
-                                                                            </toolkit:Expander.Header>
-                                                                            <Label Text="{Binding Description}" Grid.Row="1"/>
-                                                                        </toolkit:Expander>
-                                                                    </Grid>
-                                                                </Frame>
-                                                            </Grid>
-                                                        </DataTemplate>
-                                                    </BindableLayout.ItemTemplate>
-                                                </StackLayout>
-                                            </Frame>
-                                            <Frame Padding="0" Margin="5" BackgroundColor="Black">
-                                                <StackLayout BindableLayout.ItemsSource="{Binding SymptomsForUser}" HeightRequest="135" Background="black" Margin="3">
-                                                    <BindableLayout.ItemTemplate>
-                                                        <DataTemplate x:DataType="model:Symptom">
-                                                            <Grid x:Name="Symptoms" Margin="5" RowDefinitions="*,*">
-                                                                <Label Text="Symptoms:" Grid.Row="0" TextColor="AliceBlue"/>
-                                                                <Frame BorderColor="White" Grid.Row="1">
-                                                                    <Grid RowDefinitions="*,*">
-                                                                        <toolkit:Expander>
-                                                                            <toolkit:Expander.Header>
-                                                                                <Label Text="{Binding Title}" Grid.Row="0" TextColor="White"/>
-                                                                            </toolkit:Expander.Header>
-                                                                            <Label Text="{Binding Description}" Grid.Row="1" TextColor="White"/>
-                                                                        </toolkit:Expander>
-                                                                    </Grid>
-                                                                </Frame>
-                                                            </Grid>
-                                                        </DataTemplate>
-                                                    </BindableLayout.ItemTemplate>
-                                                </StackLayout>
-                                            </Frame>
-                                        </StackLayout>
-                                    </toolkit:Expander>
-                                </Frame>
-                            </ContentView>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </Grid>
-        </Frame>
-    </VerticalStackLayout>-->
 </ContentPage>

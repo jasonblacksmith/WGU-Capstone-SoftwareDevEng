@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Maui.Platform;
 using WGU_Capstone_C868.Services.Calls;
 
 namespace WGU_Capstone_C868.ViewModel
@@ -38,6 +39,9 @@ namespace WGU_Capstone_C868.ViewModel
         [ObservableProperty]
         internal bool yesAppointment;
 
+        [ObservableProperty]
+        internal string daysSinceLastRelapse;
+
         internal string mapsLocation;
 
         #endregion
@@ -61,7 +65,6 @@ namespace WGU_Capstone_C868.ViewModel
             await Init();
         }
 
-        //TODO: Dashboard Page
         public async Task Init()
         {
             PageTitle = "Dashboard";
@@ -126,6 +129,8 @@ namespace WGU_Capstone_C868.ViewModel
             }
 
             RefreshView refresh = new();
+
+            DaysSinceLastRelapse = await DaysSinceLastRelapseLogic();
         }
         #endregion
 
@@ -133,22 +138,42 @@ namespace WGU_Capstone_C868.ViewModel
         public static Relapse ThisRelapse = new();
 
         private static RelapseCalls RelapseCalls = new RelapseCalls();
-        //TODO: Relapse Diary Card
-        //TODO: Link to Relapse Diary Page
+
         [RelayCommand]
         public async Task ToRelapseDiary()
         {
             RelapseDiaryViewModel.ThisUser = TheUser;
+            RelapseDiaryViewModel.ThisDaysSinceMessage = DaysSinceLastRelapse;
             await Shell.Current.GoToAsync("//RelapseDiary", true);
         }
-        //TODO: Counter of days since last active relapse
-        #endregion
 
-        #region Variables and Classes for Dr Visit Notes
-
-        //TODO: Notes/Questions Card
-        //TODO: Link to Notes and Questions Page
-        //TODO: Link to Last visit | Next visit
+        public async Task<string> DaysSinceLastRelapseLogic()
+        {
+            ObservableCollection<Relapse> relapseRecords = new();
+            try
+            {
+                relapseRecords = await RelapseCalls.GetRelapsesAsync();
+                List<DateTime> days = new List<DateTime>();
+                foreach (Relapse r in relapseRecords)
+                {
+                    if(TheUser.UserId == r.UserId)
+                    {
+                        days.Add(r.DateAndTime);
+                    }
+                }
+                DateTime MaxDateTime = days.Max<DateTime>();
+                TimeSpan timeSpan = DateTime.Today.Subtract(MaxDateTime);
+                int daysSince = timeSpan.Days;
+                string DaysSinceMessage = $"Days since last relapse: {daysSince}";
+                return DaysSinceMessage;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
+                throw;
+            }
+        }
 
         #endregion
 
