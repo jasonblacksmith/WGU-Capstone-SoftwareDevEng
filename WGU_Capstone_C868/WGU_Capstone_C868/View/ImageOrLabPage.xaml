@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:services="clr-Namespace.WGU_Capstone_C868.Services"
+             xmlns:model="clr-namespace:WGU_Capstone_C868.Model"
+             xmlns:viewmodel="clr-namespace:WGU_Capstone_C868.ViewModel" 
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="WGU_Capstone_C868.View.ImageOrLabPage"
+             x:DataType="viewmodel:ImgOrLabViewModel">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding ReloadCommand}"/>
+    </ContentPage.Behaviors>
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" Margin="0">
+            <Grid.Shadow>
+                <Shadow Brush="Black"
+                        Offset="0,20"
+                        Radius="40"
+                        Opacity="0.8"/>
+            </Grid.Shadow>
+            <Label 
+                Text="{Binding Title}"
+                Grid.Column="0"
+                Grid.Row="0"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                FontSize="20" />
+            <Label
+                Text="{Binding PageTitle}"
+                Grid.Column="0"
+                Grid.Row="1"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                FontSize="15" />
+            <Button 
+                x:Name="LogOut" 
+                Text="Log Out" 
+                Grid.ColumnSpan="2" 
+                Grid.RowSpan="2" 
+                HorizontalOptions="Center" 
+                VerticalOptions="Center"
+                Command="{Binding BackToLoginCommand}"/>
+            <Label
+                Text="{Binding TheUser.Name}"
+                Grid.Column="1"
+                Grid.Row="0"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,5,0" />
+            <Label 
+                x:Name="DateTimeHeader"
+                Text="{Binding DateToday}"
+                Grid.Column="1"
+                Grid.Row="1"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Margin="0,0,5,0" />
+        </Grid>
+    </Shell.TitleView>
+    <ScrollView>
+        <VerticalStackLayout>
+            <Frame Margin="5" Padding="5">
+                <StackLayout>
+                    <Label Text="Add or Edit Imaging/Lab Appointment" Margin="0,0,0,5"/>
+                    <Grid ColumnDefinitions="*,*,*,*">
+                        <Frame x:Name="Proceedure" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Start" Margin="0,0,0,2" Padding="10,0" BackgroundColor="#FF6D437B">
+                            <Grid ColumnDefinitions="45,*" Margin="0" Padding="0" ColumnSpacing="5">
+                                <Label Grid.Column="0" Text="Select:" VerticalTextAlignment="Center" HorizontalTextAlignment="End"/>
+                                <Picker x:Name="ProceedureSelect" Title="Proceedure"  Grid.Column="1" Margin="0" VerticalTextAlignment="Center" TextColor="GhostWhite" BackgroundColor="Transparent" SelectedIndex="{Binding SelectedProceedure, Mode=TwoWay}" ItemsSource="{Binding Proceedures, Mode=TwoWay}" ItemDisplayBinding="{Binding Title}">
+                                </Picker>
+                            </Grid>
+                        </Frame>
+                        <Button x:Name="CancelButton" Grid.Column="3" Text="Cancel" Margin="2" Padding="10,2" MaximumHeightRequest="40" HorizontalOptions="End" VerticalOptions="Center" Command="{Binding CancelCommand}"/>
+
+                    </Grid>
+
+                    <Grid ColumnDefinitions="105,*" Margin="0" Padding="0" ColumnSpacing="5">
+                        <Label Text="Location Name:" Grid.Column="0" Margin="0,12,0,0" Padding="0" VerticalTextAlignment="Start" HorizontalOptions="End"/>
+                        <Frame Grid.Column="1" Margin="2" Padding="2,0" BackgroundColor="#FF6D437B">
+                            <Entry Text="{Binding LocationName}" Placeholder="location name" IsSpellCheckEnabled="False"/>
+                        </Frame>
+                    </Grid>
+                    <Frame Margin="2" Padding="5">
+                        <StackLayout>
+                            <Grid ColumnDefinitions="115,*" Margin="0" Padding="0" ColumnSpacing="5">
+                                <Label Text="Phone:" Grid.Column="0" Margin="0,12,0,0" Padding="0" VerticalTextAlignment="Start" HorizontalOptions="End"/>
+                                <Frame  Grid.Column="1" Margin="2" Padding="0">
+                                    <Entry Text="{Binding PhoneNum}" Placeholder="phone#" IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B"/>
+                                </Frame>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="115,*" Margin="0" Padding="0" ColumnSpacing="5">
+                                <Label Text="Street Address:" Grid.Column="0" Margin="0,12,0,0" Padding="0" VerticalTextAlignment="Start" HorizontalOptions="End"/>
+                                <Frame Grid.Column="1" Margin="2" Padding="0">
+                                    <Entry Text="{Binding StreetAddress}" Grid.Column="1" Placeholder="street address" IsSpellCheckEnabled="False" Margin="0" VerticalOptions="End" BackgroundColor="#FF6D437B"/>
+                                </Frame>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="115,*" Margin="0" Padding="0" ColumnSpacing="5">
+                                <Label Text="Suite or Building:" Grid.Column="0" Margin="0,12,0,0" Padding="0" VerticalTextAlignment="Start" HorizontalOptions="End"/>
+                                <Frame Grid.Column="1" Margin="2" Padding="0">
+                                    <Entry Text="{Binding SuiteOrBuilding}" Grid.Column="1" Placeholder="suite or building" IsSpellCheckEnabled="False" Margin="0" BackgroundColor="#FF6D437B"/>
+                                </Frame>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="115,*" Margin="0" Padding="0" ColumnSpacing="5">
+                                <Label Text="City:" Grid.Column="0" Margin="0,12,0,0" Padding="0" VerticalTextAlignment="Start" HorizontalOptions="End"/>
+                                <Frame Grid.Column="1" Margin="2" Padding="0">
+                                    <Entry Text="{Binding City}" Grid.Column="1" Placeholder="city" IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B"/>
+                                </Frame>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="115,*" Margin="0" Padding="0" ColumnSpacing="5">
+                                <Label Text="Zip Code:" Grid.Column="0" Margin="0,12,0,0" Padding="0" VerticalTextAlignment="Start" HorizontalOptions="End"/>
+                                <Frame  Grid.Column="1" Margin="2" Padding="0">
+                                    <Entry Text="{Binding ZipCode}" Placeholder="zip code" IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B"/>
+                                </Frame>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="115,*" Margin="0" Padding="0" ColumnSpacing="5">
+                                <Label Text="State:" Grid.Column="0" Margin="0,12,0,0" Padding="0" VerticalTextAlignment="Start" HorizontalOptions="End"/>
+                                <Frame  Grid.Column="1" Margin="2" Padding="0">
+                                    <Entry Text="{Binding State}" Placeholder="state" IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B"/>
+                                </Frame>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="115,*" Margin="0" Padding="0" ColumnSpacing="5">
+                                <Label Text="Country:" Grid.Column="0" Margin="0,12,0,0" Padding="0" VerticalTextAlignment="Start" HorizontalOptions="End"/>
+                                <Frame  Grid.Column="1" Margin="2" Padding="0">
+                                    <Entry Text="{Binding Country}" Placeholder="country" IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B"/>
+                                </Frame>
+                            </Grid>
+
+                            <Frame Margin="15,2" Padding="0" BackgroundColor="#875993" BorderColor="Transparent">
+                                <StackLayout Margin="0" Padding="0">
+                                    <Grid ColumnDefinitions="103,*" RowDefinitions="*,*" Margin="0,0" Padding="0">
+                                        <Label Text="Latitude:" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="End" Margin="5,0"/>
+                                        <Frame Grid.Column="1" Margin="2" Padding="0" HorizontalOptions="Start" WidthRequest="190" BackgroundColor="#FF6D437B" BorderColor="Transparent">
+                                            <Entry Text="{Binding InputLatitude, Mode=TwoWay}"  Margin="0" Placeholder="000.0000"  IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B" HeightRequest="35" IsEnabled="False"/>
+                                        </Frame>
+
+                                        <Label Text="Longitude:" Grid.Column="0" Grid.Row="1" VerticalOptions="Center" HorizontalOptions="End" Margin="5,0"/>
+                                        <Frame Grid.Column="1" Grid.Row="1" Margin="2" Padding="0" HorizontalOptions="Start" WidthRequest="190" BackgroundColor="#FF6D437B" BorderColor="Transparent">
+                                            <Entry Text="{Binding InputLongitude, Mode=TwoWay}" Margin="0" Placeholder="000.0000"  IsSpellCheckEnabled="False" BackgroundColor="#FF6D437B" HeightRequest="35" IsEnabled="False"/>
+                                        </Frame>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,*">
+                                        <Label Text="For Google Maps" Margin="5,5,5,0" VerticalOptions="Center"/>
+                                        <Button x:Name="GetGeoOfAddress" Text="Get Location Coordinates" Grid.Column="1" WidthRequest="200" HeightRequest="30" Padding="2" Margin="5" HorizontalOptions="End" IsEnabled="{Binding AddressValid}" Command="{Binding GetCoordinatesCommand}"/>
+                                    </Grid>
+
+                                </StackLayout>
+                            </Frame>
+                        </StackLayout>
+                    </Frame>
+                    <Frame Margin="2" Padding="5">
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" RowSpacing="1" ColumnSpacing="1">
+                            <Label Text="Appointemnt Time:" Margin="0" Padding="0"/>
+                            <Frame Grid.Column="0" Grid.Row="1" Margin="2" Padding="0" HeightRequest="40" VerticalOptions="End" BackgroundColor="#FF6D437B" BorderColor="Transparent">
+                                <DatePicker Date="{Binding DateAppointment}" MinimumDate="{Binding DateValidMin}" Margin="0" HorizontalOptions="Center" BackgroundColor="#FF6D437B" TextColor="#E2C3FF" HeightRequest="35"></DatePicker>
+                            </Frame>
+                            <Frame Grid.Column="1" Grid.Row="1" Margin="2" Padding="0" HeightRequest="40" VerticalOptions="End" BackgroundColor="#FF6D437B" BorderColor="Transparent">
+                                <TimePicker Time="{Binding TimeAppointment}" Margin="0" HorizontalOptions="Center" BackgroundColor="#FF6D437B" TextColor="#E2C3FF" HeightRequest="35"></TimePicker>
+                            </Frame>
+
+                        </Grid>
+                    </Frame>
+                    <Frame Margin="2" Padding="5">
+                        <StackLayout>
+                            <Label Text="Pre-Appointment Notes:" Margin="2" />
+                            <Frame Margin="2" Padding="2" BackgroundColor="#FF6D437B" HeightRequest="60">
+                                <Editor Text="{Binding NoteAppointment}" Placeholder="Add Notes" TextColor="#E2C3FF" />
+                            </Frame>
+                        </StackLayout>
+                    </Frame>
+                    <Grid ColumnDefinitions="*,*">
+                        <Button x:Name="DeleteButton" Grid.Column="0" Text="Delete" Margin="2" Padding="10,2" MaximumHeightRequest="40" HorizontalOptions="Center" VerticalOptions="Center" Command="{Binding DeleteCommand}" IsVisible="{Binding IsEdit}"/>
+                        <Button x:Name="UpdateOrSave" Text="{Binding UpdateOrSave}" Grid.Column="1" Margin="2" Padding="10,2" MaximumHeightRequest="40" HorizontalOptions="Center" VerticalOptions="Center" Command="{Binding SaveCommand}"/>
+                    </Grid>
+
+                </StackLayout>
+
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

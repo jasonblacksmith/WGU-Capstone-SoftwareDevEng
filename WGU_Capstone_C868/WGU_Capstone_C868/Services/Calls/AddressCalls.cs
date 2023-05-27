@@ -13,22 +13,22 @@ namespace WGU_Capstone_C868.Services.Calls
 {
     public class AddressCalls : IAddressCalls
     {
-        public Address address;
+        public Address address = new();
         public ObservableCollection<Address> addresses = new();
 
         //Creates and adds new Address record to DB
         public async Task<Address> AddAddressAsync(Address address)
         {
-            Address AddAddress = address;
+            this.address = address;
             try
             {
-                _ = await SqLiteDataService.Db.InsertAsync(AddAddress);
-                return AddAddress;
+                await SqLiteDataService.Db.InsertAsync(this.address);
+                return this.address;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
+                throw;
             }
         }
 
@@ -37,25 +37,38 @@ namespace WGU_Capstone_C868.Services.Calls
         {
             try
             {
-                Address GetAddress = await SqLiteDataService.Db.GetAsync<Address>(pk);
-                return GetAddress;
+                address = await SqLiteDataService.Db.GetAsync<Address>(pk);
+                return address;
             } 
             catch (Exception ex)
             { 
                 Debug.WriteLine(ex);
-                return null;
+                throw;
             }
         }
 
         //Returns an ObservableCollection of all Addresses int the table
         public async Task<ObservableCollection<Address>> GetAddressesAsync()
         {
-            List<Address> Addresses = await SqLiteDataService.Db.Table<Address>().ToListAsync();
-            foreach (Address Address in Addresses)
+            try
             {
-                addresses.Add(Address);
+                List<Address> Addresses = new();
+
+                addresses.Clear();
+                Addresses.Clear();
+
+                Addresses = await SqLiteDataService.Db.Table<Address>().ToListAsync();
+                foreach (Address Address in Addresses)
+                {
+                    addresses.Add(Address);
+                }
+                return addresses;
             }
-            return addresses;
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
         }
 
         //Removes or Deletes the desired Address record from the DB
@@ -63,13 +76,13 @@ namespace WGU_Capstone_C868.Services.Calls
         {
             try
             {
-                _ = await SqLiteDataService.Db.DeleteAsync<Address>(address.AddressId);
+                await SqLiteDataService.Db.DeleteAsync<Address>(address.AddressId);
 
                 return await Task.FromResult(true);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Debug.WriteLine(ex);
                 return false;
             }
         }
@@ -77,16 +90,17 @@ namespace WGU_Capstone_C868.Services.Calls
         //Updates the desired Address in the Address table in the DB
         public async Task<Address> UpdateAddressAsync(Address address)
         {
-            Address UpdateAddress = address;
+            Address UpdateAddress = new();
+            UpdateAddress = address;
             try
             {
-                _ = await SqLiteDataService.Db.UpdateAsync(UpdateAddress);
+                await SqLiteDataService.Db.UpdateAsync(UpdateAddress);
                 return UpdateAddress;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
+                throw;
             }
         }
     }

@@ -7,6 +7,11 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="WGU_Capstone_C868.View.Dashboard"
              x:DataType="viewmodel:DashboardViewModel">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding ReloadCommand}"/>
+    </ContentPage.Behaviors>
     <Shell.TitleView>
         <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" Margin="0">
             <Grid.Shadow>
@@ -29,8 +34,16 @@
                 HorizontalOptions="Start"
                 VerticalOptions="Center"
                 FontSize="15" />
+            <Button 
+                x:Name="LogOut" 
+                Text="Log Out" 
+                Grid.ColumnSpan="2" 
+                Grid.RowSpan="2" 
+                HorizontalOptions="Center" 
+                VerticalOptions="Center"
+                Command="{Binding BackToLoginCommand}"/>
             <Label
-                Text="{Binding DashboardUser.Name}"
+                Text="{Binding TheUser.Name}"
                 Grid.Column="1"
                 Grid.Row="0"
                 HorizontalOptions="End"
@@ -51,22 +64,21 @@
             <Grid RowDefinitions="225, 225, 225" RowSpacing="15" Margin="0,20,0,0">
                 <Frame x:Name="MRIandScans" Grid.Row="0" CornerRadius="20" Margin="10" BorderColor="#9340D9" Padding="10,10,10,0" BackgroundColor="#170D21">
                     <Grid RowDefinitions="*,*,*,*,*,25">
-                        <Button x:Name="MRIsAndScansLabel" Grid.Row="0" Text="MRI's and Scans"  FontAttributes="Bold" Padding="0,0,4,0" Margin="0,0,5,0" FontSize="25" HorizontalOptions="StartAndExpand" WidthRequest="200" TextColor="#E2C3FF"
-                          Background="Transparent"/>
-                        <Frame x:Name="UpcomingMRIorAppointment" CornerRadius="8" Grid.Row="1" Grid.RowSpan="4" Margin="3,0,3,0" BackgroundColor="#472861" BorderColor="#9340D9" Padding="0">
+                        <Label x:Name="ImagingOrLabsLabel" Grid.Row="0" Text="Imaging and Labs"  FontAttributes="Bold" Padding="0,0,4,0" Margin="0,0,5,0" FontSize="25" HorizontalOptions="Center" TextColor="#E2C3FF" Background="Transparent"/>
+                        <Button x:Name="AddAppointment" Grid.Row="1" Grid.RowSpan="4" Text="Press to add an appointment!" BorderColor="#9340D9" BorderWidth="3" TextColor="#E2C3FF" FontAttributes="Bold" CornerRadius="15" FontSize="20" IsVisible="{Binding NoAppointment}" Command="{Binding AddNewAppointmentCommand}"/>
+                        <Frame x:Name="UpcomingImgLabOrAppointment" CornerRadius="8" Grid.Row="1" Grid.RowSpan="4" Margin="3,0,3,0" BackgroundColor="#472861" BorderColor="#9340D9" Padding="0" IsVisible="{Binding YesAppointment}">
                             <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,*">
-                                <Label x:Name="UpComingProceedureLabel" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding UpcomingProceedure}" Margin="15,5,15,8" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontAttributes="Bold" FontSize="Large"/>
+                                <Label x:Name="UpComingProceedureLabel" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding UpcomingProceedure, Mode=TwoWay}" Margin="15,5,15,8" HorizontalTextAlignment="Center" VerticalTextAlignment="End" FontAttributes="Bold" FontSize="Large"/>
                                 <Line x:Name="HorizontalRule" Grid.Row="1" Grid.ColumnSpan="2" Stroke="#9340D9" VerticalOptions="End" X1="310" Y1="0" X2="20" Y2="1" />
-                                
-                                <Label x:Name="NameOfFacilityLabel" Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" Text="{Binding AppointmentLocationName}" HorizontalOptions="Center" VerticalOptions="Center" FontSize="17"/>
-                                <Label x:Name="PhoneNumberLabel" Grid.Row="1" Grid.Column="1" Text="{Binding AppointmentPhone}" VerticalTextAlignment="Center" FontSize="17" Margin="10,0,0,0"/>
-                                <Label x:Name="DateTimeLabel" Grid.Row="2" Grid.Column="0" Text="{Binding AppointmentTime}" FontSize="Medium" Margin="10,8,0,0" HorizontalOptions="Center" VerticalOptions="Start" />
 
-                                <Button x:Name="OverlayButtonMRIsAndScans" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" Padding="0"/>
+                                <Label x:Name="NameOfFacilityLabel" Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" Text="{Binding AppointmentLocationName, Mode=TwoWay}" HorizontalOptions="Center" VerticalOptions="Center" FontSize="17"/>
+                                <Label x:Name="PhoneNumberLabel" Grid.Row="1" Grid.Column="1" Text="{Binding AppointmentPhone, Mode=TwoWay}" VerticalTextAlignment="Center" FontSize="17" Margin="10,0,0,0"/>
+                                <Label x:Name="DateTimeLabel" Grid.Row="2" Grid.Column="0" Text="{Binding AppointmentTime, Mode=TwoWay}" FontSize="Medium" Margin="10,8,0,0" HorizontalOptions="Center" VerticalOptions="Start" />
+
+                                <Button x:Name="OverlayButtonMRIsAndScans" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Transparent" Padding="0" Command="{Binding OpenCurrentAppointmentCommand}"/>
                                 <Button x:Name="LinkToLocation" Text="Location Map" Grid.Row="2" Grid.Column="1" Margin="0,0,5,5" Padding="2" BorderColor="#9340D9" BorderWidth="3" TextColor="#E2C3FF" FontAttributes="Bold" CornerRadius="50" FontSize="20" BackgroundColor="#732FA3" Command="{Binding OpenMapsCommand}"/>
                             </Grid>
                         </Frame>
-                        <Button x:Name="PastResultsLink" Grid.Row="5" Background="Transparent" Text="Past Results" FontAttributes="Italic" Padding="0,0,4,0" Margin="3,0,3,5" FontSize="Small" HorizontalOptions="EndAndExpand" WidthRequest="100" TextColor="#E2C3FF"/>
                     </Grid>
                 </Frame>
 
@@ -76,21 +88,10 @@
 
                         <Label x:Name="DaysSinceLastLabel" Grid.Row="1" Text="Days since last relapse: 00" FontSize="Large" HorizontalOptions="Center" Margin="0,15,0,0" />
 
-                        <Button x:Name="OverlayButtonRelapseDiary" Grid.Row="0" Grid.RowSpan="2" BackgroundColor="Transparent" Padding="0"/>
+                        <Button x:Name="OverlayButtonRelapseDiary" Grid.Row="0" Grid.RowSpan="2" BackgroundColor="Transparent" Padding="0"
+                                Command="{Binding ToRelapseDiaryCommand}"/>
                     </Grid>
 
-                </Frame>
-
-                <Frame x:Name="NotesQuestions" Grid.Row="2" CornerRadius="20" Margin="20" BorderColor="#9340D9" BackgroundColor="#170D21" Padding="0">
-                    <Grid RowDefinitions="*,*" ColumnDefinitions="*,*" Margin="0" Padding="0">
-                        <Label x:Name="QuestionsNotesLabel" Grid.Row="0" Grid.ColumnSpan="2" Text="Notes/Questions" FontSize="35" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="End" Margin="0,0,0,10" Padding="0"/>
-
-                        <Button x:Name="OverlayButtonNotesQuestions" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" BackgroundColor="Transparent" Padding="0"/>
-
-                        <Button x:Name="LastVisitButton" Grid.Row="1" Grid.Column="0" Text="Last Visit" Padding="0,0,4,0" Margin="3,0,3,5" FontSize="Large" HorizontalOptions="End" VerticalOptions="Start" WidthRequest="120" HeightRequest="40" TextColor="#E2C3FF" BackgroundColor="Transparent"/>
-
-                        <Button x:Name="NextVisitButton" Grid.Row="1" Grid.Column="1" Text="Next Visit" Padding="0,0,4,0" Margin="3,0,3,5" FontSize="Large" HorizontalOptions="Start" VerticalOptions="Start" WidthRequest="120" HeightRequest="40" TextColor="#E2C3FF" BackgroundColor="Transparent"/>
-                    </Grid>
                 </Frame>
             </Grid>
         </VerticalStackLayout>

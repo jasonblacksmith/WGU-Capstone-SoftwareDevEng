@@ -20,11 +20,14 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
-        //builder.Services.AddSingleton<BaseViewModel>();
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<LoginPageViewModel>();
         builder.Services.AddTransient<Dashboard>();
         builder.Services.AddTransient<DashboardViewModel>();
+        builder.Services.AddTransient<ImageOrLabPage>();
+        builder.Services.AddTransient<ImgOrLabViewModel>();
+        builder.Services.AddTransient<RelapseDiary>();
+        builder.Services.AddTransient<RelapseDiaryViewModel>();
 
         return builder.Build();
     }

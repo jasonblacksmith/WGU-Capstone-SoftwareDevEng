@@ -1,12 +1,20 @@
-﻿using System.Text.RegularExpressions;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
+using System.Web;
 using WGU_Capstone_C868.Services.Calls;
 using WGU_Capstone_C868.View;
 
 namespace WGU_Capstone_C868.ViewModel
 {
-    public partial class LoginPageViewModel : BaseViewModel    
+    public partial class LoginPageViewModel : BaseViewModel
     {
         readonly UserCalls userCalls = new();
+
+        internal MoqDataLoader moqDataLoader = new();
+
+        public CriticalObjects CritObj = new CriticalObjects();
         
         public ObservableCollection<User> Users = new();
         public int UserId;
@@ -31,22 +39,29 @@ namespace WGU_Capstone_C868.ViewModel
         public void SetAsLogin()
         {
             forLogin = true;
-            loginCreate = "  Login  ";
+            LoginCreate = "  Login  ";
+        }
+
+        [RelayCommand]
+        public void ClearLogin()
+        {
+            UserNameInput = null;
+            PasswordInput = null;
         }
 
         [RelayCommand]
         public async void SetAsCreate()
         {
             forLogin = false;
-            loginCreate = "  Create  ";
+            LoginCreate = "  Create  ";
             await Shell.Current.DisplayAlert("Password Requirements", "Password must have 1 lowercase and 1 capital letter, 1 number, 1 special character, and be 8 characters or longer.", "OK");
         }
 
         [RelayCommand]
         public async Task LoginOrCreate()
         {
-            userName = userNameInput;
-            password = passwordInput;
+            userName = UserNameInput;
+            password = PasswordInput;
             if (forLogin && (userName is not null && password is not null))
             {
                 await ValidateUser(userName, password);
@@ -66,6 +81,17 @@ namespace WGU_Capstone_C868.ViewModel
         public async Task KillTestData()
         {
             await SqLiteDataService.BurnAndRebuild();
+            await LoadData.Init();
+            await Shell.Current.DisplayAlert("Restart the App", "You must close and reopen the application for data to refresh!", "Close");
+            Application.Current.Quit();
+            return;
+        }
+
+        //For Testing Only!!!
+        [RelayCommand]
+        public void LoadMockData()
+        {
+            moqDataLoader.Init();
             return;
         }
 
@@ -79,13 +105,13 @@ namespace WGU_Capstone_C868.ViewModel
                 {
                     if (password == U.Password)
                     {
-                        theUser = U;
-                        CriticalObjects.UserData = theUser;
+                        TheUser = U;
+                        DashboardViewModel.ThisUser = TheUser;
                         await Shell.Current.GoToAsync($"//Dashboard", true);
                     }
                 }
             }
-            if(theUser == null)
+            if(TheUser == null)
             {
                 await Shell.Current.DisplayAlert("Could Not Login",
                 $"Please check Username and Password and try again.", "OK");
@@ -105,7 +131,7 @@ namespace WGU_Capstone_C868.ViewModel
                 }
             }
 
-            theUser = new()
+            TheUser = new()
             {
                 UserName = userName,
                 Password = password,
@@ -114,7 +140,7 @@ namespace WGU_Capstone_C868.ViewModel
 
             try
             {
-                await userCalls.AddUserAsync(theUser);
+                await userCalls.AddUserAsync(TheUser);
                 await Shell.Current.DisplayAlert("User created!", "User created successfully! Please Login using your Username and Password", "OK");
                 SetAsLogin();
             }
@@ -127,12 +153,19 @@ namespace WGU_Capstone_C868.ViewModel
 
         bool ValidPassword(string Password)
         {
-            Match match = Regex.Match(Password, regexValidator);
+            Match match = Regex.Match(Password, RegexValidator);
             if(Password is not null && match.Success)
             {
                 return true;
             }
             else { return false; }
         }
+
+        public IEnumerator GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 }

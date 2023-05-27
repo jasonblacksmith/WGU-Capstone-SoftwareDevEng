@@ -1,116 +1,238 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WGU_Capstone_C868.Model;
+﻿using Microsoft.Extensions.Configuration;
 using WGU_Capstone_C868.Services.Calls;
 
 namespace WGU_Capstone_C868.ViewModel
 {
-    public partial class DashboardViewModel : BaseViewModel
+    public partial class DashboardViewModel : LoginPageViewModel
     {
-        private UserCalls UserCalls = new UserCalls();
+        public static User ThisUser = new();
+        #region Variables and Classes for Img/Lab Appointemnts
 
-        //TODO: Link to MRI's and Scans Page with Next Upcoming Proceedure
-        //TODO: Get the Name of the Facility and Phone Number to display
-        private AppointmentCalls AppointmentCalls = new AppointmentCalls();
-        private AppointmentStateCalls AppointmentStateCalls = new AppointmentStateCalls();
-        private ProceedureCalls ProceedureCalls = new ProceedureCalls();
-        //TODO: Link to a map of the location
-        private AddressCalls AddressCalls = new AddressCalls();
-        //TODO: Sublink to Past Results
-        private ResultCalls ResultCalls = new ResultCalls();
-        //TODO: !!!Empty State "Add your first proceedure!" Links to adding a new Proceedure Appointment
+        public Appointment AppointmentData = new Appointment();
+        public Address AddressData = new Address();
+        public Proceedure ProceedureData = new Proceedure();
 
+        private static AppointmentCalls AppointmentCalls = new AppointmentCalls();
+        private static ProceedureCalls ProceedureCalls = new ProceedureCalls();
+        private static AddressCalls AddressCalls = new AddressCalls();
+        //private static ResultCalls ResultCalls = new ResultCalls();
+
+        [ObservableProperty]
+        private bool upcomingTrue;
+
+        [ObservableProperty]
+        internal string appointmentLocationName;
+
+        [ObservableProperty]
+        internal string appointmentPhone;
+
+        [ObservableProperty]
+        internal string appointmentTime;
+
+        [ObservableProperty]
+        internal string upcomingProceedure;
+
+        [ObservableProperty]
+        internal bool noAppointment;
+
+        [ObservableProperty]
+        internal bool yesAppointment;
+
+        internal string mapsLocation;
+
+        #endregion
+
+        #region Init
+        public DashboardViewModel()
+        {
+
+        }
+
+        [RelayCommand]
+        public async Task Reload()
+        {
+            AppointmentData = null;
+            AddressData = null;
+            AppointmentLocationName = null;
+            AppointmentPhone = null;
+            AppointmentTime = null;
+            UpcomingProceedure = null;
+            mapsLocation = null;
+            await Init();
+        }
+
+        //TODO: Dashboard Page
+        public async Task Init()
+        {
+            PageTitle = "Dashboard";
+
+            TheUser = ThisUser;
+            Debug.WriteLine(TheUser.Name);
+
+            try
+            {
+                AppointmentData = await SetMRIsAndScansAppointment(TheUser.UserId);
+
+                if (AppointmentData == null)
+                {
+                    NoAppointment = true;
+                    YesAppointment = false;
+                }
+                else
+                {
+                    NoAppointment = false;
+                    YesAppointment = true;
+                    Debug.WriteLine("Appointment: " + AppointmentData.LocationName + " " + AppointmentData.AppointmentId);
+                    AppointmentLocationName = AppointmentData.LocationName;
+                    AppointmentPhone = AppointmentData.PhoneNumber;
+                    AppointmentTime = AppointmentData.DateAndTime.ToString("MM:dd:yy hh:mm:tt");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+
+            try
+            {
+                if (YesAppointment)
+                {
+                    ProceedureData = await ProceedureCalls.GetProceedureAsync(AppointmentData.ProceedureId); ;
+                    Debug.WriteLine("Proceedure: " + ProceedureData.Title + " " + ProceedureData.ProceedureId);
+
+                    UpcomingProceedure = $"Upcoming: {ProceedureData.Title}";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+
+            try
+            {
+                if(YesAppointment)
+                {
+                    AddressData = await ThisAddress(AppointmentData.AddressId);
+                    Debug.WriteLine("Address: " + AddressData.StreetAddress + " " + AddressData.AddressId);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+
+            RefreshView refresh = new();
+        }
+        #endregion
+
+        #region Variables and Classes for Relapse Diary
+        public static Relapse ThisRelapse = new();
+
+        private static RelapseCalls RelapseCalls = new RelapseCalls();
         //TODO: Relapse Diary Card
         //TODO: Link to Relapse Diary Page
+        [RelayCommand]
+        public async Task ToRelapseDiary()
+        {
+            RelapseDiaryViewModel.ThisUser = TheUser;
+            await Shell.Current.GoToAsync("//RelapseDiary", true);
+        }
         //TODO: Counter of days since last active relapse
-        private RelapseCalls RelapseCalls = new RelapseCalls();
+        #endregion
+
+        #region Variables and Classes for Dr Visit Notes
 
         //TODO: Notes/Questions Card
         //TODO: Link to Notes and Questions Page
         //TODO: Link to Last visit | Next visit
 
-        [ObservableProperty]
-        internal User dashboardUser;
+        #endregion
 
-        [ObservableProperty]
-        internal string appointmentLocationName = CriticalObjects.AppointmentData.LocationName;
+        #region ViewModel Methods for Img/Lab Appointments
 
-        [ObservableProperty]
-        internal string appointmentPhone = CriticalObjects.AppointmentData.PhoneNumber;
-
-        [ObservableProperty]
-        internal string upcomingProceedure = CriticalObjects.ProceedureData.Title;
-
-        [ObservableProperty]
-        internal string appointmentTime = CriticalObjects.AppointmentData.DateAndTime.ToString();
-
-        internal string mapsLocation = "";
-
-        private async Task<Address> ThisAddress()
+        public async Task<Address> ThisAddress(int addressId)
         {
             Address address = new Address();
-            address = await AddressCalls.GetAddressAsync(CriticalObjects.AppointmentData.AddressId);
-            return address; 
-        } 
+            try
+            {
+                address = await AddressCalls.GetAddressAsync(addressId);
+                return address;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
+            }
+        }
 
-        private async Task<Proceedure> ThisProceedure()
+        public async Task<Proceedure> ThisProceedure(int proceedureId)
         {
             Proceedure proceedure = new Proceedure();
-            proceedure = await ProceedureCalls.GetProceedureAsync(CriticalObjects.AppointmentData.ProceedureId);
-            return CriticalObjects.ProceedureData = proceedure;
-        }
-        //TODO: Dashboard Page
-        public DashboardViewModel()
-        {
-            pageTitle = "Dashboard";
-            dashboardUser = CriticalObjects.UserData;
-        }
-
-        private async Task<DashboardViewModel> InitializeAsync()
-        {
-            _ = await SetMRIsAndScansAppointment(dashboardUser.UserId);
-            _ = await ThisAddress();
-            _ = await ThisProceedure();
-            return this;
-        }
-
-        public static Task<DashboardViewModel> CreateAsync()
-        {
-            var ret = new DashboardViewModel();
-            return ret.InitializeAsync();
-        }
-
-        public static async Task UseDashboardViewModelAsync()
-        {
-            _ = await CreateAsync();
-        }
-
-        private async Task<Appointment> SetMRIsAndScansAppointment(int userId)
-        {
-            ObservableCollection<Appointment> _appointments = await AppointmentCalls.GetAppointmentsAsync();
-
-            foreach (Appointment a in _appointments)
+            try
             {
-                if (a.UserId != userId)
+                proceedure = await ProceedureCalls.GetProceedureAsync(proceedureId);
+                return proceedure;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
+            }
+        }
+
+        public async Task<Appointment> SetMRIsAndScansAppointment(int userId)
+        {
+            ObservableCollection<Appointment> appointments = await AppointmentCalls.GetAppointmentsAsync();
+            try
+            {
+                foreach (Appointment a in appointments)
                 {
-                    _appointments.Remove(a);
+                    //Check to see if there is a current Appointment and
+                    //make sure to set ones set current that are out dated for the user
+                    //to not current.
+                    if (a.DateAndTime < DateTime.Now)
+                    {
+                        a.Current = false;
+                        await AppointmentCalls.UpdateAppointmentAsync(a);
+                    }
                 }
             }
-            return CriticalObjects.AppointmentData = _appointments.OrderByDescending(a => a.DateAndTime).First();
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
+            }
+            ObservableCollection<Appointment> appointments1 = await AppointmentCalls.GetAppointmentsAsync();
+            try
+            {
+                foreach (Appointment a in appointments1)
+                {
+                    //Return the current appointment for the user
+                    if ((a.UserId == userId) && (a.DateAndTime > DateTime.Now) && (a.Current == true))
+                    {
+                        return a;
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
         }
 
         [RelayCommand]
         public async Task OpenMaps()
         {
-            Location location = new Location(CriticalObjects.AddressData.Latitude,CriticalObjects.AddressData.Longitude);
+            Location location = new Location(AddressData.Latitude, AddressData.Longitude);
             var options = new MapLaunchOptions
             {
-                Name = CriticalObjects.AppointmentData.LocationName
-                //, NavigationMode = NavigationMode.Driving
+                Name = AppointmentData.LocationName
             };
 
             try
@@ -121,6 +243,35 @@ namespace WGU_Capstone_C868.ViewModel
             {
                 Debug.WriteLine(ex);
             }
+        }
+
+        [RelayCommand]
+        public async Task AddNewAppointment()
+        {
+            ImgOrLabViewModel.ThisUser = TheUser;
+            ImgOrLabViewModel.Edit = false;
+            await Shell.Current.GoToAsync($"//ImageOrLabPage", true);
+        }
+
+        [RelayCommand]
+        public async Task OpenCurrentAppointment()
+        {
+            ImgOrLabViewModel.ThisUser = TheUser;
+            ImgOrLabViewModel.Edit = true;
+            ImgOrLabViewModel.EditAppointemntId = AppointmentData.AppointmentId;
+            await Shell.Current.GoToAsync($"//ImageOrLabPage", true);
+        }
+
+        #endregion
+
+        [RelayCommand]
+        public async Task BackToLogin()
+        {
+            TheUser = null;
+            ThisUser = null;
+
+            // Load new page
+            await Shell.Current.GoToAsync("//MainPage", true);
         }
     }
 }

@@ -9,22 +9,22 @@ namespace WGU_Capstone_C868.Services.Calls
 {
     public class ProceedureCalls : IProceedureCalls
     {
-        public Proceedure proceedure;
+        public Proceedure proceedure = new();
         public ObservableCollection<Proceedure> proceedures = new();
 
         //Creates and adds new Proceedure record to DB
         public async Task<Proceedure> AddProceedureAsync(Proceedure proceedure)
         {
-            Proceedure AddProceedure = proceedure;
+            this.proceedure = proceedure;
             try
             {
-                _ = await SqLiteDataService.Db.InsertAsync(AddProceedure);
-                return AddProceedure;
+                await SqLiteDataService.Db.InsertAsync(this.proceedure);
+                return this.proceedure;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
+                throw;
             }
         }
 
@@ -33,25 +33,38 @@ namespace WGU_Capstone_C868.Services.Calls
         {
             try
             {
-                Proceedure GetProceedure = await SqLiteDataService.Db.GetAsync<Proceedure>(pk);
-                return GetProceedure;
+                this.proceedure = await SqLiteDataService.Db.GetAsync<Proceedure>(pk);
+                return this.proceedure;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
+                throw;
             }
         }
 
         //Returns an ObservableCollection of all Proceedures int the table
         public async Task<ObservableCollection<Proceedure>> GetProceeduresAsync()
         {
-            List<Proceedure> Proceedures = await SqLiteDataService.Db.Table<Proceedure>().ToListAsync();
-            foreach (Proceedure Proceedure in Proceedures)
+            try
             {
-                proceedures.Add(Proceedure);
+                List<Proceedure> Proceedures = new();
+
+                proceedures.Clear();
+                Proceedures.Clear();
+
+                Proceedures = await SqLiteDataService.Db.Table<Proceedure>().ToListAsync();
+                foreach (Proceedure Proceedure in Proceedures)
+                {
+                    proceedures.Add(Proceedure);
+                }
+                return proceedures;
             }
-            return proceedures;
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
         }
 
         //Removes or Deletes the desired Proceedure record from the DB
@@ -59,7 +72,7 @@ namespace WGU_Capstone_C868.Services.Calls
         {
             try
             {
-                _ = await SqLiteDataService.Db.DeleteAsync<Proceedure>(proceedure.ProceedureId);
+                await SqLiteDataService.Db.DeleteAsync<Proceedure>(proceedure.ProceedureId);
 
                 return await Task.FromResult(true);
             }
@@ -73,16 +86,16 @@ namespace WGU_Capstone_C868.Services.Calls
         //Updates the desired Proceedure in the Proceedure table in the DB
         public async Task<Proceedure> UpdateProceedureAsync(Proceedure proceedure)
         {
-            Proceedure UpdateProceedure = proceedure;
+            this.proceedure = proceedure;
             try
             {
-                _ = await SqLiteDataService.Db.UpdateAsync(UpdateProceedure);
-                return UpdateProceedure;
+                await SqLiteDataService.Db.UpdateAsync(this.proceedure);
+                return this.proceedure;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
+                throw;
             }
         }
     }

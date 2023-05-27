@@ -26,9 +26,6 @@ namespace WGU_Capstone_C868.Model
         public string Notes { get; set; }
         [Column("Phone")]
         public string PhoneNumber { get; set; }
-        [Indexed]
-        [Column("StateId")]
-        public int StateId { get; set; }
         [Column("Current")]
         public bool Current { get; set; }
         [Column("DateAndTime")]

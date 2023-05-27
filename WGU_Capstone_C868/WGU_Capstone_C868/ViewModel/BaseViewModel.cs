@@ -5,10 +5,10 @@ namespace WGU_Capstone_C868.ViewModel
     public partial class BaseViewModel : ObservableObject
     {
         [ObservableProperty]
-        internal string title = "My MS Tracker";
+        public string title = "My MS Tracker";
 
         [ObservableProperty]
-        internal string pageTitle;
+        public string pageTitle;
 
         [ObservableProperty]
         public string dateToday = DateTime.Today.ToString("MM/dd/yyyy");

@@ -18,7 +18,7 @@ namespace WGU_Capstone_C868.Services.Calls
             User AddUser = user;
             try
             {
-                _ = await SqLiteDataService.Db.InsertAsync(AddUser);
+                await SqLiteDataService.Db.InsertAsync(AddUser);
                 return AddUser;
             }
             catch (Exception ex)
@@ -31,9 +31,10 @@ namespace WGU_Capstone_C868.Services.Calls
         //Returns the desired User record from the DB
         public async Task<User> GetUserAsync(int pk)
         {
+            User GetUser = new();
             try
             {
-                User GetUser = await SqLiteDataService.Db.GetAsync<User>(pk);
+                GetUser = await SqLiteDataService.Db.GetAsync<User>(pk);
                 return GetUser;
             }
             catch (Exception ex)
@@ -46,20 +47,25 @@ namespace WGU_Capstone_C868.Services.Calls
         //Returns an ObservableCollection of all Users int the table
         public async Task<ObservableCollection<User>> GetUsersAsync()
         {
-            List<User> Users = await SqLiteDataService.Db.Table<User>().ToListAsync();
+            List<User> Users = new();
+
+            users.Clear();
+            Users.Clear();
+
+            Users = await SqLiteDataService.Db.Table<User>().ToListAsync();
             foreach (User User in Users)
             {
                 users.Add(User);
             }
             return users;
-                    }
+        }
 
         //Removes or Deletes the desired User record from the DB
         public async Task<bool> RemoveUserAsync(User user)
         {
             try
             {
-                _ = await SqLiteDataService.Db.DeleteAsync<User>(user.UserId);
+                await SqLiteDataService.Db.DeleteAsync<User>(user);
 
                 return await Task.FromResult(true);
             }
@@ -76,7 +82,7 @@ namespace WGU_Capstone_C868.Services.Calls
             User UpdateUser = user;
             try
             {
-                _ = await SqLiteDataService.Db.UpdateAsync(UpdateUser);
+                await SqLiteDataService.Db.UpdateAsync(UpdateUser);
                 return UpdateUser;
             }
             catch (Exception ex)
