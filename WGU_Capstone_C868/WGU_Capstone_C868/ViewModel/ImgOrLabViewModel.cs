@@ -401,7 +401,7 @@ namespace WGU_Capstone_C868.ViewModel
             ThisUser = null;
 
             // Load new page
-            await Shell.Current.GoToAsync("//MainPage", false);
+            await Shell.Current.GoToAsync("//MainPage", true);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Syncfusion.Maui.Core.Hosting;
 using WGU_Capstone_C868.Services;
 using WGU_Capstone_C868;
 using WGU_Capstone_C868.ViewModel;
@@ -11,11 +12,15 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
-        builder.UseMauiApp<App>().ConfigureFonts(fonts =>
+        builder
+            .UseMauiApp<App>()
+            .ConfigureSyncfusionCore()
+            .ConfigureFonts(fonts =>
         {
             fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
             fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-        }).UseMauiCommunityToolkit();
+        })
+            .UseMauiCommunityToolkit();
 
 #if DEBUG
         builder.Logging.AddDebug();

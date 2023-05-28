@@ -71,9 +71,16 @@
 
                 <Button x:Name="LoginSubmit" Text="{Binding LoginCreate}" FontSize="Large" BackgroundColor="#45275e" BorderColor="#6b3796" BorderWidth="3" Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="7" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Start" Padding="5" Margin="5" Command="{Binding LoginOrCreateCommand}"/>
             </Grid>
-            <Button x:Name="KillAllData" Command="{Binding KillTestDataCommand}" Text="Data Kill Switch for Test" BackgroundColor="Red" HeightRequest="50" WidthRequest="180" BorderColor="Black" BorderWidth="5">
-            </Button>
-            <Button x:Name="LoadMockData" Command="{Binding LoadMockDataCommand}" Text="Load Mock Data for Test" BackgroundColor="Green" HeightRequest="50" WidthRequest="180" BorderColor="Black" BorderWidth="5"/>
+            <Frame IsVisible="{Binding DebugMode}">
+                <StackLayout>
+                    <Button x:Name="KillAllData" Command="{Binding KillTestDataCommand}" Text="Data Kill Switch for Test" BackgroundColor="Red" HeightRequest="50" WidthRequest="180" BorderColor="Black" BorderWidth="5">
+                    </Button>
+                    <Button x:Name="LoadMockData" Command="{Binding LoadMockDataCommand}" Text="Load Mock Data for Test" BackgroundColor="Green" HeightRequest="50" WidthRequest="200" BorderColor="Black" BorderWidth="5"/>
+
+
+                    <Button x:Name="UnitTestsInDebug" Command="{Binding RunTestsCommand}" Text="Run Tests" BackgroundColor="Blue" HeightRequest="50" WidthRequest="180" BorderColor="Black" BorderWidth="5" />
+                </StackLayout>
+            </Frame>
         </VerticalStackLayout>
         
     </ScrollView>
