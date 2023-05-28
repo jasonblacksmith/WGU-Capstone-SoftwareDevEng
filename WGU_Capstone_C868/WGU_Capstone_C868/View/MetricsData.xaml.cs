@@ -1,3 +1,5 @@
+using Syncfusion.Maui.DataGrid;
+
 namespace WGU_Capstone_C868.View;
 
 public partial class MetricsData : ContentPage
@@ -6,5 +8,6 @@ public partial class MetricsData : ContentPage
 	{
 		InitializeComponent();
         BindingContext = viewModel;
+		MetricsDataViewModel.entryGrid = entryGrid;
     }
 }

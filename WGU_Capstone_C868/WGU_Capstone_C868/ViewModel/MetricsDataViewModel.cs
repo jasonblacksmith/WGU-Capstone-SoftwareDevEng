@@ -8,12 +8,15 @@ using Syncfusion.Maui.DataGrid;
 using WGU_Capstone_C868.Model;
 using WGU_Capstone_C868.Model.DataStructs;
 using WGU_Capstone_C868.Services.Calls;
+using Syncfusion.Maui.Data;
 
 namespace WGU_Capstone_C868.ViewModel
 {
     public partial class MetricsDataViewModel : LoginPageViewModel
     {
         public static User ThisUser = new User();
+        public static SfDataGrid entryGrid;
+        public bool IsResults = false;
 
         RelapseCalls RelapseCalls = new RelapseCalls();
         TriggerCalls TriggerCalls = new TriggerCalls();
@@ -41,11 +44,11 @@ namespace WGU_Capstone_C868.ViewModel
             set { SetProperty(ref _symptomsReport, value); }
         }
 
-        public ObservableCollection<Appointment> _appointmentReport = new ObservableCollection<Appointment>();
+        public ObservableCollection<Appointment> _appointmentsReport = new ObservableCollection<Appointment>();
         public ObservableCollection<Appointment> AppointmentsReport
         {
-            get { return _appointmentReport; }
-            set { SetProperty(ref _appointmentReport, value); }
+            get { return _appointmentsReport; }
+            set { SetProperty(ref _appointmentsReport, value); }
         }
 
         [ObservableProperty]
@@ -127,13 +130,13 @@ namespace WGU_Capstone_C868.ViewModel
             CanSeeSymptoms = true;
             CanSeeAppointments = false;
         }
-        //TODO: Fix this one for appointments
+
         [RelayCommand]
         private async Task LoadAppointments()
         {
             try
             {
-                _symptomsReport = await SymptomCalls.GetSymptomsAsync();
+                _appointmentsReport = await AppointmentCalls.GetAppointmentsAsync();
             }
             catch (Exception ex)
             {
@@ -155,23 +158,116 @@ namespace WGU_Capstone_C868.ViewModel
             // Load new page
             await Shell.Current.GoToAsync("//MainPage", true);
         }
+
+        [ObservableProperty]
+        string stringToCompare;
+
+        [RelayCommand]
+        public async Task FilterRecords()
+        {
+            string compare = StringToCompare;
+            if (compare.Length >= 3)
+            {
+                FilterTheRecords(compare);
+                if (!IsResults)
+                {
+                    await Shell.Current.DisplayAlert("No Results", "No records contain results that match!", "Okay");
+                }
+                return;
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert("Too Short", "Search must be 3 characters or more long.", "Ok");
+            }
+        }
+
+        public void FilterTheRecords(string stringToCompare)
+        {
+            //String searchs for contains
+            //hits all strings
+            //Each string value in each record of selected display type
+            //Compiles all results
+            //Then clears the ObservableCollection and reloads with results.
+
+            if (CanSeeEntries)
+            {
+                ObservableCollection<Relapse> holderOfTruth = new ObservableCollection<Relapse>();
+                holderOfTruth.Clear();
+                foreach (Relapse r in DiaryEntries)
+                {
+                    if (r.Location.Contains(stringToCompare) || r.Notes.Contains(stringToCompare))
+                    {
+                        holderOfTruth.Add(r);
+                        IsResults = true;
+                    }
+                }
+
+                if(holderOfTruth.Count != 0)
+                {
+                    DiaryEntries.Clear();
+                    DiaryEntries = holderOfTruth;
+                }
+            }
+            else if (CanSeeTriggers)
+            {
+                ObservableCollection<Model.Trigger> holderOfTruth = new ObservableCollection<Model.Trigger>();
+                holderOfTruth.Clear();
+
+                foreach (Model.Trigger t in TriggersReport)
+                {
+                    if (t.Title.Contains(stringToCompare) || t.Description.Contains(stringToCompare))
+                    {
+                        holderOfTruth.Add(t);
+                        IsResults = true;
+                    }
+                }
+
+                if (holderOfTruth.Count != 0)
+                {
+                    TriggersReport.Clear();
+                    TriggersReport = holderOfTruth;
+                }
+            }
+            else if (CanSeeSymptoms)
+            {
+                ObservableCollection<Symptom> holderOfTruth = new ObservableCollection<Symptom>();
+                holderOfTruth.Clear();
+
+                foreach (Symptom s in SymptomsReport)
+                {
+                    if (s.Title.Contains(stringToCompare) || s.Description.Contains(stringToCompare))
+                    {
+                        holderOfTruth.Add(s);
+                        IsResults = true;
+                    }
+                }
+
+                if (holderOfTruth.Count != 0)
+                {
+                    SymptomsReport.Clear();
+                    SymptomsReport = holderOfTruth;
+                }
+            }
+            else if(CanSeeAppointments)
+            {
+                ObservableCollection<Appointment> holderOfTruth = new ObservableCollection<Appointment>();
+                holderOfTruth.Clear();
+
+                foreach (Appointment a in AppointmentsReport)
+                {
+                    if (a.LocationName.Contains(stringToCompare) || a.Notes.Contains(stringToCompare))
+                    {
+                        holderOfTruth.Add(a);
+                        IsResults = true;
+                    }
+                }
+
+                if (holderOfTruth.Count != 0)
+                {
+                    AppointmentsReport.Clear();
+                    AppointmentsReport = holderOfTruth;
+                }
+            }
+        }
     }
 }
-
-
-//data.Clear();
-//data.Add(new RelapseStruct(d, "Elephant Attack at Zoo", 0, "Dumbo dun went full cray cray and it dun relapsed me sumfin gud fierce like!", 1, 1, 2));
-//data.Add(new RelapseStruct(d1, "Singing in Public", 0, "Not cool y'all being oput on the spot an all!", 1, 1, 2));
-//data.Add(new RelapseStruct(d2, "Wrestling in local League", 0, "I think it was the choke hold that did it... but I can't remember seeing as I passed out!", 1, 1, 2));
-//data.Add(new RelapseStruct(d3, "Spanish Fork Niece and Nephews house", 0, "My Sister In-Law is a horder and not the most clean, so being here is no beuno!", 1, 1, 2));
-
-//_diaryEntries.Clear();
-//foreach (RelapseStruct rs in data)
-//{
-//    _diaryEntries.Add(rs.Relapse);
-//}
-
-//foreach (Relapse r in DiaryEntries)
-//{
-//    await RelapseCalls.AddRelapseAsync(r);
-//}

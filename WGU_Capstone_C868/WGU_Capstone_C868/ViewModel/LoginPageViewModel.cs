@@ -34,6 +34,31 @@ namespace WGU_Capstone_C868.ViewModel
         public string passwordInput;
         [ObservableProperty]
         public string name;
+        [ObservableProperty]
+        private bool debugMode = false;
+
+#if DEBUG
+        public LoginPageViewModel()
+        {
+            debugMode = true;
+        }
+#endif
+        [RelayCommand]
+        public async Task RunTests()
+        {
+#if DEBUG
+            if (DebugMode)
+            {
+                Services.ServiceTests.AppointmentServiceCallUnitTests runTests = new();
+                await runTests.RunAll();
+            }
+            else
+            {
+                return;
+            }
+#endif
+            return;
+        }
 
         [RelayCommand]
         public void SetAsLogin()
@@ -80,10 +105,12 @@ namespace WGU_Capstone_C868.ViewModel
         [RelayCommand]
         public async Task KillTestData()
         {
+#if DEBUG
             await SqLiteDataService.BurnAndRebuild();
             await LoadData.Init();
             await Shell.Current.DisplayAlert("Restart the App", "You must close and reopen the application for data to refresh!", "Close");
             Application.Current.Quit();
+#endif
             return;
         }
 
@@ -91,7 +118,9 @@ namespace WGU_Capstone_C868.ViewModel
         [RelayCommand]
         public void LoadMockData()
         {
+#if DEBUG
             moqDataLoader.Init();
+#endif
             return;
         }
 
