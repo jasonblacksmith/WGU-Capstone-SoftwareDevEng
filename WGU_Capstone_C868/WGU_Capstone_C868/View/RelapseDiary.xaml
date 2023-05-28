@@ -96,6 +96,7 @@
                             <Label Grid.Column="1" Text="Diary Entries" FontSize="16"  FontAttributes="Bold" Padding="2" Margin="0" VerticalTextAlignment="Center" TextColor="#a1a1a1" />
                         </Grid>
                     </CollectionView.Header>
+                    <CollectionView.EmptyView Text="Please add Entry!"/>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:Relapse">
                             <StackLayout>
@@ -126,6 +127,7 @@
                             <Label Grid.Column="1" Text="Triggers:" FontSize="10" FontAttributes="Bold" Padding="2" Margin="0" VerticalTextAlignment="Center" TextColor="#a1a1a1" />
                         </Grid>
                     </CollectionView.Header>
+                    <CollectionView.EmptyView Text="Please add Trigger!"/>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:Trigger">
                             <StackLayout>
@@ -154,6 +156,7 @@
                             <Label Grid.Column="1" Text="Symptoms:" FontSize="10" FontAttributes="Bold" Padding="2" Margin="0" VerticalTextAlignment="Center" TextColor="#a1a1a1" />
                         </Grid>
                     </CollectionView.Header>
+                    <CollectionView.EmptyView Text="Please add Symptom!"/>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:Symptom">
                             <StackLayout>

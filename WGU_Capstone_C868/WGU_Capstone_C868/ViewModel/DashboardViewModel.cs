@@ -16,7 +16,6 @@ namespace WGU_Capstone_C868.ViewModel
         private static AppointmentCalls AppointmentCalls = new AppointmentCalls();
         private static ProceedureCalls ProceedureCalls = new ProceedureCalls();
         private static AddressCalls AddressCalls = new AddressCalls();
-        //private static ResultCalls ResultCalls = new ResultCalls();
 
         [ObservableProperty]
         private bool upcomingTrue;
@@ -44,6 +43,7 @@ namespace WGU_Capstone_C868.ViewModel
 
         internal string mapsLocation;
 
+        public bool NoDiaryEntries = false;
         #endregion
 
         #region Init
@@ -144,37 +144,79 @@ namespace WGU_Capstone_C868.ViewModel
         {
             RelapseDiaryViewModel.ThisUser = TheUser;
             RelapseDiaryViewModel.ThisDaysSinceMessage = DaysSinceLastRelapse;
+
             await Shell.Current.GoToAsync("//RelapseDiary", true);
         }
 
         public async Task<string> DaysSinceLastRelapseLogic()
         {
-            ObservableCollection<Relapse> relapseRecords = new();
+            await EmptyState();
+            if (NoDiaryEntries)
+            {
+                string Message = "Add your first diary entry!";
+
+                return Message;
+            }
+            else
+            {
+                ObservableCollection<Relapse> relapseRecords = new();
+                try
+                {
+                    relapseRecords = await RelapseCalls.GetRelapsesAsync();
+                    List<DateTime> days = new List<DateTime>();
+                    foreach (Relapse r in relapseRecords)
+                    {
+                        if (TheUser.UserId == r.UserId)
+                        {
+                            days.Add(r.DateAndTime);
+                        }
+                    }
+                    DateTime MaxDateTime = days.Max<DateTime>();
+                    TimeSpan timeSpan = DateTime.Today.Subtract(MaxDateTime);
+                    int daysSince = timeSpan.Days;
+                    string DaysSinceMessage = $"Days since last relapse: {daysSince}";
+                    return DaysSinceMessage;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    return null;
+                    throw;
+                }
+            }
+        }
+
+        public async Task EmptyState()
+        {
+
+            ObservableCollection<Relapse> listA = new ObservableCollection<Relapse>();
             try
             {
-                relapseRecords = await RelapseCalls.GetRelapsesAsync();
-                List<DateTime> days = new List<DateTime>();
-                foreach (Relapse r in relapseRecords)
+
+                listA = await RelapseCalls.GetRelapsesAsync();
+                if (listA == null)
                 {
-                    if(TheUser.UserId == r.UserId)
+                    NoDiaryEntries = true;
+                    return;
+                }
+                else
+                {
+                    foreach (Relapse r in listA)
                     {
-                        days.Add(r.DateAndTime);
+                        if (r.UserId == TheUser.UserId)
+                        {
+                            NoDiaryEntries = true;
+                            return;
+                        }
                     }
                 }
-                DateTime MaxDateTime = days.Max<DateTime>();
-                TimeSpan timeSpan = DateTime.Today.Subtract(MaxDateTime);
-                int daysSince = timeSpan.Days;
-                string DaysSinceMessage = $"Days since last relapse: {daysSince}";
-                return DaysSinceMessage;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return null;
                 throw;
             }
         }
-
         #endregion
 
         #region ViewModel Methods for Img/Lab Appointments

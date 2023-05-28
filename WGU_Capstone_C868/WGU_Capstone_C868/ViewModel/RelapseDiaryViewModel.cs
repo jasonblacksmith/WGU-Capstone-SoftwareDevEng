@@ -70,6 +70,9 @@ namespace WGU_Capstone_C868.ViewModel
         [ObservableProperty]
         public string daysSinceMessage;
 
+        [ObservableProperty]
+        public bool firstTimeUser;
+
         ObservableCollection<Relapse> _relapseDiaryEntries = new ObservableCollection<Relapse>();
         public ObservableCollection<Relapse> RelapseDiaryEntries
         {
@@ -96,13 +99,78 @@ namespace WGU_Capstone_C868.ViewModel
         {
             PageTitle = "Relapse Diary";
             TheUser = ThisUser;
-            DaysSinceMessage = ThisDaysSinceMessage;
+            if(DaysSinceMessage != null) 
+            {
+                DaysSinceMessage = ThisDaysSinceMessage;
+            }
+            else
+            {
+                ThisDaysSinceMessage = "Add your first entry!";
+            }
+            FirstTimeUser = false;
             await Init();
         }
 
         public async Task Init()
         {
-            await NotesSelected();
+            //await NotesSelected();
+            //First Time Load Check (EmptyState?);
+            await EmptyState();
+            if (!FirstTimeUser)
+            {
+                await NotesSelected();
+            }
+            else
+            {
+                await FirstTimeGuided();
+            }
+        }
+
+        public async Task EmptyState()
+        {
+            ObservableCollection<Relapse> listA = new ObservableCollection<Relapse>();
+            try
+            {
+                listA = await RelapseCalls.GetRelapsesAsync();
+                if(listA == null)
+                {
+                    FirstTimeUser= true;
+                    return;
+                }
+                else
+                {
+                    foreach (Relapse r in listA)
+                    {
+                        if (r.UserId == TheUser.UserId)
+                        {
+                            FirstTimeUser = true;
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                throw;
+            }
+        }
+
+        public async Task FirstTimeGuided()
+        {
+            IsNotes = true;
+            IsTriggers = false;
+            IsSymptoms = false;
+
+            IsNotesButton = false;
+            IsTriggersButton = true;
+            IsSymptomsButton = true;
+
+            RelapseDiaryEntries.Clear();
+
+            SelectedRelapse = null;
+            newTriggerCollectionId = 1;
+            newSymptomCollectionId = 1;
         }
 
         [RelayCommand]
@@ -123,15 +191,22 @@ namespace WGU_Capstone_C868.ViewModel
             IsSymptomsButton = true;
 
             SelectedItem = "New Entry";
-
-            allRelapses = await RelapseCalls.GetRelapsesAsync();
-            allRelapses.OrderBy(x => x.DateAndTime).ToList();
-            foreach (Relapse r in allRelapses)
+            try
             {
-                if (r.UserId == UserId)
+                allRelapses = await RelapseCalls.GetRelapsesAsync();
+                allRelapses.OrderBy(x => x.DateAndTime).ToList();
+                foreach (Relapse r in allRelapses)
                 {
-                    RelapseDiaryEntries.Add(r);
+                    if (r.UserId == UserId)
+                    {
+                        RelapseDiaryEntries.Add(r);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
             }
 
             //Set Edit Status
