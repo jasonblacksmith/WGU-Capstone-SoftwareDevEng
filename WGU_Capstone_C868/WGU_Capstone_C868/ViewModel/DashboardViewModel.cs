@@ -188,31 +188,26 @@ namespace WGU_Capstone_C868.ViewModel
 
         public async Task EmptyState()
         {
-
-            ObservableCollection<Relapse> listA = new ObservableCollection<Relapse>();
             try
             {
-
-                listA = await RelapseCalls.GetRelapsesAsync();
-                if (listA == null)
+                ObservableCollection<Relapse> CheckMe= await RelapseCalls.GetRelapsesAsync();
+                foreach(Relapse r in CheckMe)
                 {
-                    NoDiaryEntries = true;
-                    return;
-                }
-                else
-                {
-                    foreach (Relapse r in listA)
+                    if (r.UserId == TheUser.UserId)
                     {
-                        if (r.UserId == TheUser.UserId)
-                        {
-                            NoDiaryEntries = true;
-                            return;
-                        }
+                        NoDiaryEntries = false;
+                    }
+                    else
+                    {
+                        NoDiaryEntries = true;
+                        RelapseDiaryViewModel.IsNew= true;
                     }
                 }
+                return;
             }
             catch (Exception ex)
             {
+                NoDiaryEntries = true;
                 Debug.WriteLine(ex);
                 throw;
             }

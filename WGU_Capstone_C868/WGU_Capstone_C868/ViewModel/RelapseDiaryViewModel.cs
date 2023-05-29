@@ -15,6 +15,7 @@ namespace WGU_Capstone_C868.ViewModel
 {
     public partial class RelapseDiaryViewModel : LoginPageViewModel
     {
+        public static bool IsNew;
         public static User ThisUser = new User();
         public static string ThisDaysSinceMessage = "";
 
@@ -107,15 +108,13 @@ namespace WGU_Capstone_C868.ViewModel
             {
                 ThisDaysSinceMessage = "Add your first entry!";
             }
-            FirstTimeUser = false;
+            //Why do I have theis FirstTimeUser when I have IsNew? Lack of sleep, that is why!!!
+            FirstTimeUser = IsNew;
             await Init();
         }
 
         public async Task Init()
         {
-            //await NotesSelected();
-            //First Time Load Check (EmptyState?);
-            await EmptyState();
             if (!FirstTimeUser)
             {
                 await NotesSelected();
@@ -123,36 +122,6 @@ namespace WGU_Capstone_C868.ViewModel
             else
             {
                 await FirstTimeGuided();
-            }
-        }
-
-        public async Task EmptyState()
-        {
-            ObservableCollection<Relapse> listA = new ObservableCollection<Relapse>();
-            try
-            {
-                listA = await RelapseCalls.GetRelapsesAsync();
-                if(listA == null)
-                {
-                    FirstTimeUser= true;
-                    return;
-                }
-                else
-                {
-                    foreach (Relapse r in listA)
-                    {
-                        if (r.UserId == TheUser.UserId)
-                        {
-                            FirstTimeUser = true;
-                            return;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                throw;
             }
         }
 
@@ -167,11 +136,10 @@ namespace WGU_Capstone_C868.ViewModel
             IsSymptomsButton = true;
 
             RelapseDiaryEntries.Clear();
+            AddANew();
             await NotesSelected();
 
-            SelectedRelapse = null;
-            newTriggerCollectionId = 1;
-            newSymptomCollectionId = 1;
+            //SelectedRelapse = null;
         }
 
         [RelayCommand]
@@ -211,12 +179,14 @@ namespace WGU_Capstone_C868.ViewModel
             }
 
             //Set Edit Status
-            if (SelectedRelapse.UserId > 0)
+            if (SelectedRelapse.RelapseId > 0)
             {
                 IsEdit = true;
             }
-
-            SelectedRelapse = RelapseDiaryEntries.FirstOrDefault();//Deffault on load
+            if (!FirstTimeUser)
+            {
+                SelectedRelapse = RelapseDiaryEntries.FirstOrDefault();//Deffault on load
+            }
             //TODO: Fix for first time load!
             if (FirstTimeUser)
             {
@@ -371,7 +341,6 @@ namespace WGU_Capstone_C868.ViewModel
                     {
                         await Shell.Current.DisplayAlert("Missing Inputs?", "Please make sure that there is a location name, date, and notes filled out or selected.", "Ok");
                     }
-
                 }
 
                 if (IsTriggers)
