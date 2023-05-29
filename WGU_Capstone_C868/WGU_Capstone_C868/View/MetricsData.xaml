@@ -65,7 +65,6 @@
             <Button Text="Entries" Command="{Binding LoadEntriesCommand}" Grid.Column="0" BorderColor="MediumPurple" BorderWidth="2" Padding="2"/>
             <Button Text="Triggers" Command="{Binding LoadTriggersCommand}" Grid.Column="1" BorderColor="MediumPurple" BorderWidth="2" Padding="2"/>
             <Button Text="Symptoms" Command="{Binding LoadSymptomsCommand}" Grid.Column="2" BorderColor="MediumPurple" BorderWidth="2" Padding="2"/>
-            <Button Text="Appointments" Command="{Binding LoadAppointmentsCommand}" Grid.Column="3" BorderColor="MediumPurple" BorderWidth="2" Padding="2"/>
         </Grid>
         <Frame>
             <Grid ColumnDefinitions="*,100">
@@ -134,9 +133,9 @@
                 </syncfusion:SfDataGrid.Columns>
             </syncfusion:SfDataGrid>
         </Frame>
-        
-        <Frame BackgroundColor="MediumPurple" Margin="5" Padding="2" HeightRequest="500" IsVisible="{Binding CanSeeSymptoms}">
-            <syncfusion:SfDataGrid ItemsSource="{Binding SymptomsReport}" 
+
+      <Frame BackgroundColor="MediumPurple" Margin="5" Padding="2" HeightRequest="500" IsVisible="{Binding CanSeeSymptoms}">
+         <syncfusion:SfDataGrid ItemsSource="{Binding SymptomsReport}" 
                                HeaderGridLinesVisibility="Both"
                                GridLinesVisibility="Both"
                                SortingMode="Single"
@@ -146,65 +145,23 @@
                                ColumnWidthMode="Auto"
                                RowHeight="50"
                                    LiveDataUpdateMode="AllowDataShaping">
-                <syncfusion:SfDataGrid.Columns>
-                    <syncfusion:DataGridNumericColumn MappingName="SymptomId"
+            <syncfusion:SfDataGrid.Columns>
+               <syncfusion:DataGridNumericColumn MappingName="SymptomId"
                                                   HeaderText="Symptom ID"
                                                       Format="000"/>
-                    <syncfusion:DataGridNumericColumn MappingName="SymptomCollectionId"
+               <syncfusion:DataGridNumericColumn MappingName="SymptomCollectionId"
                                                   HeaderText="Symptom Col ID"
                                                       Format="000"/>
-                    <syncfusion:DataGridTextColumn MappingName="Title"
+               <syncfusion:DataGridTextColumn MappingName="Title"
                                                HeaderText="Title"
                                                ColumnWidthMode="FitByCell"/>
-                    <syncfusion:DataGridTextColumn MappingName="Description"
+               <syncfusion:DataGridTextColumn MappingName="Description"
                                                HeaderText="Description"
                                                ColumnWidthMode="FitByCell"/>
-                    <syncfusion:DataGridCheckBoxColumn MappingName="IsNew"
+               <syncfusion:DataGridCheckBoxColumn MappingName="IsNew"
                                                        HeaderText="New"/>
-                </syncfusion:SfDataGrid.Columns>
-            </syncfusion:SfDataGrid>
-        </Frame>
-
-        <Frame BackgroundColor="MediumPurple" Margin="5" Padding="2" HeightRequest="500" IsVisible="{Binding CanSeeAppointments}">
-            <syncfusion:SfDataGrid ItemsSource="{Binding AppointmentsReport}" 
-                               HeaderGridLinesVisibility="Both"
-                               GridLinesVisibility="Both"
-                               SortingMode="Single"
-                               SelectionMode="Multiple"
-                                   AutoGenerateColumnsMode="None"
-                               HeaderRowHeight="60"
-                               ColumnWidthMode="Auto"
-                               RowHeight="50"
-                                   LiveDataUpdateMode="AllowDataShaping">
-                <syncfusion:SfDataGrid.Columns>
-                    <syncfusion:DataGridNumericColumn MappingName="AppointmentId"
-                                                  HeaderText="Appointment ID"
-                                                      Format="000"/>
-                    <syncfusion:DataGridNumericColumn MappingName="ProceedureId"
-                                                  HeaderText="Proceedure ID"
-                                                      Format="000"/>
-                    <syncfusion:DataGridTextColumn MappingName="Location Name"
-                                               HeaderText="Title"
-                                               ColumnWidthMode="FitByCell"/>
-                    <syncfusion:DataGridNumericColumn MappingName="AddressId"
-                                                  HeaderText="Address ID"
-                                                      Format="000"/>
-                    <syncfusion:DataGridTextColumn MappingName="Notes"
-                                               HeaderText="Notes"
-                                               ColumnWidthMode="FitByCell"/>
-                    <syncfusion:DataGridTextColumn MappingName="PhoneNumber"
-                                                   HeaderText="Phone Number"
-                                                   ColumnWidthMode="FitByCell"/>
-                    <syncfusion:DataGridCheckBoxColumn MappingName="Current"
-                                                       HeaderText="Is Current"/>
-                    <syncfusion:DataGridDateColumn MappingName="DateAndTime"
-                                                   HeaderText="Date and Time"
-                                                   ColumnWidthMode="FitByCell"/>
-                    <syncfusion:DataGridNumericColumn MappingName="UserId"
-                                                  HeaderText="User ID"
-                                                      Format="000"/>
-                </syncfusion:SfDataGrid.Columns>
-            </syncfusion:SfDataGrid>
-        </Frame>
-    </StackLayout>
+            </syncfusion:SfDataGrid.Columns>
+         </syncfusion:SfDataGrid>
+      </Frame>
+   </StackLayout>
 </ContentPage>

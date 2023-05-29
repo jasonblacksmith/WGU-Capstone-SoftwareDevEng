@@ -15,6 +15,7 @@ namespace WGU_Capstone_C868.ViewModel
 {
     public partial class RelapseDiaryViewModel : LoginPageViewModel
     {
+        public static bool IsNew;
         public static User ThisUser = new User();
         public static string ThisDaysSinceMessage = "";
 
@@ -70,6 +71,9 @@ namespace WGU_Capstone_C868.ViewModel
         [ObservableProperty]
         public string daysSinceMessage;
 
+        [ObservableProperty]
+        public bool firstTimeUser;
+
         ObservableCollection<Relapse> _relapseDiaryEntries = new ObservableCollection<Relapse>();
         public ObservableCollection<Relapse> RelapseDiaryEntries
         {
@@ -96,13 +100,46 @@ namespace WGU_Capstone_C868.ViewModel
         {
             PageTitle = "Relapse Diary";
             TheUser = ThisUser;
-            DaysSinceMessage = ThisDaysSinceMessage;
+            if(DaysSinceMessage != null) 
+            {
+                DaysSinceMessage = ThisDaysSinceMessage;
+            }
+            else
+            {
+                ThisDaysSinceMessage = "Add your first entry!";
+            }
+            //Why do I have theis FirstTimeUser when I have IsNew? Lack of sleep, that is why!!!
+            FirstTimeUser = IsNew;
             await Init();
         }
 
         public async Task Init()
         {
+            if (!FirstTimeUser)
+            {
+                await NotesSelected();
+            }
+            else
+            {
+                await FirstTimeGuided();
+            }
+        }
+
+        public async Task FirstTimeGuided()
+        {
+            IsNotes = true;
+            IsTriggers = false;
+            IsSymptoms = false;
+
+            IsNotesButton = false;
+            IsTriggersButton = true;
+            IsSymptomsButton = true;
+
+            RelapseDiaryEntries.Clear();
+            AddANew();
             await NotesSelected();
+
+            //SelectedRelapse = null;
         }
 
         [RelayCommand]
@@ -123,26 +160,44 @@ namespace WGU_Capstone_C868.ViewModel
             IsSymptomsButton = true;
 
             SelectedItem = "New Entry";
-
-            allRelapses = await RelapseCalls.GetRelapsesAsync();
-            allRelapses.OrderBy(x => x.DateAndTime).ToList();
-            foreach (Relapse r in allRelapses)
+            try
             {
-                if (r.UserId == UserId)
+                allRelapses = await RelapseCalls.GetRelapsesAsync();
+                allRelapses.OrderBy(x => x.DateAndTime).ToList();
+                foreach (Relapse r in allRelapses)
                 {
-                    RelapseDiaryEntries.Add(r);
+                    if (r.UserId == UserId)
+                    {
+                        RelapseDiaryEntries.Add(r);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
             }
 
             //Set Edit Status
-            if (SelectedRelapse.UserId > 0)
+            if (SelectedRelapse.RelapseId > 0)
             {
                 IsEdit = true;
             }
+            if (!FirstTimeUser)
+            {
+                SelectedRelapse = RelapseDiaryEntries.FirstOrDefault();//Deffault on load
+            }
 
-            SelectedRelapse = RelapseDiaryEntries.FirstOrDefault();//Deffault on load
-            newTriggerCollectionId = SelectedRelapse.TriggerCollectionId;
-            newSymptomCollectionId = SelectedRelapse.SymptomCollectionId;
+            if (FirstTimeUser)
+            {
+                newTriggerCollectionId = 1;
+                newSymptomCollectionId = 1;
+            }
+            else
+            {
+                newTriggerCollectionId = SelectedRelapse.TriggerCollectionId;
+                newSymptomCollectionId = SelectedRelapse.SymptomCollectionId;
+            }
         } 
 
         [RelayCommand]
@@ -286,7 +341,6 @@ namespace WGU_Capstone_C868.ViewModel
                     {
                         await Shell.Current.DisplayAlert("Missing Inputs?", "Please make sure that there is a location name, date, and notes filled out or selected.", "Ok");
                     }
-
                 }
 
                 if (IsTriggers)
@@ -372,12 +426,12 @@ namespace WGU_Capstone_C868.ViewModel
                 Relapse _newRelapse = new()
                 {
                     RelapseId = 0,
-                    UserId = SelectedRelapse.UserId,
+                    UserId = TheUser.UserId,
                     Location = null,
                     DateAndTime = DateTime.Now,
                     Notes = null,
-                    TriggerCollectionId = SelectedRelapse.TriggerCollectionId,
-                    SymptomCollectionId = SelectedRelapse.SymptomCollectionId
+                    TriggerCollectionId = 1,
+                    SymptomCollectionId = 1
                 };
                 SelectedRelapse = _newRelapse;
             }
@@ -387,7 +441,7 @@ namespace WGU_Capstone_C868.ViewModel
                 Model.Trigger _newTrigger = new()
                 {
                     TriggerId = 0,
-                    TriggerCollectionId= SelectedTrigger.TriggerCollectionId,
+                    TriggerCollectionId= 1,
                     Title = null,
                     Description = null,
                     IsNew = true
@@ -400,7 +454,7 @@ namespace WGU_Capstone_C868.ViewModel
                 Symptom _newSymptom = new()
                 {
                     SymptomId = 0,
-                    SymptomCollectionId = SelectedSymptom.SymptomCollectionId,
+                    SymptomCollectionId = 1,
                     Title = null,
                     Description = null,
                     IsNew = true
