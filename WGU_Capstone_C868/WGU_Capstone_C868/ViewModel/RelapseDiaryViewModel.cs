@@ -167,6 +167,7 @@ namespace WGU_Capstone_C868.ViewModel
             IsSymptomsButton = true;
 
             RelapseDiaryEntries.Clear();
+            await NotesSelected();
 
             SelectedRelapse = null;
             newTriggerCollectionId = 1;
@@ -216,8 +217,17 @@ namespace WGU_Capstone_C868.ViewModel
             }
 
             SelectedRelapse = RelapseDiaryEntries.FirstOrDefault();//Deffault on load
-            newTriggerCollectionId = SelectedRelapse.TriggerCollectionId;
-            newSymptomCollectionId = SelectedRelapse.SymptomCollectionId;
+            //TODO: Fix for first time load!
+            if (FirstTimeUser)
+            {
+                newTriggerCollectionId = 1;
+                newSymptomCollectionId = 1;
+            }
+            else
+            {
+                newTriggerCollectionId = SelectedRelapse.TriggerCollectionId;
+                newSymptomCollectionId = SelectedRelapse.SymptomCollectionId;
+            }
         } 
 
         [RelayCommand]
@@ -447,12 +457,12 @@ namespace WGU_Capstone_C868.ViewModel
                 Relapse _newRelapse = new()
                 {
                     RelapseId = 0,
-                    UserId = SelectedRelapse.UserId,
+                    UserId = TheUser.UserId,
                     Location = null,
                     DateAndTime = DateTime.Now,
                     Notes = null,
-                    TriggerCollectionId = SelectedRelapse.TriggerCollectionId,
-                    SymptomCollectionId = SelectedRelapse.SymptomCollectionId
+                    TriggerCollectionId = 1,
+                    SymptomCollectionId = 1
                 };
                 SelectedRelapse = _newRelapse;
             }
@@ -462,7 +472,7 @@ namespace WGU_Capstone_C868.ViewModel
                 Model.Trigger _newTrigger = new()
                 {
                     TriggerId = 0,
-                    TriggerCollectionId= SelectedTrigger.TriggerCollectionId,
+                    TriggerCollectionId= 1,
                     Title = null,
                     Description = null,
                     IsNew = true
@@ -475,7 +485,7 @@ namespace WGU_Capstone_C868.ViewModel
                 Symptom _newSymptom = new()
                 {
                     SymptomId = 0,
-                    SymptomCollectionId = SelectedSymptom.SymptomCollectionId,
+                    SymptomCollectionId = 1,
                     Title = null,
                     Description = null,
                     IsNew = true
