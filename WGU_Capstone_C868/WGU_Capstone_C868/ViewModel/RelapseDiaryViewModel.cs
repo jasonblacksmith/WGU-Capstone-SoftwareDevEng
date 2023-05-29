@@ -187,7 +187,7 @@ namespace WGU_Capstone_C868.ViewModel
             {
                 SelectedRelapse = RelapseDiaryEntries.FirstOrDefault();//Deffault on load
             }
-            //TODO: Fix for first time load!
+
             if (FirstTimeUser)
             {
                 newTriggerCollectionId = 1;

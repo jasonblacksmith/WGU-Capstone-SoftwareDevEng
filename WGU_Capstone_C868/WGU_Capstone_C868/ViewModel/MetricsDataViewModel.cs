@@ -21,7 +21,6 @@ namespace WGU_Capstone_C868.ViewModel
         RelapseCalls RelapseCalls = new RelapseCalls();
         TriggerCalls TriggerCalls = new TriggerCalls();
         SymptomCalls SymptomCalls = new SymptomCalls();
-        AppointmentCalls AppointmentCalls = new AppointmentCalls();
 
         public ObservableCollection<Relapse> _diaryEntries = new ObservableCollection<Relapse>();
         public ObservableCollection<Relapse> DiaryEntries
@@ -44,13 +43,6 @@ namespace WGU_Capstone_C868.ViewModel
             set { SetProperty(ref _symptomsReport, value); }
         }
 
-        public ObservableCollection<Appointment> _appointmentsReport = new ObservableCollection<Appointment>();
-        public ObservableCollection<Appointment> AppointmentsReport
-        {
-            get { return _appointmentsReport; }
-            set { SetProperty(ref _appointmentsReport, value); }
-        }
-
         [ObservableProperty]
         public bool canSeeEntries = true;
 
@@ -59,9 +51,6 @@ namespace WGU_Capstone_C868.ViewModel
 
         [ObservableProperty]
         public bool canSeeSymptoms = false;
-
-        [ObservableProperty]
-        public bool canSeeAppointments = false;
 
         [RelayCommand]
         public async Task Reload()
@@ -92,7 +81,6 @@ namespace WGU_Capstone_C868.ViewModel
             CanSeeEntries = true;
             CanSeeTriggers = false;
             CanSeeSymptoms = false;
-            CanSeeAppointments = false;
         }
 
         [RelayCommand]
@@ -110,7 +98,6 @@ namespace WGU_Capstone_C868.ViewModel
             CanSeeEntries = false;
             CanSeeTriggers = true;
             CanSeeSymptoms = false;
-            CanSeeAppointments = false;
         }
 
         [RelayCommand]
@@ -128,25 +115,6 @@ namespace WGU_Capstone_C868.ViewModel
             CanSeeEntries = false;
             CanSeeTriggers = false;
             CanSeeSymptoms = true;
-            CanSeeAppointments = false;
-        }
-
-        [RelayCommand]
-        private async Task LoadAppointments()
-        {
-            try
-            {
-                _appointmentsReport = await AppointmentCalls.GetAppointmentsAsync();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                throw;
-            }
-            CanSeeEntries = false;
-            CanSeeTriggers = false;
-            CanSeeSymptoms = false;
-            CanSeeAppointments = true;
         }
 
         [RelayCommand]
@@ -246,26 +214,6 @@ namespace WGU_Capstone_C868.ViewModel
                 {
                     SymptomsReport.Clear();
                     SymptomsReport = holderOfTruth;
-                }
-            }
-            else if(CanSeeAppointments)
-            {
-                ObservableCollection<Appointment> holderOfTruth = new ObservableCollection<Appointment>();
-                holderOfTruth.Clear();
-
-                foreach (Appointment a in AppointmentsReport)
-                {
-                    if (a.LocationName.Contains(stringToCompare) || a.Notes.Contains(stringToCompare))
-                    {
-                        holderOfTruth.Add(a);
-                        IsResults = true;
-                    }
-                }
-
-                if (holderOfTruth.Count != 0)
-                {
-                    AppointmentsReport.Clear();
-                    AppointmentsReport = holderOfTruth;
                 }
             }
         }
