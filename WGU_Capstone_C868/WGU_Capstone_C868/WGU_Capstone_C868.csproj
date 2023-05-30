@@ -86,7 +86,6 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="NUnit" Version="3.13.3" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.141-beta" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.5" />
 		<PackageReference Include="Syncfusion.Maui.DataGrid" Version="21.2.6" />
@@ -114,10 +113,6 @@
 	  <MauiXaml Update="View\RelapseDiary.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <Folder Include="UnitTests\MockServices\" />
 	</ItemGroup>
 
 </Project>
